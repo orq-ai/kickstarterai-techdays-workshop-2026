@@ -1,4 +1,4 @@
-# Refund logic
+# Business logic
 
 The refund agent is a small customer-service system: the prompt handles conversation, while code tools enforce what may happen.
 
