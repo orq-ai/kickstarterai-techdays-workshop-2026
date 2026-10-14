@@ -1,4 +1,7 @@
+# Credentials: .env and any copy of it (.env.local, .env.bak, ...). Only the template is tracked.
 .env
+.env.*
+!.env.example
 .venv/
 __pycache__/
 *.pyc
