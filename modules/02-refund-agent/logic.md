@@ -26,8 +26,6 @@ The listed post-window exceptions are damaged in transit, never received, and de
 
 ## One refund decision
 
-This is the intended v1 decision shape. It is pseudocode, not a second implementation: the real checks remain in the code tools.
-
 ```python {.code-frame}
 # 1. Start with facts the customer cannot choose.
 order = lookup_order(order_id)
