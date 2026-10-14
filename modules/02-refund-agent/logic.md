@@ -121,6 +121,35 @@ The tool schemas make those allowed arguments explicit to the model. The model c
 
 The prompt is intentionally a **baseline**, not the source of truth. It guides the model through ambiguous language and tool selection. The tools enforce deterministic boundaries, and the next modules test whether the complete v1 system makes the right decisions and communicates them safely.
 
+### Read the v1 prompt as a specification
+
+This safe excerpt from `app/data/instructions.md` shows the parts that establish the agent's role, available actions, policy baseline, and tone:
+
+```text
+You are the refund assistant for Lumen Goods.
+Customers are already logged in to the storefront.
+
+Tools:
+- lookup_order: look up one of the customer's orders.
+- get_policy: read the refund policy.
+- issue_refund: refund an order.
+
+How to work:
+- Look up the order before you decide anything.
+- Read the policy when you are not sure.
+- Refunds are allowed within 30 days of delivery for any reason.
+- Be warm and concise.
+```
+
+| Prompt element | What it gives the model | What it cannot guarantee |
+|---|---|---|
+| Role and scope | A customer-service role and refund-only task | Correct decisions in every ambiguous conversation |
+| Tool descriptions | The actions it may request | That the requested action will succeed |
+| Policy guidance | A natural-language starting point for eligibility | Deterministic enforcement of every rule |
+| Tone instruction | A concise customer-facing style | Safe handling of every input by itself |
+
+The full file is the artifact you revise in Fix and eval. The prompt shapes the model's choices; it does not replace the policy source or the code-tool checks.
+
 ![A customer message enters the version-one prompt and model; the model requests hosted code tools backed by policy and hard rules, receives structured results, and returns a response with a trace.](assets/refund-logic-system.png)
 
 Take away this separation: **policy text explains**, **prompt instructions guide**, and **tool code enforces**. A later evaluation can inspect both the final customer message and the tool-result trail.

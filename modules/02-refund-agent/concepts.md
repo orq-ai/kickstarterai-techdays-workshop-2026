@@ -46,7 +46,7 @@ orq.agents.create(
 )
 ```
 
-This v1 agent does not configure fallback models, memory stores, knowledge bases, cost caps, or approval gates. The application does not dispatch its tools itself: it gives orq.ai the agent configuration; orq.ai owns the loop and the sandbox execution.
+This v1 agent does not configure fallback models, memory stores, knowledge bases, cost caps, or interactive tool gates. The application does not dispatch its tools itself: it gives orq.ai the agent configuration; orq.ai owns the loop and the sandbox execution.
 
 ## One turn on the wire
 
