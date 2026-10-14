@@ -6,6 +6,8 @@
 | `401 API key is not valid for this workspace` | a typo in the key, or a stale `ORQ_API_KEY` in your shell picked up by another tool | the repo reads `.env` and wins over the shell; for the CLI and orqi run `set -a; source .env; set +a` first |
 | `400` invalid model on a gateway call | the model id has no provider, or the model is not enabled in the workspace | copy it from the Model Garden as `provider/model` |
 | `make orq-doctor` shows another workspace under `auth` | your own `orq auth login` session | `orq whoami` above it says `source: ORQ_API_KEY`: that is the key that counts |
+| orqi: `401 Token verification failed` although `make smoke-test` works | orqi reuses an older stored login for model calls | `mv ~/.orqi/agent/auth.json ~/.orqi/agent/auth.json.bak`, then run orqi again with `.env` exported |
+| `eq dashboard` says `ORQ_API_KEY was rejected` | it read an older key exported in your shell | use `make evaluatorq-dashboard`, which exports `.env` first |
 | coding agent cannot find your agent | its MCP connection signed in over OAuth to your own workspace | connect with the bearer header, see the coding agents module |
 | the chat UI says the agent does not exist | not seeded yet | `make seed-workspace` |
 | the version picker has no `@2.0.0` | nothing published yet, or unchanged instructions | edit `app/data/instructions.md`, `make publish-agent-version`, reload the page |

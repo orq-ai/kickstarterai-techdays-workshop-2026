@@ -50,6 +50,8 @@ Run it twice. A model is not deterministic: one run can miss what the next one f
 make evaluatorq-dashboard       # uv run eq dashboard
 ```
 
+![eq dashboard, Agent Sim run ws01-sim-v1.0.0 against ws01-refund-agent@1.0.0: executive summary, 2 personas, 3 scenarios, 6 conversations, goal-met donut and quality metrics, with tabs for Breakdown, Recommendations and Transcripts.](assets/eq-dashboard.png)
+
 Open your run (`ws07-sim-v1.0.0`). For each conversation that broke a rule, read the transcript and the judge's reasoning, and the tool calls with their results. Then write down, in one sentence each, **every** behaviour you would not ship. There is more than one.
 
 Two questions that help:

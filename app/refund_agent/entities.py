@@ -402,7 +402,7 @@ def seed(orq=None) -> None:
             f"seed failed: {str(exc)[:300]}\nfix: check that ORQ_API_KEY, ORQ_PROJECT and WS_PREFIX are the ones from your email"
         ) from exc
     print(f"elapsed  : {time.time() - started:.0f}s")
-    print(f"next     : `make agent-chat-ui`; everything sits under {settings.path} in the Studio")
+    print(f"next     : `make agent-chat-ui`; in the Studio, search {settings.prefix} in your key's project")
 
 
 def main(argv: list[str] | None = None) -> int:

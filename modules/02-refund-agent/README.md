@@ -51,6 +51,8 @@ The left panel, **Backend (mock) · read-only**, shows the data the code tools w
 
 Open a trace link. The trace shows the model calls and one span per tool call, run in orq.
 
+![A refund trace in the Studio: the agent span, two gpt-6-luna calls and the lookup_order and issue_refund tool spans with a sandbox execute; the issue_refund span shows its arguments and the result amount_refunded 89.](assets/agent-trace.png)
+
 ### Step 3 · Inspect and call it from Python
 
 Open `modules/02-refund-agent/run.py`. It has two TODOs: the call itself, and printing each tool result.
@@ -95,6 +97,10 @@ orq responses create --model "agent/${WS_PREFIX}-refund-agent" --input '"Refund 
 ### Step 5 · Versions in the Studio
 
 Open **Agents** > your `-refund-agent` > **Versions**. There is one version today. Then open one tool under **Tools**: the Python that orq runs, generated from `tools.py`.
+
+![The agent's settings in the Studio: role, description, model gpt-6-luna and the three code tools ws01-lookup_order, ws01-issue_refund, ws01-get_policy.](assets/agent-tools.png)
+
+![The ws01-issue_refund code tool in the Studio: the generated header comment, the window and limit constants, and the start of the order fixture.](assets/tool-code.png)
 
 ## Hint
 

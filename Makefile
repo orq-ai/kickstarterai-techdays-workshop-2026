@@ -35,8 +35,8 @@ agent-chat-ui: ## Chat with your agent in the browser on http://127.0.0.1:8002 (
 simulate-agent: ## Simulated customers against your agent, VERSION=1.0.0 by default (modules/03-simulation/run.py)
 	$(RUN) python modules/03-simulation/run.py $(or $(VERSION),1.0.0)
 
-evaluatorq-dashboard: ## Simulation and eval results in the browser (eq dashboard)
-	$(RUN) eq dashboard
+evaluatorq-dashboard: ## Simulation and eval results in the browser (eq dashboard), with the key from .env
+	@set -a; source .env; set +a; $(RUN) eq dashboard
 
 # ── Fix and eval ──
 publish-agent-version: ## Publish FILE (default app/data/instructions.md) as your agent's next version; no-op if unchanged
