@@ -1,4 +1,4 @@
-# Fix and eval
+# Improve and Evaluate
 
 | | |
 |---|---|
@@ -9,7 +9,7 @@
 
 A fix is not done when it only passes the conversation that found it. This tutorial turns failure evidence into a new agent version, then checks simulations and a 20-row regression eval with four scorer thresholds.
 
-Read the [Fix and eval concepts](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/04-concepts/) for error analysis, scorer design, and the evaluation gate.
+Read the [Concepts](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/04-concepts/) page for error analysis, scorer design, and the evaluation gate.
 
 ![Diagram: the prompt-improvement loop. Simulation failures inform edits to the instructions; publishing creates a new agent version; replay, simulation and the regression eval produce evidence before a failure becomes a new test case.](assets/improvement-loop.png)
 

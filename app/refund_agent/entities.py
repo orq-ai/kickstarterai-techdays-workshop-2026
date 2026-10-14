@@ -403,11 +403,11 @@ def seed(orq=None) -> None:
             f"seed failed: {str(exc)[:300]}\nfix: check that ORQ_API_KEY, ORQ_PROJECT and WS_PREFIX are the ones from your email"
         ) from exc
     print(f"elapsed  : {time.time() - started:.0f}s")
-    print(f"next     : `uv run python modules/02-refund-agent/hello_agent.py` or `uv run python -m app.web`")
+    print(f"next     : `uv run python modules/02-refund-agent/run.py` or `uv run python -m app.web`")
 
 
 def seed_eval(orq=None) -> None:
-    """Create the dataset and policy judge used only by Fix and eval. Safe to rerun."""
+    """Create the dataset and policy judge used only by Improve and Evaluate. Safe to rerun."""
     settings.require_seat()
     orq = orq or make_orq()
     started = time.time()

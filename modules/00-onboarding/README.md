@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **Prerequisites** | a laptop with [uv](https://docs.astral.sh/uv/), `git`, `make`, and the [orq.ai CLI](https://docs.orq.ai/reference/cli) |
-| **You will have** | your own key and seat in the workshop workspace, the models it offers, and one model request sent through the orq.ai AI Gateway from curl, the CLI and Python, with its trace |
+| **You will have** | a working gateway request using the workshop key, plus its trace in Studio |
 
 ## Why
 
@@ -42,85 +42,27 @@ source .env        # load ORQ_API_KEY, WS_PREFIX, MODEL, and other settings
 set +a              # stop auto-exporting future shell assignments
 ```
 
-`make` commands load `.env` themselves; this is only for commands you type directly into the shell.
+Workshop Python scripts load `.env` themselves. This export is for direct shell commands such as `orq` and `curl`.
 
-Then check the CLI sees your key:
+Check that the CLI uses your workshop key:
 
 ```bash {.terminal}
 orq whoami
-orq doctor
 ```
 
-`orq whoami` verifies the credential source; `orq doctor` checks the configured endpoints and available tooling. `make orq-doctor` is the shortcut that runs both with `.env` exported.
+Look for `source: ORQ_API_KEY`. If authentication fails, `orq doctor` diagnoses the configured endpoints and tooling. `make orq-doctor` runs both commands with `.env` exported.
 
-`orq whoami` must say `source: ORQ_API_KEY`. `orq doctor` may also mention your own `orq auth login` session; the key is what counts.
+A saved `orq auth login` session can point to another workspace. For this exercise, check that `orq whoami` reports `source: ORQ_API_KEY`.
 
-### Step 3 · The Model Garden
+### Step 3 · Make one gateway request
 
-Open [my.orq.ai](https://my.orq.ai) and switch to the workshop workspace.
-
-Open **AI Gateway** > **Models**, the Model Garden. These are the models the gateway serves to this workspace, each with its provider, type and price per token. A model id is always `provider/model`: `openai/gpt-6-luna` is the one in your `.env` as `MODEL`.
-
-![The Model Garden filtered to enabled models: GPT-6 Luna, DeepSeek, GLM, Kimi and Nemotron models, each with its provider/model id, price per token and capabilities.](assets/model-garden.png)
-
-The same list from the terminal:
-
-```bash {.terminal}
-orq models list -o json |
-  jq -r '
-    .[]
-    | select(.enabled)
-    | "\(.provider)/\(.model_id)  \(.model_type)"
-  '
-```
-
-### Step 4 · One request: curl, CLI, Python
-
-The gateway speaks the OpenAI API at `https://my.orq.ai/v3/router`. The same request three ways:
-
-=== "curl"
-
-    ```bash {.terminal}
-    curl -s https://my.orq.ai/v3/router/responses \
-      -H "Authorization: Bearer $ORQ_API_KEY" \
-      -H "Content-Type: application/json" \
-      --data "{
-        \"model\": \"$MODEL\",
-        \"input\": \"Say hello in five words.\"
-      }" \
-      -D - |
-      grep -i x-orq-trace-id
-    ```
-
-=== "orq.ai CLI"
-
-    ```bash {.terminal}
-    orq responses create \
-      --model "$MODEL" \
-      --input '"Say hello in five words."' \
-      -o json
-    ```
-
-=== "Python"
-
-    ```python {.code-frame}
-    from openai import OpenAI
-
-    client = OpenAI(api_key=ORQ_API_KEY, base_url="https://my.orq.ai/v3/router")
-    response = client.responses.create(
-        model="openai/gpt-6-luna",
-        input="Say hello in five words.",
-    )
-    print(response.output_text)
-    ```
-
-The Python version is `app/gateway_check.py`, the last setup check:
+A model ID has the form `provider/model`. `app/gateway_check.py` uses `MODEL` from your `.env` to make one OpenAI-compatible Responses API call and print its trace ID.
 
 ```bash {.terminal}
 uv run python -m app.gateway_check
 ```
 
-This runs the last onboarding check in `app/gateway_check.py`. It sends one request to the configured model through the orq.ai AI Gateway and prints its trace ID. `make gateway-check` is the shortcut.
+`make gateway-check` is an optional shortcut for the same command. Look for `verdict : OK` and save the trace ID:
 
 ```text
 ── Gateway check · one request through the gateway ───────
@@ -133,9 +75,73 @@ trace    : 74c18139baffe8399c6029823b037995
 verdict  : OK, your key and the gateway work
 ```
 
-Every response carries an `x-orq-trace-id` header: the proof the call went through orq.ai.
+### Step 4 · Find that trace
 
-### Step 5 · Swap the model, find the traces
+Open [my.orq.ai](https://my.orq.ai), select the workshop workspace, then open **Observability** > **Traces** and find the ID from Step 3. Check the model, response, tokens, cost, and latency. That is the same evidence you will later use to inspect an agent turn.
+
+![The Traces page with the gateway check selected: one responses.openai trace with a gpt-6-luna span, its model, input, output and reasoning tokens, and estimated cost.](assets/gateway-trace.png)
+
+### Optional · Browse models and try other interfaces
+
+In **AI Gateway** > **Models**, the Model Garden lists the models available to this workspace. The model ID in `.env` is your starting point; the provider, capabilities, and price help you choose another. Comparing models is useful, but not required before creating the agent.
+
+![The Model Garden filtered to enabled models: GPT-6 Luna, DeepSeek, GLM, Kimi and Nemotron models, each with its provider/model id, price per token and capabilities.](assets/model-garden.png)
+
+The same list from the terminal (requires `jq`):
+
+```bash {.terminal}
+orq models list -o json |
+  jq -r '
+    .[]
+    | select(.enabled)
+    | "\(.provider)/\(.model_id)  \(.model_type)"
+  '
+```
+
+The following tabs show the same request without the workshop script. They are alternative interfaces, not three additional required calls. The gateway speaks the OpenAI API at `https://my.orq.ai/v3/router`.
+
+=== "curl"
+
+    ```bash {.terminal}
+    curl -s https://my.orq.ai/v3/router/responses \
+      -H "Authorization: Bearer $ORQ_API_KEY" \
+      -H "Content-Type: application/json" \
+      --data "{
+        \"model\": \"$MODEL\",
+        \"input\": \"In one sentence: what does an AI gateway do?\"
+      }" \
+      -D - |
+      grep -i x-orq-trace-id
+    ```
+
+=== "orq.ai CLI"
+
+    ```bash {.terminal}
+    orq responses create \
+      --model "$MODEL" \
+      --input '"In one sentence: what does an AI gateway do?"' \
+      -o json
+    ```
+
+=== "Python"
+
+    ```python {.code-frame}
+    from openai import OpenAI
+
+    from app.refund_agent.config import settings  # loads .env
+
+    client = OpenAI(api_key=settings.api_key, base_url=settings.router_url)
+    raw = client.responses.with_raw_response.create(
+        model=settings.model,
+        input="In one sentence: what does an AI gateway do?",
+    )
+    print(raw.parse().output_text)
+    print(raw.headers.get("x-orq-trace-id"))
+    ```
+
+These examples use the same gateway contract. `app/gateway_check.py` is the tested Python version from Step 3; the trace header confirms the request passed through orq.ai.
+
+### Optional · Compare another model
 
 Pick another chat model from the Model Garden and send the same request; only the model id changes:
 
@@ -143,9 +149,7 @@ Pick another chat model from the Model Garden and send the same request; only th
 uv run python -m app.gateway_check deepseek/deepseek-flash
 ```
 
-Then open **Traces** in the Studio and search the two trace ids. Compare the model, tokens, cost and latency of the two calls.
-
-![The Traces page with the gateway check selected: one responses.openai trace with a gpt-6-luna span, its model, input, output and reasoning tokens, and estimated cost.](assets/gateway-trace.png)
+Compare the two trace IDs in **Observability** > **Traces**. The model, tokens, cost, and latency will differ.
 
 ## Gotchas
 

@@ -27,8 +27,8 @@ Then follow the docs site, or `make help` for every target in order.
 | Page | Folder | You run |
 |---|---|---|
 | Onboarding | `modules/00-onboarding` | `make setup orq-doctor gateway-check`; the gateway from curl, CLI and Python |
-| Coding agents | `modules/01-coding-agents` | orqi, or the orq.ai plugin in your own agent |
-| Designing an agent | `modules/02-refund-agent` | `make seed-workspace`, `make agent-chat-ui`, `make invoke-agent` |
+| Designing an agent | `modules/02-refund-agent` | hello agent, `make seed-workspace`, `make invoke-agent`, first trace |
+| Coding agents (optional) | `modules/01-coding-agents` | orqi, or the orq.ai plugin in your own agent |
 | Simulation | `modules/03-simulation` | `make simulate-agent`, `make evaluatorq-dashboard` |
 | Fix and eval | `modules/04-fix-and-eval` | `make publish-agent-version`, `make compare-versions`, `make regression-eval` |
 

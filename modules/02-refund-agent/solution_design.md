@@ -1,4 +1,4 @@
-# Solution design
+# Agent Design
 
 The v1 solution combines a system prompt, policy-backed hosted code tools, and agent settings into one managed orq.ai agent.
 
@@ -114,11 +114,11 @@ How to work:
 | Policy guidance | A natural-language starting point for eligibility | Deterministic enforcement of every rule |
 | Tone instruction | A concise customer-facing style | Safe handling of every input by itself |
 
-The full file is the artifact revised in Fix and eval. The prompt shapes the model's choices; it does not replace policy source or code-tool checks.
+The full file is the artifact revised in Improve and Evaluate. The prompt shapes the model's choices; it does not replace policy source or code-tool checks.
 
 ## Next
 
-The [Tutorial](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02/) creates and invokes this managed agent, then lets you inspect its tool calls and traces.
+[Build the Agent](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02/) creates and invokes this managed agent, then lets you inspect its tool calls and traces.
 
 ## Official docs
 
