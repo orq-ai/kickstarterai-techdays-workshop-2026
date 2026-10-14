@@ -18,13 +18,13 @@ setup: ## Install Python deps (uv) and create .env from the example if missing
 orq-doctor: ## orq CLI check with the key from .env: who you are, endpoints, skills
 	@set -a; source .env; set +a; unset ORQ_WORKSPACE; orq whoami && orq doctor
 
-seed-workspace: ## Create your agent v1.0.0, its code tools, the eval dataset and the judge (idempotent)
-	$(RUN) python -m app.refund_agent.entities seed
-
-smoke-test: ## One turn to your agent: answer, tools called, trace id
+smoke-test: ## One model request through the orq AI Gateway: answer, tokens, trace id
 	$(RUN) python -m app.smoke
 
 # ── Refund agent ──
+seed-workspace: ## Create your agent v1.0.0, its code tools, the eval dataset and the judge (idempotent)
+	$(RUN) python -m app.refund_agent.entities seed
+
 invoke-agent: ## Inspect your agent and call it from Python (modules/02-refund-agent/run.py)
 	$(RUN) python modules/02-refund-agent/run.py
 

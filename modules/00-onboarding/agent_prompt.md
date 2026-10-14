@@ -1,1 +1,1 @@
-Read AGENTS.md and modules/00-onboarding/README.md. I pasted my kickstart email block into .env. Run `make orq-doctor`, `make seed-workspace` and `make smoke-test` in that order, stop at the first failure, and tell me the fix. Never print ORQ_API_KEY.
+Read AGENTS.md and modules/00-onboarding/README.md. I pasted my kickstart email block into .env. Run `make orq-doctor` and `make smoke-test`, stop at the first failure, and tell me the fix. Then send the same request with another chat model enabled in the workspace and compare the two traces. Never print ORQ_API_KEY.
