@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" width="1000" height="620" role="img">
-  <title>How the pieces fit</title>
-  <desc>Your chat UI and simulation call the orq.ai AI Gateway from your laptop. The managed refund agent runs its model loop against the model provider and its code tools in orq.ai. Studio records every call. An optional coding agent connects through the orq.ai MCP server.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" width="1000" height="620" role="img" aria-labelledby="workshop-map-title workshop-map-desc">
+  <title id="workshop-map-title">How the pieces fit</title>
+  <desc id="workshop-map-desc">Your chat UI and simulation call the orq.ai AI Gateway from your laptop. The managed refund agent runs its model loop against the model provider and its code tools in orq.ai. Studio records every call. An optional coding agent connects through the orq.ai MCP server.</desc>
   <style>@import url("../../../scripts/diagram.css");</style>
   <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
   <rect width="1000" height="620" fill="#f9f8f6"/>
@@ -9,7 +9,7 @@
   <text x="44" y="58" class="zone-title">YOUR LAPTOP</text>
   <rect x="44" y="80" width="180" height="92" rx="10" class="node"/>
   <text x="134" y="120" text-anchor="middle" class="name">Chat UI</text>
-  <text x="134" y="150" text-anchor="middle" class="sub">ask, read answer</text>
+  <text x="134" y="150" text-anchor="middle" class="sub">local web app</text>
   <rect x="44" y="212" width="180" height="104" rx="10" class="node"/>
   <text x="134" y="254" text-anchor="middle" class="name">Simulation</text>
   <text x="134" y="284" text-anchor="middle" class="sub">evaluatorq</text>
@@ -40,7 +40,7 @@
   <text x="890" y="284" text-anchor="middle" class="sub">external</text>
 
   <path d="M224 116 H308" class="arrow"/>
-  <path d="M224 264 H264 V140 H308" class="arrow"/>
+  <path d="M224 264 H256 Q264 264 264 256 V148 Q264 140 272 140 H308" class="arrow"/>
   <path d="M400 172 V212" class="arrow"/>
   <path d="M660 212 V172" class="arrow dash"/>
   <text x="672" y="198" class="lbl">answer + tool results</text>

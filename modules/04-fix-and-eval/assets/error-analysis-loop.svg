@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" width="1000" height="400" role="img">
-  <title>Error analysis comes before evaluators</title>
-  <desc>Traces are read one by one (open coding), grouped into named failure modes (axial coding), collected in a failure taxonomy, and turned into one binary evaluator per mode that feeds the regression eval.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" width="1000" height="400" role="img" aria-labelledby="error-analysis-loop-title error-analysis-loop-desc">
+  <title id="error-analysis-loop-title">Error analysis comes before evaluators</title>
+  <desc id="error-analysis-loop-desc">Traces are read one by one (open coding), grouped into named failure modes (axial coding), collected in a failure taxonomy, and turned into one binary evaluator per mode that feeds the regression eval.</desc>
   <style>@import url("../../../scripts/diagram.css");</style>
   <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
   <rect width="1000" height="400" fill="#f9f8f6"/>
@@ -33,7 +33,7 @@
 
   <path d="M304 92 H360" class="arrow"/>
   <path d="M640 92 H696" class="arrow"/>
-  <path d="M836 154 V202 H164 V250" class="arrow"/>
+  <path d="M836 154 V194 Q836 202 828 202 H172 Q164 202 164 210 V250" class="arrow"/>
   <path d="M304 312 H360" class="arrow"/>
   <path d="M640 312 H696" class="arrow dash"/>
 </svg>

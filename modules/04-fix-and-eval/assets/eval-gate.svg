@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 524" width="1000" height="524" role="img">
-  <title>Every scorer must clear its threshold</title>
-  <desc>Fixed dataset rows run through a pinned agent version and four scorers; each scorer mean must reach its threshold or the run fails with exit code 1.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 524" width="1000" height="524" role="img" aria-labelledby="eval-gate-title eval-gate-desc">
+  <title id="eval-gate-title">Every scorer must clear its threshold</title>
+  <desc id="eval-gate-desc">Fixed dataset rows run through a pinned agent version and four scorers; each scorer mean must reach its threshold or the run fails with exit code 1.</desc>
   <style>@import url("../../../scripts/diagram.css");</style>
   <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
   <rect width="1000" height="524" fill="#f9f8f6"/>

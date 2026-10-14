@@ -7,14 +7,15 @@
 @font-face { font-family: "Kurrent Mono"; font-weight: 500; src: url("../docs/stylesheets/fonts/ESKlarheitKurrentMono-Md.woff2") format("woff2"); }
 
 text { font-family: "Avio Sans", sans-serif; fill: #25232e; }
-.name  { font-size: 26px; font-weight: 600; }
-.sub   { font-size: 19px; fill: #55535f; }
-.code  { font: 500 19px "Kurrent Mono", monospace; fill: #025558; }
-.tool  { font: 500 23px "Kurrent Mono", monospace; fill: #25232e; }
-.zone-title { font-size: 17px; font-weight: 600; letter-spacing: 0.1em; fill: #025558; }
-.lbl   { font-size: 18px; font-weight: 600; fill: #025558; paint-order: stroke; stroke: #f9f8f6; stroke-width: 7px; stroke-linejoin: round; }
+.name  { font-size: 24px; font-weight: 600; }
+.q     { font-size: 24px; font-weight: 600; }
+.sub   { font-size: 20px; fill: #025558; }
+.msg   { font-size: 20px; }
+.code  { font: 500 20px "Kurrent Mono", monospace; fill: #025558; }
+.tool  { font: 500 20px "Kurrent Mono", monospace; fill: #25232e; }
+.zone-title { font: 500 16px "Kurrent Mono", monospace; letter-spacing: 0.14em; fill: #025558; }
+.lbl   { font-size: 20px; font-weight: 500; fill: #025558; paint-order: stroke; stroke: #f9f8f6; stroke-width: 8px; stroke-linejoin: round; }
 .note  { font-size: 20px; font-style: italic; }
-.num   { font: 600 40px "Kurrent", sans-serif; fill: #025558; }
 
 .node  { fill: #fff; stroke: #25232e; stroke-width: 1.6; }
 .focal { fill: #fdf0ea; stroke: #df5325; stroke-width: 2.2; }

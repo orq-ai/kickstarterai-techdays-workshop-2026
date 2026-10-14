@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 540" width="1000" height="540" role="img">
-  <title>What the judge can see</title>
-  <desc>A text-only judge sees the customer and agent messages. This workshop's judge also sees each tool call and its result, so it can check the agent's claims.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 540" width="1000" height="540" role="img" aria-labelledby="judge-visibility-title judge-visibility-desc">
+  <title id="judge-visibility-title">What the judge can see</title>
+  <desc id="judge-visibility-desc">A text-only judge sees the customer and agent messages. This workshop's judge also sees each tool call and its result, so it can check the agent's claims.</desc>
   <style>@import url("../../../scripts/diagram.css");</style>
   <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
   <rect width="1000" height="540" fill="#f9f8f6"/>

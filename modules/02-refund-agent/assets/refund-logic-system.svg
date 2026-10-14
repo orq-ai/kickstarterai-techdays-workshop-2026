@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 540" width="1000" height="540" role="img">
-  <title>The v1 system</title>
-  <desc>The agent version holds instructions, a model and limits and guides what to do; three hosted code tools enforce the refund rules and return structured results.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 540" width="1000" height="540" role="img" aria-labelledby="refund-logic-system-title refund-logic-system-desc">
+  <title id="refund-logic-system-title">The v1 system</title>
+  <desc id="refund-logic-system-desc">The agent version holds instructions, a model and limits and guides what to do; three hosted code tools enforce the refund rules and return structured results.</desc>
   <style>@import url("../../../scripts/diagram.css");</style>
   <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
   <rect width="1000" height="540" fill="#f9f8f6"/>
@@ -29,8 +29,8 @@
   <text x="738" y="306" text-anchor="middle" class="sub">from the knowledge files</text>
   <rect x="524" y="344" width="428" height="112" rx="10" class="focal"/>
   <text x="738" y="384" text-anchor="middle" class="tool">issue_refund</text>
-  <text x="738" y="414" text-anchor="middle" class="sub">checks ownership, duplicates, the EUR 500</text>
-  <text x="738" y="438" text-anchor="middle" class="sub">cap and the 30-day window</text>
+  <text x="738" y="414" text-anchor="middle" class="sub">checks ownership and duplicates,</text>
+  <text x="738" y="438" text-anchor="middle" class="sub">the EUR 500 cap, the 30-day window</text>
 
   <path d="M404 170 H500" class="accent"/><text x="452" y="154" text-anchor="middle" class="lbl">call</text>
   <path d="M500 380 H404" class="accent dash"/><text x="452" y="416" text-anchor="middle" class="lbl">result</text>

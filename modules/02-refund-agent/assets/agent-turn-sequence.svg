@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 610" width="1000" height="610" role="img">
-  <title>One turn on the wire</title>
-  <desc>The app sends one request; inside orq.ai the model requests a function call, the code tool returns an orq result item, and the agent returns a message with a trace ID.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 610" width="1000" height="610" role="img" aria-labelledby="agent-turn-sequence-title agent-turn-sequence-desc">
+  <title id="agent-turn-sequence-title">One turn on the wire</title>
+  <desc id="agent-turn-sequence-desc">The app sends one request; inside orq.ai the model requests a function call, the code tool returns an orq result item, and the agent returns a message with a trace ID.</desc>
   <style>@import url("../../../scripts/diagram.css");</style>
   <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
   <rect width="1000" height="610" fill="#f9f8f6"/>

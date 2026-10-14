@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 450" width="1000" height="450" role="img">
-  <title>Turn evidence into a version you can prove</title>
-  <desc>Failure evidence informs an instruction edit; publishing creates a new agent version; replay, simulation and the regression eval verify it; a fixed failure becomes a new dataset row and the loop repeats.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 450" width="1000" height="450" role="img" aria-labelledby="improvement-loop-title improvement-loop-desc">
+  <title id="improvement-loop-title">Turn evidence into a version you can prove</title>
+  <desc id="improvement-loop-desc">Failure evidence informs an instruction edit; publishing creates a new agent version; replay, simulation and the regression eval verify it; a fixed failure becomes a new dataset row and the loop repeats.</desc>
   <style>@import url("../../../scripts/diagram.css");</style>
   <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
   <rect width="1000" height="450" fill="#f9f8f6"/>
@@ -31,7 +31,7 @@
   <path d="M640 90 H696" class="arrow"/>
   <path d="M836 150 V230" class="arrow"/>
   <path d="M696 290 H640" class="arrow"/>
-  <path d="M360 290 H164 V150" class="arrow dash"/>
+  <path d="M360 290 H172 Q164 290 164 282 V150" class="arrow dash"/>
 
   <text x="500" y="414" text-anchor="middle" class="note">The control refund must still pass after every prompt change.</text>
 </svg>

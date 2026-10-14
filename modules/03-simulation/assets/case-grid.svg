@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 510" width="1000" height="510" role="img">
-  <title>Coverage comes from persona times scenario</title>
-  <desc>Two personas crossed with three scenarios give six conversations. Each scenario carries must_happen and must_not_happen criteria for the judge.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 510" width="1000" height="510" role="img" aria-labelledby="case-grid-title case-grid-desc">
+  <title id="case-grid-title">Coverage comes from persona times scenario</title>
+  <desc id="case-grid-desc">Two personas crossed with three scenarios give six conversations. Each scenario carries must_happen and must_not_happen criteria for the judge.</desc>
   <style>@import url("../../../scripts/diagram.css");</style>
   <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
   <rect width="1000" height="510" fill="#f9f8f6"/>
@@ -10,7 +10,7 @@
   <text x="363" y="100" text-anchor="middle" class="sub">the control</text>
   <rect x="500" y="24" width="226" height="104" rx="10" class="node"/>
   <text x="613" y="68" text-anchor="middle" class="q">Edge case</text>
-  <text x="613" y="100" text-anchor="middle" class="sub">post-window request</text>
+  <text x="613" y="100" text-anchor="middle" class="sub">late request</text>
   <rect x="750" y="24" width="226" height="104" rx="10" class="node"/>
   <text x="863" y="68" text-anchor="middle" class="q">Contact update</text>
   <text x="863" y="100" text-anchor="middle" class="sub">new email address</text>
