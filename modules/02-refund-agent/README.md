@@ -1,4 +1,4 @@
-# Designing an agent
+# Build the Agent
 
 | | |
 |---|---|
@@ -9,21 +9,11 @@
 
 The refund agent is a fully managed, versioned orq.ai agent: your app sends one message and gets one response, while orq.ai runs both the model loop and the code tools. The tools come from `app/refund_agent/tools.py`; instructions come from `app/data/instructions.md`.
 
-Start with [Agent concepts](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-concepts/) and its hello agent. Then read the [Business case](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-logic/) policy table and the diagram in [Solution design](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-solution-design/). The detailed tool and prompt references can wait until after your first agent trace.
+Foundations covers the generic agent loop; [Use Case](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-logic/) defines the refund requirements and [Agent Design](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-solution-design/) shows the v1 approach.
 
 ## Steps
 
-### Step 1 · Run a hello agent
-
-Run the smallest managed-agent example before adding refund policy or tools:
-
-```bash {.terminal}
-uv run python modules/02-refund-agent/hello_agent.py
-```
-
-`hello_agent.py` creates `agent/<WS_PREFIX>-hello-agent` only if it does not exist, then sends it `Hello`. Its configuration has one instruction, one model, no tools, `max_iterations: 1`, and a 30-second limit. The response includes a trace ID, just like the refund agent will.
-
-### Step 2 · Create the refund agent
+### Step 1 · Create the refund agent
 
 Your seat prefix from the email (`WS_PREFIX=ws07`) goes in front of every entity you create, keeping your agent and evaluation resources separate from other participants:
 
@@ -41,7 +31,7 @@ tools    : ws07-lookup_order, ws07-issue_refund,
 agent    : ws07-refund-agent v1.0.0
 ```
 
-The dataset and policy judge are introduced in Fix and eval. The seed command is safe to run again: it only creates what is missing and never changes an existing agent. It refuses to run with an empty or made-up `WS_PREFIX`. `uv run python -m app.refund_agent.entities reset` deletes your seat's entities, and only those.
+The dataset and policy judge are introduced in Improve and Evaluate. The seed command is safe to run again: it only creates what is missing and never changes an existing agent. It refuses to run with an empty or made-up `WS_PREFIX`. `uv run python -m app.refund_agent.entities reset` deletes your seat's entities, and only those.
 
 ### What this command creates
 
@@ -52,7 +42,7 @@ The seed script reads the local agent sources and creates the matching orq.ai re
 | `app/refund_agent/tools.py` | Three hosted code tools |
 | `app/data/instructions.md` | The first refund-agent version |
 
-Afterward, the chat UI and scripts use the resource keys. They invoke the managed agent; they do not run the tool implementation on your laptop. Fix and eval creates its dataset and policy judge when that module needs them.
+Afterward, the chat UI and scripts use the resource keys. They invoke the managed agent; they do not run the tool implementation on your laptop. Improve and Evaluate creates its dataset and policy judge when that module needs them.
 
 ??? info "Optional: Inspect the SDK calls and agent settings"
     **The SDK calls behind seed**
@@ -110,9 +100,9 @@ Afterward, the chat UI and scripts use the resource keys. They invoke the manage
 
     This v1 agent does not configure fallback models, memory stores, knowledge bases, cost caps, or interactive tool gates. That boundary is useful beyond this workshop: seed or provision entities in a controlled path, then make product code invoke stable keys.
 
-### Step 3 · Read the resources in the Studio
+### Step 2 · Read the resources in the Studio
 
-Open **Agents**, search for your `WS_PREFIX`, and open `-refund-agent`. Verify the agent key, model, and three attached tools. The screenshot is cropped to the configuration column; the full v1 instructions are left for the Fix and eval module, after Simulation.
+Open **Agents**, search for your `WS_PREFIX`, and open `-refund-agent`. Verify the agent key, model, and three attached tools. The screenshot is cropped to the configuration column; the full v1 instructions are left for the Improve and Evaluate module, after Agent Simulation.
 
 ![The actual ws999-refund-agent configuration column in Studio shows its key, role, model, and three hosted tools without revealing the full instructions.](assets/agent-overview.png)
 
@@ -124,7 +114,7 @@ On **Versions**, confirm it starts at v1.0.0. You can inspect the limits there a
 
 A model has no equivalent code editor: it is selected as a configuration value on the agent. The code you can inspect lives in the tool resource; the prompt you can inspect lives in the agent version; the request and result you can inspect live in the trace.
 
-### Step 4 · Inspect and call it from Python
+### Step 3 · Inspect and call it from Python
 
 Open `modules/02-refund-agent/run.py`. Complete these two TODOs before you run it:
 
