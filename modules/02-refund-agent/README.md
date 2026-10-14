@@ -11,15 +11,6 @@ The refund agent is a fully managed, versioned orq.ai agent: your app sends one 
 
 Read [Agent concepts](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-concepts/) for the managed loop, response items, and versions. Then read the [Business case](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-logic/) for the policy requirements and [Solution design](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-solution-design/) for the v1 prompt, tools, and configuration.
 
-### Where the agent runs
-
-![Diagram: the chat and simulation run on your laptop and call the Orq AI Gateway. The highlighted managed refund agent and all three code tools run inside Orq, with traces in the Studio. Your coding agent can also connect through the gateway and MCP server.](assets/managed-agent-map.svg)
-
-
-[Open full-size Agent architecture diagram](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/assets/managed-agent-map.svg)
-
-The chat UI and its read-only order panel run locally. The **highlighted agent and code tools run in Orq**: the laptop sends a request and receives the answer, tool arguments and results. The order panel displays fixture data; it is not a live database that updates after a refund.
-
 ## Steps
 
 ### Step 1 · Run a hello agent

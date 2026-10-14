@@ -31,7 +31,9 @@ The skills are workflows written for an agent (simulate an agent, build an evalu
 
     Example output, abbreviated. The exact list reflects the connected MCP session and your permissions:
 
-    ```text {.terminal}
+    <!-- termynal -->
+
+    ```console
     $ orqi "List the chat models available through the connected orq.ai MCP server."
 
     Chat models available to this MCP session:

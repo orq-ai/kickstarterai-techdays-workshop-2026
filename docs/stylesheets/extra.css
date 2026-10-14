@@ -189,7 +189,7 @@ html { font-size: 100%; }
   border: 1px solid #3b4c4e;
   border-radius: 0.4rem;
   overflow: hidden;
-  margin: 1.1em 0;
+  margin: 0.75em 0;
 }
 .md-typeset .highlight::before {
   content: "Code";
@@ -203,7 +203,7 @@ html { font-size: 100%; }
 .md-typeset .highlight::before,
 .md-typeset .highlight > .filename {
   display: block;
-  padding: 0.55rem 1rem;
+  padding: 0.4rem 0.8rem;
   margin: 0;
   background: transparent;
   border-bottom: 1px solid #3b4c4e;
@@ -214,7 +214,7 @@ html { font-size: 100%; }
 }
 .md-typeset .highlight:has(> .filename)::before { display: none; }
 .md-typeset .highlight pre { margin: 0; }
-.md-typeset .highlight pre > code { padding: 1rem 3rem 1rem 1rem; }
+.md-typeset .highlight pre > code { padding: 0.7rem 2.5rem 0.7rem 0.8rem; }
 .md-typeset .highlight .md-code__nav { background: transparent; }
 .md-typeset .highlight .md-code__button {
   background: transparent;
@@ -222,31 +222,6 @@ html { font-size: 100%; }
 }
 .md-typeset .highlight .md-code__button:hover,
 .md-typeset .highlight .md-code__button:focus-visible { color: #ffffff; }
-
-/* Text fences include transcripts, prompts, and configuration examples. */
-.md-typeset .highlight.language-text {
-  --md-code-bg-color: #f3f5f4;
-  --md-code-fg-color: #283d3f;
-  border-color: #cbd5d2;
-}
-.md-typeset .highlight.language-text::before,
-.md-typeset .highlight.language-text > .filename {
-  color: #526865;
-  border-color: #cbd5d2;
-}
-.md-typeset .highlight.language-text .md-code__button { color: #526865; }
-.md-typeset .highlight.language-text .md-code__button:hover,
-.md-typeset .highlight.language-text .md-code__button:focus-visible { color: #025558; }
-[data-md-color-scheme="slate"] .md-typeset .highlight.language-text {
-  --md-code-bg-color: #2d393b;
-  --md-code-fg-color: #e0e9e7;
-  border-color: #526865;
-}
-[data-md-color-scheme="slate"] .md-typeset .highlight.language-text::before,
-[data-md-color-scheme="slate"] .md-typeset .highlight.language-text > .filename,
-[data-md-color-scheme="slate"] .md-typeset .highlight.language-text .md-code__button {
-  color: #bbcfc9;
-}
 
 /* Sidebar nav + TOC: ~content size, a touch bigger so the menu reads as chrome. */
 .md-nav { font-size: 1rem; }
@@ -320,29 +295,15 @@ html { font-size: 100%; }
 }
 
 /* --- Python snippets: framed code surface in both color schemes -------- */
-/* Python fences opt into this with `{.code-frame}`. This is intentionally
-   lighter than a terminal: it shows source code, not a shell session. */
+/* Source snippets share the dark surface and compact spacing of commands. */
 .md-typeset .code-frame.highlight {
-  --md-code-fg-color: #283d3f;
-  --md-code-hl-name-color: #283d3f;
-  --md-code-hl-keyword-color: #025558;
-  --md-code-hl-function-color: #684b87;
-  --md-code-hl-constant-color: #684b87;
-  --md-code-hl-string-color: #226946;
-  --md-code-hl-number-color: #a44822;
-  --md-code-hl-special-color: #a44822;
-  --md-code-hl-variable-color: #283d3f;
-  --md-code-hl-operator-color: #526865;
-  --md-code-hl-punctuation-color: #526865;
-  --md-code-hl-comment-color: #526865;
-  --md-code-hl-generic-color: #526865;
   position: relative;
-  margin: 1em 0;
-  padding: 2.5rem 1.1rem 1.1rem;
+  margin: 0.75em 0;
+  padding: 1.8rem 0 0;
   overflow: hidden;
-  background: #f1efeb;
-  border: 1px solid #cfcdc8;
-  border-radius: 8px;
+  background: var(--md-code-bg-color);
+  border: 1px solid #3b4c4e;
+  border-radius: 0.4rem;
 }
 .md-typeset .code-frame.highlight::before {
   content: "</>";
@@ -351,7 +312,7 @@ html { font-size: 100%; }
   position: absolute;
   top: 0.68rem;
   left: 1rem;
-  color: var(--orq-teal);
+  color: #8fdbcc;
   font-family: var(--md-code-font-family);
   font-size: 0.78rem;
   font-weight: 700;
@@ -362,7 +323,7 @@ html { font-size: 100%; }
   top: 0.68rem;
   left: 0;
   width: 100%;
-  color: #6b6975;
+  color: #afc0bd;
   font-family: var(--md-code-font-family);
   font-size: 0.72rem;
   text-align: center;
@@ -371,13 +332,13 @@ html { font-size: 100%; }
 .md-typeset .code-frame.highlight code {
   background: transparent;
 }
-.md-typeset .code-frame.highlight .md-code__button { color: #526865; }
+.md-typeset .code-frame.highlight .md-code__button { color: #afc0bd; }
 .md-typeset .code-frame.highlight .md-code__button:hover,
-.md-typeset .code-frame.highlight .md-code__button:focus-visible { color: #025558; }
+.md-typeset .code-frame.highlight .md-code__button:focus-visible { color: #fff; }
 [data-md-color-scheme="slate"] .md-typeset .code-frame.highlight .md-code__button { color: #afc0bd; }
 [data-md-color-scheme="slate"] .md-typeset .code-frame.highlight {
-  background: #2f2d3a;
-  border-color: rgba(255, 255, 255, 0.14);
+  background: var(--md-code-bg-color);
+  border-color: #3b4c4e;
 }
 [data-md-color-scheme="slate"] .md-typeset .code-frame.highlight::after {
   color: #a8a39d;
@@ -425,10 +386,10 @@ html { font-size: 100%; }
 /* Shell fences opt into this with `{.terminal}`. Keep Python and other
    explanatory code on the normal documentation surface. */
 .md-typeset .terminal.highlight {
-  --terminal-bg: #1a1917;
+  --terminal-bg: #202b2d;
   position: relative;
-  margin: 1em 0;
-  padding: 2.75rem 1.1rem 1.1rem;
+  margin: 0.75em 0;
+  padding: 1.8rem 0 0;
   overflow: hidden;
   background: var(--terminal-bg);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -487,7 +448,7 @@ html { font-size: 100%; }
    the JS-injected min-height, and tighten padding. */
 [data-termynal] {
   min-height: 0 !important;
-  padding: 2.4rem 1.1rem 1.1rem !important;
+  padding: 2.1rem 0.8rem 0.8rem !important;
   --color-bg: #202b2d;
   --color-text: #f1f5f4;
   --color-text-subtle: #afc0bd;
@@ -497,7 +458,7 @@ html { font-size: 100%; }
   font-size: 0.85em;
 }
 [data-termynal] [data-terminal-control] { color: var(--orq-teal-light); }
-.terminal-session { position: relative; margin: 1.1em 0; }
+.terminal-session { position: relative; margin: 0.75em 0; }
 .terminal-session [data-ty] {
   line-height: 1.35;
 }
