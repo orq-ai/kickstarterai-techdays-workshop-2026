@@ -2,7 +2,6 @@
 
 | | |
 |---|---|
-| **Time** | 30 min |
 | **Prerequisites** | refund agent module done |
 | **You will have** | six simulated conversations against `@1.0.0`, judged against criteria you wrote, in `eq dashboard`, and a short list of behaviours to fix |
 
