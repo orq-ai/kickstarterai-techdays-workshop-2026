@@ -119,6 +119,46 @@ html { font-size: 100%; }
    ponytail: CSS over rewriting 19 files; drop this if the metadata block becomes a list. */
 .md-typeset table:not([class]) thead:not(:has(th:not(:empty))) { display: none; }
 
+/* Lesson tables: a teal heading, orange edge and a gentle rhythm between rows. */
+.md-typeset table:not([class]):has(thead th:not(:empty)) {
+  --table-key-color: var(--orq-teal);
+  --table-stripe: color-mix(in srgb, var(--orq-teal) 4%, var(--md-default-bg-color));
+  --table-hover: color-mix(in srgb, var(--orq-teal) 8%, var(--md-default-bg-color));
+  width: 100%;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-top: 3px solid var(--orq-orange-deep);
+  border-radius: 0.4rem;
+  border-spacing: 0;
+  overflow: hidden;
+}
+.md-typeset table:not([class]):has(thead th:not(:empty)) thead th {
+  background: var(--orq-teal);
+  color: #fff;
+  font-weight: 600;
+  padding: 0.8rem 1rem;
+  border-bottom: 0;
+}
+.md-typeset table:not([class]):has(thead th:not(:empty)) tbody td {
+  padding: 0.8rem 1rem;
+  vertical-align: top;
+}
+.md-typeset table:not([class]):has(thead th:not(:empty)) tbody td:first-child {
+  color: var(--table-key-color);
+  font-weight: 600;
+}
+.md-typeset table:not([class]):has(thead th:not(:empty)) tbody tr:nth-child(odd) {
+  background: var(--table-stripe);
+}
+.md-typeset table:not([class]):has(thead th:not(:empty)) tbody tr:hover,
+.md-typeset table:not([class]):has(thead th:not(:empty)) tbody tr:focus-within {
+  background: var(--table-hover);
+}
+[data-md-color-scheme="slate"] .md-typeset table:not([class]):has(thead th:not(:empty)) {
+  --table-key-color: #7ed0c5;
+  --table-stripe: color-mix(in srgb, var(--orq-teal-light) 8%, var(--md-default-bg-color));
+  --table-hover: color-mix(in srgb, var(--orq-teal-light) 14%, var(--md-default-bg-color));
+}
+
 /* A diff of two prompt files is a diff of prose: the lines run to ~200 characters, and a
    horizontal scrollbar hides exactly the half of the sentence that changed. Wrap them.
    Matched by content (Pygments .gd/.gi) because Material emits no language class here, so
