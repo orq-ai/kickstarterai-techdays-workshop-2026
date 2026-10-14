@@ -1,65 +1,54 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 960" role="img" aria-labelledby="title desc">
-<title id="title">How the pieces fit</title>
-<desc id="desc">The local chat sends a request through the Orq Responses API to the managed agent. The agent calls its configured language model at the provider and its code tools inside Orq, then returns the answer and tool evidence through the API. Studio records the execution. An optional coding assistant uses MCP to manage resources separately.</desc>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#025558"/></marker></defs>
-<style>text{font-family:Arial,Helvetica,sans-serif;fill:#25232e}.title{font-size:30px;font-weight:700}.name{font-size:22px;font-weight:700}.body{font-size:18px;fill:#025558}.small{font-size:16px;fill:#025558}.tag{font:14px ui-monospace,monospace;fill:#b63f18;letter-spacing:1px}.zone{font:15px ui-monospace,monospace;fill:#025558;letter-spacing:1px}.edge{fill:none;stroke:#025558;stroke-width:2;marker-end:url(#arrow)}.record{stroke-dasharray:6 5}</style>
-<rect width="1200" height="960" rx="14" fill="#f9f8f6"/>
-<text x="35" y="38" class="zone">ARCHITECTURE · A MANAGED AGENT</text>
-<text x="35" y="82" class="title">How the pieces fit</text>
-<text x="35" y="113" class="body">Your laptop sends a message. Orq runs the agent loop and code tools.</text>
-<rect x="330" y="292" width="830" height="430" rx="14" fill="#f0f3f1" stroke="#cbd8d4" stroke-width="1.5"/>
-<text x="352" y="322" class="zone">ORQ.AI · MANAGED EXECUTION</text>
-<text x="42" y="322" class="zone">YOUR LAPTOP</text>
-<rect x="35" y="352" width="230" height="120" rx="10" fill="#fff" stroke="#025558" stroke-width="1.5"/>
-<text x="150" y="394" class="name" text-anchor="middle">Chat client</text>
-<text x="150" y="425" class="body" text-anchor="middle">Send a message</text>
-<text x="150" y="451" class="small" text-anchor="middle">Read the answer</text>
-<rect x="360" y="352" width="285" height="120" rx="10" fill="#fff" stroke="#025558" stroke-width="1.5"/>
-<text x="502" y="391" class="name" text-anchor="middle">Responses API</text>
-<text x="502" y="420" class="body" text-anchor="middle">Through the AI Gateway</text>
-<text x="502" y="448" class="small" text-anchor="middle">One request to agent/&lt;key&gt;</text>
-<rect x="765" y="352" width="360" height="120" rx="10" fill="#fdf0e8" stroke="#df5325" stroke-width="1.5"/>
-<text x="945" y="387" class="name" text-anchor="middle">Managed refund agent</text>
-<text x="945" y="416" class="body" text-anchor="middle">Instructions + model + tool loop</text>
-<text x="945" y="447" class="small" text-anchor="middle">Orq orchestrates each turn</text>
-<path d="M265 389H360" class="edge"/>
-<text x="310" y="376" class="small" text-anchor="middle">Message</text>
-<path d="M645 389H765" class="edge"/>
-<text x="705" y="376" class="small" text-anchor="middle">Agent call</text>
-<path d="M765 451H645" class="edge"/>
-<text x="705" y="438" class="small" text-anchor="middle">Response</text>
-<path d="M360 451H265" class="edge"/>
-<text x="310" y="438" class="small" text-anchor="middle">Response</text>
-<text x="35" y="510" class="small">Response = answer + tool calls and results</text>
-<rect x="765" y="161" width="360" height="99" rx="10" fill="#fff" stroke="#025558" stroke-width="1.5"/>
-<text x="765" y="144" class="zone">EXTERNAL MODEL PROVIDER</text>
-<text x="945" y="202" class="name" text-anchor="middle">Configured language model</text>
-<text x="945" y="232" class="body" text-anchor="middle">The agent’s reasoning model</text>
-<path d="M865 352V260" class="edge"/>
-<text x="848" y="307" class="small" text-anchor="middle">Model request</text>
-<path d="M1025 260V352" class="edge"/>
-<text x="1080" y="307" class="small" text-anchor="middle">Model result</text>
-<rect x="765" y="570" width="360" height="110" rx="10" fill="#fdf0e8" stroke="#df5325" stroke-width="1.5"/>
-<text x="945" y="608" class="name" text-anchor="middle">Hosted code tools</text>
-<text x="945" y="638" class="body" text-anchor="middle">lookup_order · get_policy</text>
-<text x="945" y="664" class="body" text-anchor="middle">issue_refund</text>
-<path d="M865 472V570" class="edge"/>
-<text x="850" y="535" class="small" text-anchor="middle">Tool call</text>
-<path d="M1025 570V472" class="edge"/>
-<text x="1080" y="535" class="small" text-anchor="middle">Tool result</text>
-<rect x="360" y="570" width="285" height="110" rx="10" fill="#fff" stroke="#025558" stroke-width="1.5"/>
-<text x="502" y="609" class="name" text-anchor="middle">Studio</text>
-<text x="502" y="638" class="body" text-anchor="middle">Inspect the execution trace</text>
-<text x="502" y="664" class="small" text-anchor="middle">Model calls + tool spans</text>
-<path d="M790 472V528H502V570" class="edge record"/>
-<text x="598" y="518" class="small" text-anchor="middle">Execution evidence</text>
-<text x="35" y="782" class="zone">OPTIONAL · YOUR DEVELOPMENT ASSISTANT</text>
-<rect x="35" y="803" width="1125" height="122" rx="14" fill="#e9f1ee" stroke="#cbd8d4" stroke-width="1.5"/>
-<text x="70" y="843" class="name">Coding assistant</text>
-<text x="70" y="875" class="body">orqi / your coding agent</text>
-<path d="M365 852H615" class="edge"/>
-<text x="490" y="838" class="small" text-anchor="middle">MCP connection</text>
-<text x="650" y="843" class="name">Orq MCP server</text>
-<text x="650" y="875" class="body">Create, update and inspect workspace resources</text>
-<text x="35" y="947" class="small">Solid arrows: requests and responses · Dashed arrow: recorded execution evidence</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" width="1000" height="620" role="img" aria-labelledby="workshop-map-title workshop-map-desc">
+  <title id="workshop-map-title">How the pieces fit</title>
+  <desc id="workshop-map-desc">Your chat UI and simulation call the orq.ai AI Gateway from your laptop. The managed refund agent runs its model loop against the model provider and its code tools in orq.ai. Studio records every call. An optional coding agent connects through the orq.ai MCP server.</desc>
+  <style>@import url("../../../scripts/diagram.css");</style>
+  <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
+  <rect width="1000" height="620" fill="#f9f8f6"/>
+
+  <rect x="24" y="24" width="220" height="572" rx="12" class="zone"/>
+  <text x="44" y="58" class="zone-title">YOUR LAPTOP</text>
+  <rect x="44" y="80" width="180" height="92" rx="10" class="node"/>
+  <text x="134" y="120" text-anchor="middle" class="name">Chat UI</text>
+  <text x="134" y="150" text-anchor="middle" class="sub">local web app</text>
+  <rect x="44" y="212" width="180" height="104" rx="10" class="node"/>
+  <text x="134" y="254" text-anchor="middle" class="name">Simulation</text>
+  <text x="134" y="284" text-anchor="middle" class="sub">evaluatorq</text>
+  <rect x="44" y="488" width="180" height="80" rx="10" class="quiet"/>
+  <text x="134" y="524" text-anchor="middle" class="q">Coding agent</text>
+  <text x="134" y="552" text-anchor="middle" class="sub">optional</text>
+
+  <rect x="284" y="24" width="480" height="572" rx="12" class="zone"/>
+  <text x="308" y="58" class="zone-title">ORQ.AI</text>
+  <rect x="308" y="80" width="432" height="92" rx="10" class="node"/>
+  <text x="524" y="120" text-anchor="middle" class="name">AI Gateway</text>
+  <text x="524" y="150" text-anchor="middle" class="sub">Responses API · agent/&lt;key&gt;</text>
+  <rect x="308" y="212" width="432" height="104" rx="10" class="focal"/>
+  <text x="524" y="254" text-anchor="middle" class="name">Managed refund agent</text>
+  <text x="524" y="284" text-anchor="middle" class="sub">instructions + model + tool loop</text>
+  <rect x="308" y="356" width="432" height="92" rx="10" class="node"/>
+  <text x="524" y="396" text-anchor="middle" class="name">Hosted code tools</text>
+  <text x="524" y="426" text-anchor="middle" class="sub">lookup_order · get_policy · issue_refund</text>
+  <rect x="308" y="488" width="206" height="80" rx="10" class="node"/>
+  <text x="411" y="524" text-anchor="middle" class="name">MCP server</text>
+  <text x="411" y="552" text-anchor="middle" class="sub">workspace access</text>
+  <rect x="534" y="488" width="206" height="80" rx="10" class="node"/>
+  <text x="637" y="524" text-anchor="middle" class="name">Studio</text>
+  <text x="637" y="552" text-anchor="middle" class="sub">a trace per call</text>
+
+  <rect x="804" y="212" width="172" height="104" rx="10" class="node"/>
+  <text x="890" y="254" text-anchor="middle" class="name">Model</text>
+  <text x="890" y="284" text-anchor="middle" class="sub">external</text>
+
+  <path d="M224 116 H308" class="arrow"/>
+  <path d="M224 264 H256 Q264 264 264 256 V148 Q264 140 272 140 H308" class="arrow"/>
+  <path d="M400 172 V212" class="arrow"/>
+  <path d="M660 212 V172" class="arrow dash"/>
+  <text x="672" y="198" class="lbl">answer + tool results</text>
+  <path d="M740 264 H804" class="accent"/>
+  <path d="M400 316 V356" class="accent"/>
+  <text x="412" y="342" class="lbl">tool call</text>
+  <path d="M660 356 V316" class="accent dash"/>
+  <text x="672" y="342" class="lbl">result</text>
+  <path d="M224 528 H308" class="arrow dash"/>
+  <text x="266" y="516" text-anchor="middle" class="lbl">MCP</text>
 </svg>

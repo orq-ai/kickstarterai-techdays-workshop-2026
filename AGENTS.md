@@ -9,6 +9,7 @@ An orq.ai workshop repository. Participants run it by hand or with a coding agen
 - `app/web.py` + `web/index.html` is the chat UI (`make agent-chat-ui`).
 - `evals/` is the regression eval (`regression.py`, `scorers.py`) and the evaluatorq simulation target (`target.py`).
 - `modules/NN-name/` is one exercise each: `README.md` (the lesson), `run.py` (starter with TODOs, where the module has code), `agent_prompt.md`, `assets/`. The completed `run.py` files live at the same paths on the `solution` branch, with the reference prompt at `modules/04-fix-and-eval/solution/instructions.md`. Never put solution code on `main`.
+- Diagrams are SVG sources next to their PNGs (`modules/NN-name/assets/*.svg`, `docs/assets/diagrams/*.svg`), styled by `scripts/diagram.css`. Edit the SVG, run `make diagrams`, commit both; docs embed the PNG.
 - `docs/` is the MkDocs site. Module pages include `modules/NN-name/README.md` via snippets, so edit the README, not the page, and use absolute URLs in READMEs (relative links break the build).
 
 ## Conventions

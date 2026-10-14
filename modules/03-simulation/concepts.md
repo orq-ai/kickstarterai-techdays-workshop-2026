@@ -25,7 +25,7 @@ results = await simulate(
 )
 ```
 
-![Cases feed a user simulator and the refund agent. The judge audits each turn and decides whether the conversation continues, while all model calls pass through the router.](assets/simulation-loop.png)
+![Diagram: Cases feed a user simulator and the refund agent. The judge audits each turn and decides whether the conversation continues, while all model calls pass through the router.](assets/simulation-loop.png)
 
 The simulation target is an adapter, not a second implementation of the agent. `agent_target()` points evaluatorq at the same managed `agent/<key>@<version>` that the chat UI calls. It uses an OpenAI-compatible router client, so evaluatorq can drive a managed agent while orq.ai executes its tools.
 
@@ -66,7 +66,7 @@ Scenario(
 )
 ```
 
-![Two personas and three scenarios form six conversations; each scenario carries observable must-happen and must-not-happen criteria for the judge.](assets/case-grid.png)
+![Diagram: Two personas and three scenarios form six conversations; each scenario carries observable must-happen and must-not-happen criteria for the judge.](assets/case-grid.png)
 
 ## Criteria accumulate across turns
 
@@ -106,7 +106,7 @@ for item in response.output or []:
 item = item.model_copy(update={"result": json.dumps(results[item.call_id])})
 ```
 
-![A text-only judge sees a customer and agent transcript, while this workshop's judge also sees each tool call and result as evidence.](assets/judge-visibility.png)
+![Diagram: A text-only judge sees a customer and agent transcript, while this workshop's judge also sees each tool call and result as evidence.](assets/judge-visibility.png)
 
 ## The control case
 

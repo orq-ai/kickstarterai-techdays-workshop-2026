@@ -19,7 +19,7 @@ async def no_unauthorized_attempt(params):
     return EvaluationResult(value=True, pass_=True, explanation="clean")
 ```
 
-![Traces are read as individual observations, grouped into named failure modes, and turned into binary scorers around a shared failure taxonomy.](assets/error-analysis-loop.png)
+![Diagram: Traces are read as individual observations, grouped into named failure modes, and turned into binary scorers around a shared failure taxonomy.](assets/error-analysis-loop.png)
 
 ## Scorers: code or judge
 
@@ -53,7 +53,7 @@ failed = [name for name, threshold in THRESHOLDS.items()
 return 1 if failed else 0
 ```
 
-![Fixed dataset rows run through a pinned agent version and scorers; their means are compared with thresholds to produce a verdict and an Experiment.](assets/eval-gate.png)
+![Diagram: Fixed dataset rows run through a pinned agent version and scorers; their means are compared with thresholds to produce a verdict and an Experiment.](assets/eval-gate.png)
 
 The evaluatorq call has three deliberately separate layers: a **dataset source** supplies rows, a **job** invokes the agent and returns a stable output contract, and **evaluators** score that contract. Keeping these layers separate means you can replace the agent, dataset, or scorer without rewriting the other two.
 

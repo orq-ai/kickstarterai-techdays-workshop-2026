@@ -33,7 +33,7 @@ This boundary keeps the decision small enough to test: can this specific order b
 
 The listed post-window exceptions are damaged in transit, never received, and defective on arrival. Each needs evidence appropriate to the claim. If the available information cannot establish the right path, the request goes to human support rather than becoming a new automatic rule.
 
-![A refund request is checked for ownership, prior refund state, amount, and delivery window; it is automatically refunded when eligible, refused for failed order checks, or routed to human review when evidence or limit rules require it.](assets/refund-policy-flow.png)
+![Diagram: A refund request is checked for ownership, prior refund state, amount, and delivery window; it is automatically refunded when eligible, refused for failed order checks, or routed to human review when evidence or limit rules require it.](assets/refund-policy-flow.png)
 
 ## Business acceptance criteria
 

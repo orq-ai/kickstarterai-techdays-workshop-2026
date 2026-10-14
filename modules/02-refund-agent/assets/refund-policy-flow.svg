@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 572" width="1000" height="572" role="img" aria-labelledby="refund-policy-flow-title refund-policy-flow-desc">
+  <title id="refund-policy-flow-title">How an automatic refund is decided</title>
+  <desc id="refund-policy-flow-desc">Checks run in order: the order belongs to the customer and is not refunded, the EUR 500 limit, the 30-day window, then a listed exception with evidence. Each check exits to a refusal, human review or a refund.</desc>
+  <style>@import url("../../../scripts/diagram.css");</style>
+  <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
+  <rect width="1000" height="572" fill="#f9f8f6"/>
+  <rect x="24" y="24" width="420" height="76" rx="10" class="node"/>
+  <text x="234" y="71" text-anchor="middle" class="q">Own order, not yet refunded?</text>
+  <path d="M444 62 H600" class="arrow"/><text x="522" y="50" text-anchor="middle" class="lbl">no</text>
+  <rect x="600" y="24" width="376" height="76" rx="38" class="node"/>
+  <text x="788" y="58" text-anchor="middle" class="q">Refuse</text>
+  <text x="788" y="84" text-anchor="middle" class="sub">not found or already refunded</text>
+  <path d="M234 100 V136" class="arrow"/><text x="250" y="124" class="lbl">yes</text>
+  <rect x="24" y="136" width="420" height="76" rx="10" class="node"/>
+  <text x="234" y="183" text-anchor="middle" class="q">Over EUR 500?</text>
+  <path d="M444 174 H600" class="arrow"/><text x="522" y="162" text-anchor="middle" class="lbl">yes</text>
+  <rect x="600" y="136" width="376" height="76" rx="38" class="soft"/>
+  <text x="788" y="170" text-anchor="middle" class="q">Human review</text>
+  <text x="788" y="196" text-anchor="middle" class="sub">over the automatic limit</text>
+  <path d="M234 212 V248" class="arrow"/><text x="250" y="236" class="lbl">no</text>
+  <rect x="24" y="248" width="420" height="76" rx="10" class="node"/>
+  <text x="234" y="295" text-anchor="middle" class="q">Delivered within 30 days?</text>
+  <path d="M444 286 H600" class="accent"/><text x="522" y="274" text-anchor="middle" class="lbl">yes</text>
+  <rect x="600" y="248" width="376" height="76" rx="38" class="focal"/>
+  <text x="788" y="282" text-anchor="middle" class="q">Refund</text>
+  <text x="788" y="308" text-anchor="middle" class="sub">any reason</text>
+  <path d="M234 324 V360" class="arrow"/><text x="250" y="348" class="lbl">no</text>
+  <rect x="24" y="360" width="420" height="76" rx="10" class="node"/>
+  <text x="234" y="394" text-anchor="middle" class="q">Listed exception + evidence?</text>
+  <text x="234" y="420" text-anchor="middle" class="sub">damaged, never received, defective</text>
+  <path d="M444 398 H600" class="accent"/><text x="522" y="386" text-anchor="middle" class="lbl">yes</text>
+  <rect x="600" y="360" width="376" height="76" rx="38" class="focal"/>
+  <text x="788" y="394" text-anchor="middle" class="q">Refund</text>
+  <text x="788" y="420" text-anchor="middle" class="sub">exception with evidence</text>
+  <path d="M234 436 V472" class="arrow"/><text x="250" y="460" class="lbl">no</text>
+  <rect x="24" y="472" width="420" height="76" rx="38" class="soft"/>
+  <text x="234" y="506" text-anchor="middle" class="q">Human review</text>
+  <text x="234" y="532" text-anchor="middle" class="sub">no valid exception or evidence</text>
+</svg>

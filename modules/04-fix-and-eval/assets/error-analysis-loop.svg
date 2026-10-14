@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" width="1000" height="400" role="img" aria-labelledby="error-analysis-loop-title error-analysis-loop-desc">
+  <title id="error-analysis-loop-title">Error analysis comes before evaluators</title>
+  <desc id="error-analysis-loop-desc">Traces are read one by one (open coding), grouped into named failure modes (axial coding), collected in a failure taxonomy, and turned into one binary evaluator per mode that feeds the regression eval.</desc>
+  <style>@import url("../../../scripts/diagram.css");</style>
+  <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
+  <rect width="1000" height="400" fill="#f9f8f6"/>
+
+  <rect x="24" y="30" width="280" height="124" rx="10" class="node"/>
+  <text x="164" y="74" text-anchor="middle" class="name">Traces</text>
+  <text x="164" y="108" text-anchor="middle" class="sub">simulation transcripts</text>
+  <text x="164" y="132" text-anchor="middle" class="sub">from the runs</text>
+  <rect x="360" y="30" width="280" height="124" rx="10" class="node"/>
+  <text x="500" y="74" text-anchor="middle" class="name">Open coding</text>
+  <text x="500" y="108" text-anchor="middle" class="sub">one short note</text>
+  <text x="500" y="132" text-anchor="middle" class="sub">per failed trace</text>
+  <rect x="696" y="30" width="280" height="124" rx="10" class="node"/>
+  <text x="836" y="74" text-anchor="middle" class="name">Axial coding</text>
+  <text x="836" y="108" text-anchor="middle" class="sub">group the notes into</text>
+  <text x="836" y="132" text-anchor="middle" class="sub">2–8 named modes</text>
+
+  <rect x="24" y="250" width="280" height="124" rx="10" class="focal"/>
+  <text x="164" y="294" text-anchor="middle" class="name">Failure taxonomy</text>
+  <text x="164" y="328" text-anchor="middle" class="sub">named modes, each</text>
+  <text x="164" y="352" text-anchor="middle" class="sub">with a clear pass/fail</text>
+  <rect x="360" y="250" width="280" height="124" rx="10" class="node"/>
+  <text x="500" y="294" text-anchor="middle" class="name">Evaluators</text>
+  <text x="500" y="328" text-anchor="middle" class="sub">one binary scorer</text>
+  <text x="500" y="352" text-anchor="middle" class="sub">per failure mode</text>
+  <rect x="696" y="250" width="280" height="124" rx="10" class="quiet"/>
+  <text x="836" y="294" text-anchor="middle" class="name">Regression eval</text>
+  <text x="836" y="328" text-anchor="middle" class="sub">next: pinned rows,</text>
+  <text x="836" y="352" text-anchor="middle" class="sub">thresholds, a gate</text>
+
+  <path d="M304 92 H360" class="arrow"/>
+  <path d="M640 92 H696" class="arrow"/>
+  <path d="M836 154 V194 Q836 202 828 202 H172 Q164 202 164 210 V250" class="arrow"/>
+  <path d="M304 312 H360" class="arrow"/>
+  <path d="M640 312 H696" class="arrow dash"/>
+</svg>

@@ -8,7 +8,7 @@ An agent is a model, instructions, and optional tools running in a loop until it
 
 ## The loop orq.ai runs
 
-![Inside orq.ai, the model either returns an answer or calls a code tool; the tool result returns to the model, and the loop ends on an answer or its configured limits.](assets/agent-loop.png)
+![Diagram: Inside orq.ai, the model either returns an answer or calls a code tool; the tool result returns to the model, and the loop ends on an answer or its configured limits.](assets/agent-loop.png)
 
 Your application sends one customer message and receives one response. In between, orq.ai runs the model and the code tools in its sandbox; each tool result is added to the model context before the next decision. The loop ends when the model answers or reaches the agent's limits.
 
@@ -74,7 +74,7 @@ A hello turn is one `responses.create(model=f"agent/{HELLO_KEY}")` call: a `mess
 
 The agent itself is a durable entity, not something your app rebuilds per request: `orq.agents.create()` configures it; `responses.create()` runs one turn. Pinning `agent/<key>@1.0.0` makes a call reproducible — the simulation module relies on it.
 
-![An application sends a message to a managed agent; the model requests a function call, orq.ai executes the code tool, returns an orq.ai tool-result item to the model, and returns a message with a trace ID.](assets/agent-turn-sequence.png)
+![Diagram: An application sends a message to a managed agent; the model requests a function call, orq.ai executes the code tool, returns an orq.ai tool-result item to the model, and returns a message with a trace ID.](assets/agent-turn-sequence.png)
 
 ## Next
 

@@ -64,7 +64,7 @@ docs-serve: ## Live docs at http://127.0.0.1:8000
 docs-build: ## Strict docs build (fails on broken links)
 	$(RUN) mkdocs build --strict
 
-diagrams: ## Export architecture diagram HTML sources to committed PNGs
+diagrams: ## Export diagram SVG sources to committed PNGs
 	$(UV) run --with playwright python scripts/export_diagrams.py
 
 slides: ## Render slides/workshop.md to HTML with Marp

@@ -24,10 +24,9 @@ The goal and the criteria answer different questions. **Goal achieved:** did the
 
 Each criterion describes an observable event. `must_happen` requires that event on at least one turn; `must_not_happen` prohibits it on every turn. For example, in a fictional appointment conversation, the goal could be “find an available time,” with a required event “the agent states the date and time” and a prohibited event “the agent invents an available slot.” The judge audits after each agent reply. It can stop the simulation, but these checks do not intercept or undo tool calls. A later correction does not erase an earlier violation.
 
-![Diagram: a persona and scenario guide the user simulator, which exchanges messages with the managed refund agent. After each agent turn, the judge audits the transcript, goal, and criteria, then decides whether to continue.](assets/simulation-roles.svg)
-[Open full-size Simulation roles diagram](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/assets/simulation-roles.svg)
+![Diagram: a case starts a user simulator that talks to the managed refund agent. After each agent reply the judge audits the transcript and either continues the conversation or stops it with goal_achieved and criteria_met verdicts.](assets/simulation-loop.png)
 
-Solid arrows show messages and execution; dashed arrows show saved turns and recorded tool evidence.
+The dashed arrow is the loop: the judge audits after each agent reply and either asks the simulator for the next message or stops the conversation.
 
 The Python starter uses the model in `JUDGE_MODEL` for both the simulator and the judge, in separate calls. The refund agent uses the model configured when you seeded it from `MODEL`. Every model call goes through the Orq AI Gateway. Evaluatorq coordinates the conversations on your laptop, saves them for the local `eq dashboard`, and uploads the results to an Experiment in the Studio. You do not need to create a simulator or judge agent in the Studio; the seeded `-refund-policy-judge` is for the later regression eval.
 
