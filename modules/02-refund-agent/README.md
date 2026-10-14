@@ -54,6 +54,27 @@ The seed script reads the local agent sources and creates the matching orq.ai re
 
 Afterward, the chat UI and scripts use the resource keys. They invoke the managed agent; they do not run the tool implementation on your laptop. Fix and eval creates its dataset and policy judge when that module needs them.
 
+### The SDK calls behind seed
+
+`ensure_tools()` creates each hosted code tool from the local Python source. `ensure_agent()` attaches those tool keys to the managed agent.
+
+```python {.code-frame}
+# app/refund_agent/entities.py — one hosted code tool per schema
+orq.tools.create(
+    request={
+        "type": "code",
+        "key": settings.key(function["name"]),
+        "path": settings.path,
+        "description": function["description"],
+        "code_tool": {
+            "language": "python",
+            "code": hosted_tool_code(function["name"]),
+            "parameters": strict_parameters(function),
+        },
+    },
+)
+```
+
 ### What seed configures
 
 | Setting | v1 value | Why it matters |

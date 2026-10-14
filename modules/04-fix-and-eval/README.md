@@ -32,6 +32,37 @@ dataset  : ws07-refund-eval (01M4…)
 judge    : ws07-refund-policy-judge (01M4…)
 ```
 
+### The SDK calls behind seed-eval
+
+The dataset is created once, then populated from the local JSONL rows. The judge is a separate boolean evaluator resource that stores its prompt and model configuration in orq.ai.
+
+```python {.code-frame}
+# app/refund_agent/entities.py
+created = orq.datasets.create(
+    request={
+        "display_name": settings.key("refund-eval"),
+        "path": settings.path,
+    },
+)
+orq.datasets.create_datapoint(
+    dataset_id=created.id,
+    request_body=points,  # rows from app/data/dataset.jsonl
+)
+```
+
+```python {.code-frame}
+orq.evals.create(
+    request={
+        "type": "llm_eval",
+        "key": settings.key("refund-policy-judge"),
+        "path": settings.path,
+        "prompt": judge_prompt,
+        "model": settings.judge_model,
+        "output_type": "boolean",
+    },
+)
+```
+
 ### Step 2 · Change the instructions
 
 Edit `app/data/instructions.md` to fix each behaviour on your list. By hand, or ask your coding agent (paste your list and the file). Keep the ordinary refund working.
