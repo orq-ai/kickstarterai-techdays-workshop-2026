@@ -1,5 +1,5 @@
 site_name: KickstartAI TechDays · orq.ai
-site_description: Two hours with a managed orq.ai agent. Simulate customers, fix the prompt, prove it with a regression eval.
+site_description: Build, simulate, improve, and evaluate a managed orq.ai refund agent.
 site_url: https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/
 repo_url: https://github.com/orq-ai/kickstarterai-techdays-workshop-2026
 repo_name: orq-ai/kickstarterai-techdays-workshop-2026
@@ -56,6 +56,7 @@ plugins:
       skip_classes:
         - md-logo
   - termynal:
+      buttons: macos
       prompt_literal_start:
         - "$"
         - ">>>"
@@ -70,6 +71,7 @@ markdown_extensions:
   - pymdownx.details
   - pymdownx.highlight:
       anchor_linenums: true
+      pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.keys
   - pymdownx.snippets:
@@ -92,12 +94,20 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Workshop:
-      - Onboarding: modules/00.md
-      - Coding agents: modules/01.md
-      - Refund agent: modules/02.md
-      - Simulation: modules/03.md
-      - Fix and eval: modules/04.md
+  - Onboarding:
+      - Workspace Setup: modules/00.md
+      - Coding Agent Setup (optional): modules/01.md
+  - Build a Managed Agent:
+      - Foundations: modules/02-concepts.md
+      - Use Case: modules/02-logic.md
+      - Agent Design: modules/02-solution-design.md
+      - Build the Agent: modules/02.md
+  - Agent Simulation:
+      - Concepts: modules/03-concepts.md
+      - Tutorial: modules/03.md
+  - Improve and Evaluate:
+      - Concepts: modules/04-concepts.md
+      - Tutorial: modules/04.md
   - Reference:
       - Cheat sheet: reference/cheat-sheet.md
       - Troubleshooting: reference/troubleshooting.md

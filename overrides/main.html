@@ -6,8 +6,8 @@
     - RES-1088: the Orq-branded social / link-unfurl card. Material for MkDocs
       emits no og:/twitter: meta on its own (that came from the `social` plugin,
       which can't use our self-hosted brand fonts), so we reference a single
-      hand-designed static card (docs/assets/og-image.png, see
-      scripts/gen_og_card.py) as an absolute URL off site_url. -#}
+      hand-designed static card (docs/assets/og-image.png) as an absolute
+      URL off site_url. -#}
 {% block extrahead %}
   <link rel="alternate" type="text/markdown" href="{{ 'llms.txt' | url }}" title="llms.txt (agent-readable docs)">
   {% set page_title = (page.title if page and page.title else config.site_name) | striptags %}

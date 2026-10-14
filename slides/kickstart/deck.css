@@ -357,9 +357,12 @@ body::before{background:linear-gradient(to top,rgba(223,83,37,.14),transparent)!
 .flow-caption .done{color:var(--orange);font:500 20px 'Kurrent Mono',monospace;letter-spacing:.08em;margin-right:18px}
 .panel.cmd .flow-caption code{color:var(--sand)}
 /* slide 3 */
+.access-slide .access{grid-template-columns:.9fr 1.3fr .9fr;gap:32px;max-width:1800px;margin-left:auto;margin-right:auto}
+.access-slide .card.code strong{font-size:48px}
 .access .card.code{justify-content:flex-start}
 .access .card.code .code-body{margin:auto 0;display:flex;flex-direction:column;gap:22px}
 .access .card:last-child:not(.code){background:transparent;box-shadow:none;border:1.5px dashed var(--rule)}
+.access-slide .card.qr-card{background:var(--card);border:0;box-shadow:0 24px 50px -28px rgba(20,19,25,.45)}
 /* slide 10 */
 .take-home{margin-top:80px;align-items:stretch}
 .next-steps{justify-content:space-between;height:auto;gap:0;align-self:stretch}

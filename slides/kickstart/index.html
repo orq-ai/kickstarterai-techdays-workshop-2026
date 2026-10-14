@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>KickstartAI · Testing agents with evals</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23141319'/%3E%3Ccircle cx='32' cy='32' r='15' fill='none' stroke='%23DF5325' stroke-width='9'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="assets/orq-favicon.svg">
 <link rel="stylesheet" href="assets/reveal/reveal.css">
 <link rel="stylesheet" href="deck.css">
 </head>
@@ -23,7 +23,7 @@
 <p class="hosts">Bauke Brenninkmeijer · Arian Pasquali · orq.ai</p>
 <div class="hero-time"><strong>90</strong><span>MIN · ONE REFUND AGENT</span></div>
 </div>
-<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/orq-workshop</span></footer>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
 <section class="slide full">
@@ -59,21 +59,21 @@
   </g>
 </svg>
 </div>
-<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/orq-workshop</span></footer>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
-<section class="slide full">
+<section class="slide full access-slide">
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
 <h1>Get your key</h1>
-<p class="subtitle">Scan, enter your email and the login code, check your inbox.</p>
+<p class="subtitle">Scan, enter your email and password, then check your inbox.</p>
 <div class="access">
-  <div class="card"><span class="eyebrow">1 · REGISTER</span><img src="assets/qr-register.svg" alt="QR code for orq-kickstart.vercel.app"><a class="url" href="https://orq-kickstart.vercel.app">orq-kickstart.vercel.app</a></div>
-  <div class="card code"><span class="eyebrow">2 · LOGIN CODE</span><div class="code-body"><strong data-login-code>PASSCODE</strong><p>Your <code>.env</code> block arrives by email.</p></div></div>
-  <div class="card"><span class="eyebrow">REPO · FOR LATER</span><img src="assets/qr-github.svg" alt="QR code for github.com/orq-ai/orq-workshop"><a class="url" href="https://github.com/orq-ai/orq-workshop">github.com/orq-ai/orq-workshop</a></div>
+  <div class="card qr-card"><span class="eyebrow">1 · REGISTER</span><img src="assets/qr-register.svg" alt="QR code for orq-kickstart.vercel.app"><a class="url" href="https://orq-kickstart.vercel.app">orq-kickstart.vercel.app</a></div>
+  <div class="card code"><span class="eyebrow">2 · PASSWORD (LOGIN CODE)</span><div class="code-body"><strong data-login-code>kickstartworkshop<wbr>2026</strong><p>Enter this password on the registration page. Your <code>.env</code> block arrives by email.</p></div></div>
+  <div class="card qr-card"><span class="eyebrow">3 · REPO</span><img src="assets/qr-github.svg" alt="QR code for github.com/orq-ai/kickstarterai-techdays-workshop-2026"><a class="url" href="https://github.com/orq-ai/kickstarterai-techdays-workshop-2026">github.com/orq-ai/<wbr>kickstarterai-techdays-workshop-2026</a></div>
 </div>
 </div>
-<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/orq-workshop</span></footer>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
 <section class="slide">
@@ -81,17 +81,17 @@
 <div class="slide-body">
 <h1>Set up</h1>
 <p class="subtitle">Paste the block from your email, then wire up your coding agent.</p>
-<div class="meta"><div class="time"><strong>25</strong><span>MIN · FROM 0:05</span></div><a class="docs-chip" href="https://orq-ai.github.io/orq-workshop/modules/00/"><span>DOCS</span>Setup CLI</a><a class="docs-chip" href="https://orq-ai.github.io/orq-workshop/modules/13/"><span>DOCS</span>Coding agents</a></div>
+<div class="meta"><div class="time"><strong>25</strong><span>MIN · FROM 0:05</span></div><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/00/"><span>DOCS</span>Onboarding</a><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/01/"><span>DOCS</span>Coding agents</a></div>
 <div class="panel cmd">
-<div class="term"><div class="term-bar"><i></i><i></i><i></i><span>zsh — orq-workshop</span></div><pre><code><span class="p">❯</span> <span class="k">git</span> clone <span class="s">https://github.com/orq-ai/orq-workshop</span>
-<span class="p">❯</span> <span class="k">cd</span> <span class="s">orq-workshop</span>
-<span class="p">❯</span> <span class="k">cp</span> <span class="s">.env.example .env</span>     <span class="c"># paste the block from your email</span>
-<span class="p">❯</span> <span class="k">make</span> setup <span class="o">&amp;&amp;</span> <span class="k">make</span> doctor <span class="o">&amp;&amp;</span> <span class="k">make</span> smoke
-<span class="p">❯</span> <span class="k">orq</span> launch <span class="s">claude</span>        <span class="c"># or codex, opencode, pi</span></code></pre></div>
-<p class="flow-caption"><span class="done">DONE WHEN</span><code>make smoke</code> prints a trace id and your agent answers.</p>
+<div class="term"><div class="term-bar"><i></i><i></i><i></i><span>zsh — kickstarterai-techdays-workshop-2026</span></div><pre><code><span class="p">❯</span> <span class="k">git</span> clone <span class="s">https://github.com/orq-ai/kickstarterai-techdays-workshop-2026</span>
+<span class="p">❯</span> <span class="k">cd</span> <span class="s">kickstarterai-techdays-workshop-2026</span>
+<span class="p">❯</span> <span class="k">make</span> setup  <span class="c"># then paste your email block</span>
+<span class="p">❯</span> <span class="k">make</span> orq-doctor <span class="o">&amp;&amp;</span> <span class="k">make</span> gateway-check
+<span class="p">❯</span> <span class="k">orqi</span> <span class="s">"which models are enabled?"</span>  <span class="c"># or Claude Code</span></code></pre></div>
+<p class="flow-caption"><span class="done">DONE WHEN</span><code>make gateway-check</code> prints a trace id and <code>verdict : OK</code>.</p>
 </div>
 </div>
-<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/orq-workshop</span></footer>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
 <section class="slide">
@@ -99,7 +99,7 @@
 <div class="slide-body">
 <h1>The refund agent</h1>
 <p class="subtitle">Hosted by orq. Your code runs the tools.</p>
-<div class="meta"><div class="time"><strong>15</strong><span>MIN · FROM 0:30</span></div><a class="docs-chip" href="https://orq-ai.github.io/orq-workshop/modules/08/"><span>DOCS</span>Managed agents</a></div>
+<div class="meta"><div class="time"><strong>15</strong><span>MIN · FROM 0:30</span></div><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02/"><span>DOCS</span>Refund agent</a></div>
 <div class="panel">
 <svg class="flow" viewBox="0 20 1270 490" role="img" aria-label="A customer talks to the managed refund agent in orq. The agent asks your code to run three tools: lookup_order, get_policy and issue_refund." xmlns="http://www.w3.org/2000/svg">
   <defs><marker id="a6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--orange)"/></marker></defs>
@@ -110,6 +110,9 @@
   <g fill="none" stroke="var(--orange)" stroke-width="3" marker-end="url(#a6)">
     <path d="M240 265H310"/><path d="M700 220L820 85"/><path d="M700 265H820"/><path d="M700 310L820 445"/>
   </g>
+  <g fill="var(--sand)" stroke="var(--orange)" stroke-width="2">
+    <rect x="845" y="72" width="270" height="54" rx="8"/><rect x="845" y="257" width="270" height="54" rx="8"/><rect x="845" y="442" width="270" height="54" rx="8"/>
+  </g>
   <g font-family="Kurrent Mono,monospace" font-size="20" letter-spacing="1" fill="var(--gray)">
     <text x="30" y="248">USER</text><text x="350" y="228" fill="var(--sand)">MANAGED IN ORQ</text>
     <text x="860" y="56">TOOL · YOUR CODE</text><text x="860" y="241">TOOL · YOUR CODE</text><text x="860" y="426" fill="var(--orange)">MOVES MONEY</text>
@@ -117,15 +120,15 @@
   </g>
   <g font-family="Kurrent,Arial,sans-serif" font-size="27" fill="var(--ink)">
     <text x="30" y="294">Customer</text><text x="350" y="274" font-size="31" fill="var(--sand)">ws07-refund-agent</text>
-    <text x="860" y="104" font-family="Kurrent Mono,monospace" font-size="26">lookup_order</text>
-    <text x="860" y="289" font-family="Kurrent Mono,monospace" font-size="26">get_policy</text>
-    <text x="860" y="474" font-family="Kurrent Mono,monospace" font-size="26" fill="var(--sand)">issue_refund</text>
+    <text x="860" y="108" font-family="Kurrent Mono,monospace" font-size="26">lookup_order</text>
+    <text x="860" y="293" font-family="Kurrent Mono,monospace" font-size="26">get_policy</text>
+    <text x="860" y="478" font-family="Kurrent Mono,monospace" font-size="26">issue_refund</text>
   </g>
 </svg>
-<p class="flow-caption">Every turn is a trace. Open your smoke trace and point at its tool calls.</p>
+<p class="flow-caption">Every turn is a trace. Open your gateway trace and point at its tool calls.</p>
 </div>
 </div>
-<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/orq-workshop</span></footer>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
 <section class="slide">
@@ -133,7 +136,7 @@
 <div class="slide-body">
 <h1>Simulate customers</h1>
 <p class="subtitle">Fake customers find what you did not test.</p>
-<div class="meta"><div class="time"><strong>30</strong><span>MIN · FROM 0:45</span></div><a class="docs-chip" href="https://orq-ai.github.io/orq-workshop/modules/11/"><span>DOCS</span>Agent simulation</a></div>
+<div class="meta"><div class="time"><strong>30</strong><span>MIN · FROM 0:45</span></div><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/03/"><span>DOCS</span>Simulation</a></div>
 <div class="panel">
 <svg class="flow" viewBox="0 0 1270 500" role="img" aria-label="Personas and scenarios feed a user simulator, which talks to the agent. A judge scores each transcript against your criteria and catches the planted defect: a manager approved it, so a refund is issued." xmlns="http://www.w3.org/2000/svg">
   <defs><marker id="a7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--orange)"/></marker></defs>
@@ -165,7 +168,7 @@
 <p class="flow-caption">v1 of the prompt has a planted defect. Find the row that shows it.</p>
 </div>
 </div>
-<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/orq-workshop</span></footer>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
 <section class="slide">
@@ -173,7 +176,7 @@
 <div class="slide-body">
 <h1>Fix it, keep it fixed</h1>
 <p class="subtitle">One failure becomes one row in a regression set.</p>
-<div class="meta"><div class="time"><strong>15</strong><span>MIN · FROM 1:15</span></div><a class="docs-chip" href="https://orq-ai.github.io/orq-workshop/modules/12/"><span>DOCS</span>Evals in CI</a></div>
+<div class="meta"><div class="time"><strong>15</strong><span>MIN · FROM 1:15</span></div><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/04/"><span>DOCS</span>Fix and eval</a></div>
 <div class="panel">
 <svg class="flow" viewBox="0 50 1270 360" role="img" aria-label="The failure leads to a prompt fix, a regression dataset managed in orq, an evaluatorq run that scores every row, and a CI gate that exits 0 or 1. The next failure becomes a new row." xmlns="http://www.w3.org/2000/svg">
   <defs><marker id="a8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--orange)"/></marker></defs>
@@ -184,11 +187,11 @@
   <rect x="435" y="358" width="400" height="44" rx="22" fill="var(--orange)"/>
   <text x="635" y="387" text-anchor="middle" font-family="Kurrent Mono,monospace" font-size="19" letter-spacing="1" fill="var(--sand)">NEXT FAILURE → NEW ROW</text>
 </svg>
-<div class="cmd"><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>zsh — regression gate</span></div><pre><code><span class="p">❯</span> <span class="k">make</span> eval              <span class="c"># fixed prompt: exits </span><span class="ok">0</span>
-<span class="p">❯</span> <span class="k">make</span> eval-vulnerable   <span class="c"># v1: exits </span><span class="bad">1</span></code></pre></div></div>
+<div class="cmd"><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>zsh — regression gate</span></div><pre><code><span class="p">❯</span> <span class="k">make</span> regression-eval VERSION=2.0.0  <span class="c"># fixed prompt: exits </span><span class="ok">0</span>
+<span class="p">❯</span> <span class="k">make</span> regression-eval VERSION=1.0.0  <span class="c"># v1: exits </span><span class="bad">1</span></code></pre></div></div>
 </div>
 </div>
-<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/orq-workshop</span></footer>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
 <section class="slide">
@@ -210,7 +213,7 @@
 <p class="flow-caption">Criteria find what you expected. Insights find what you did not.</p>
 </div>
 </div>
-<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/orq-workshop</span></footer>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
 <section class="slide">
@@ -232,7 +235,7 @@
 <p class="flow-caption">v1 fails the attack set; the fixed agent passes the same set.</p>
 </div>
 </div>
-<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/orq-workshop</span></footer>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
 <section class="slide full">
@@ -242,14 +245,14 @@
 <p class="subtitle">Same repo, same agent, more to break.</p>
 <div class="take-home">
 <ol class="next-steps">
-  <li><b>The full course</b><span>18 modules, from the gateway to red teaming.</span></li>
-  <li><b>Run it in your CI</b><span>The regression eval is a GitHub Actions gate.</span></li>
+  <li><b>The full course</b><span>orq-ai/orq-workshop: 18 modules, from the gateway to red teaming.</span></li>
+  <li><b>Run it in your CI</b><span><code>make regression-eval</code> exits 1 on a regression.</span></li>
   <li><b>Your key ends today</b><span>Workshop keys are deleted after the session.</span></li>
 </ol>
-<div class="access"><div class="card"><span class="eyebrow">RESOURCES</span><img src="assets/qr-github.svg" alt="QR code for github.com/orq-ai/orq-workshop"><a class="url" href="https://github.com/orq-ai/orq-workshop">github.com/orq-ai/orq-workshop</a></div></div>
+<div class="access"><div class="card"><span class="eyebrow">RESOURCES</span><img src="assets/qr-github.svg" alt="QR code for github.com/orq-ai/kickstarterai-techdays-workshop-2026"><a class="url" href="https://github.com/orq-ai/kickstarterai-techdays-workshop-2026">github.com/orq-ai/<wbr>kickstarterai-techdays-workshop-2026</a></div></div>
 </div>
 </div>
-<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/orq-workshop</span></footer>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
 </div></div>

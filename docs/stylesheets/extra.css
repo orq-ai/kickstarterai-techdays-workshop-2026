@@ -61,6 +61,7 @@
   --orq-orange-text: #c4421a; /* orange for TEXT on light surfaces — ~4.6:1 AA */
   --orq-ink: #25232e;
   --orq-sand: #f9f8f6;
+  --orq-terminal-bg: #202b2d;
   /* Sidebar group headings, both rails. color-mix, not rgba(), so slate follows. */
   --orq-nav-heading: color-mix(in srgb, var(--md-default-fg-color) 70%, transparent);
 }
@@ -119,11 +120,109 @@ html { font-size: 100%; }
    ponytail: CSS over rewriting 19 files; drop this if the metadata block becomes a list. */
 .md-typeset table:not([class]) thead:not(:has(th:not(:empty))) { display: none; }
 
+/* Lesson tables: a teal heading and a gentle rhythm between rows. */
+.md-typeset table:not([class]):has(thead th:not(:empty)) {
+  --table-key-color: var(--orq-teal);
+  --table-stripe: color-mix(in srgb, var(--orq-teal) 4%, var(--md-default-bg-color));
+  --table-hover: color-mix(in srgb, var(--orq-teal) 8%, var(--md-default-bg-color));
+  width: 100%;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.4rem;
+  border-spacing: 0;
+  overflow: hidden;
+}
+.md-typeset table:not([class]):has(thead th:not(:empty)) thead th {
+  background: var(--orq-teal);
+  color: #fff;
+  font-weight: 600;
+  padding: 0.8rem 1rem;
+  border-bottom: 0;
+}
+.md-typeset table:not([class]):has(thead th:not(:empty)) tbody td {
+  padding: 0.8rem 1rem;
+  vertical-align: top;
+}
+.md-typeset table:not([class]):has(thead th:not(:empty)) tbody td:first-child {
+  color: var(--table-key-color);
+  font-weight: 600;
+}
+.md-typeset table:not([class]):has(thead th:not(:empty)) tbody tr:nth-child(odd) {
+  background: var(--table-stripe);
+}
+.md-typeset table:not([class]):has(thead th:not(:empty)) tbody tr:hover,
+.md-typeset table:not([class]):has(thead th:not(:empty)) tbody tr:focus-within {
+  background: var(--table-hover);
+}
+[data-md-color-scheme="slate"] .md-typeset table:not([class]):has(thead th:not(:empty)) {
+  --table-key-color: #7ed0c5;
+  --table-stripe: color-mix(in srgb, var(--orq-teal-light) 8%, var(--md-default-bg-color));
+  --table-hover: color-mix(in srgb, var(--orq-teal-light) 14%, var(--md-default-bg-color));
+}
+[data-md-color-scheme="slate"] .md-typeset table:not([class]):has(thead th:not(:empty)) tbody td:first-child {
+  color: var(--table-key-color) !important;
+}
+
 /* A diff of two prompt files is a diff of prose: the lines run to ~200 characters, and a
    horizontal scrollbar hides exactly the half of the sentence that changed. Wrap them.
    Matched by content (Pygments .gd/.gi) because Material emits no language class here, so
    ordinary code blocks, where column alignment carries meaning, keep scrolling. */
 .md-typeset .highlight:has(.gd, .gi) code { white-space: pre-wrap; }
+
+/* Fenced code has its own frame; commands stand apart from sample output.
+   Language classes come from pymdownx.highlight.pygments_lang_class. */
+.md-typeset .highlight {
+  --md-code-bg-color: var(--orq-terminal-bg);
+  --md-code-fg-color: #f1f5f4;
+  --md-code-hl-color: #344648;
+  --md-code-hl-number-color: #f4b183;
+  --md-code-hl-special-color: #ffb89a;
+  --md-code-hl-function-color: #8fdbcc;
+  --md-code-hl-constant-color: #c4b8ed;
+  --md-code-hl-keyword-color: #9ddbd5;
+  --md-code-hl-string-color: #c5e5ac;
+  --md-code-hl-name-color: #f1f5f4;
+  --md-code-hl-operator-color: #d5e1df;
+  --md-code-hl-punctuation-color: #d5e1df;
+  --md-code-hl-comment-color: #afc0bd;
+  --md-code-hl-generic-color: #afc0bd;
+  --md-code-hl-variable-color: #f1f5f4;
+  background: var(--md-code-bg-color);
+  border: 1px solid #3b4c4e;
+  border-radius: 0.4rem;
+  overflow: hidden;
+  margin: 0.75em 0;
+}
+.md-typeset .highlight::before {
+  content: "Code";
+}
+.md-typeset .highlight.language-bash::before,
+.md-typeset .highlight.language-sh::before {
+  display: none;
+}
+.md-typeset .highlight.language-python::before { content: "Python"; }
+.md-typeset .highlight.language-text::before { content: "Text"; }
+.md-typeset .highlight::before,
+.md-typeset .highlight > .filename {
+  display: block;
+  padding: 0.4rem 0.8rem;
+  margin: 0;
+  background: transparent;
+  border-bottom: 1px solid #3b4c4e;
+  color: #afc0bd;
+  font-family: var(--md-text-font-family);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.md-typeset .highlight:has(> .filename)::before { display: none; }
+.md-typeset .highlight pre { margin: 0; }
+.md-typeset .highlight pre > code { padding: 0.7rem 2.5rem 0.7rem 0.8rem; }
+.md-typeset .highlight .md-code__nav { background: transparent; }
+.md-typeset .highlight .md-code__button {
+  background: transparent;
+  color: #afc0bd;
+}
+.md-typeset .highlight .md-code__button:hover,
+.md-typeset .highlight .md-code__button:focus-visible { color: #ffffff; }
 
 /* Sidebar nav + TOC: ~content size, a touch bigger so the menu reads as chrome. */
 .md-nav { font-size: 1rem; }
@@ -196,6 +295,140 @@ html { font-size: 100%; }
   border-color: var(--orq-orange);
 }
 
+/* --- Python snippets: framed code surface in both color schemes -------- */
+/* Source snippets share the dark surface and compact spacing of commands. */
+.md-typeset .code-frame.highlight {
+  --md-code-bg-color: var(--orq-terminal-bg);
+  position: relative;
+  margin: 0.75em 0;
+  padding: 1.8rem 0 0;
+  overflow: hidden;
+  background: var(--md-code-bg-color);
+  border: 1px solid #3b4c4e;
+  border-radius: 0.4rem;
+}
+.md-typeset .code-frame.highlight::before {
+  display: none;
+}
+.md-typeset .code-frame.highlight::after {
+  content: "python";
+  position: absolute;
+  top: 0.68rem;
+  left: 0;
+  width: 100%;
+  color: #afc0bd;
+  font-family: var(--md-code-font-family);
+  font-size: 0.72rem;
+  text-align: center;
+}
+.md-typeset .code-frame.highlight pre,
+.md-typeset .code-frame.highlight code {
+  background: transparent;
+}
+.md-typeset .code-frame.highlight .md-code__button { color: #afc0bd; }
+.md-typeset .code-frame.highlight .md-code__button:hover,
+.md-typeset .code-frame.highlight .md-code__button:focus-visible { color: #fff; }
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight .md-code__button { color: #afc0bd; }
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight {
+  background: var(--md-code-bg-color);
+  border-color: #3b4c4e;
+}
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight::after {
+  color: #a8a39d;
+}
+/* Material's default code foreground is too muted on this custom slate panel. */
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight code,
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight code span {
+  color: #e6e2dc !important;
+}
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight code .c,
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight code .c1 {
+  color: #a8a39d !important;
+}
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight code .s,
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight code .s1,
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight code .s2 {
+  color: #f0c9a8 !important;
+}
+/* Inline identifiers often carry table values and prose labels. Keep them
+   distinct from body copy instead of inheriting Material's low-contrast grey. */
+[data-md-color-scheme="slate"] .md-typeset :not(pre) > code {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #f0c9a8 !important;
+}
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+  color: #f9f8f6;
+}
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) td {
+  color: rgba(249, 248, 246, 0.9);
+}
+/* Navigation labels and table values are Material's muted foreground by
+   default. On this slate theme they need the same readable foreground as body
+   copy; only the selected navigation item carries the teal accent. */
+[data-md-color-scheme="slate"] .md-nav__link,
+[data-md-color-scheme="slate"] .md-nav__title,
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th,
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) td {
+  color: rgba(249, 248, 246, 0.9) !important;
+}
+[data-md-color-scheme="slate"] .md-nav__link--active {
+  color: var(--orq-teal-light) !important;
+}
+
+/* --- Static shell snippets: terminal frame in both color schemes ------- */
+/* Shell fences opt into this with `{.terminal}`. Keep Python and other
+   explanatory code on the normal documentation surface. */
+.md-typeset .terminal.highlight {
+  --terminal-bg: var(--orq-terminal-bg);
+  position: relative;
+  margin: 0.75em 0;
+  padding: 1.8rem 0 0;
+  overflow: hidden;
+  background: var(--terminal-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+}
+.md-typeset .terminal.highlight::before {
+  content: "";
+  display: block;
+  padding: 0;
+  border: 0;
+  position: absolute;
+  top: 0.85rem;
+  left: 1rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: #d97757;
+  box-shadow: 1.15rem 0 #d7ae57, 2.3rem 0 #78a76e;
+}
+.md-typeset .terminal.highlight::after {
+  display: none;
+}
+.md-typeset .terminal.highlight pre,
+.md-typeset .terminal.highlight code {
+  background: transparent;
+  color: #e6e2dc;
+}
+/* Pygments' light-theme token colors include dark blues that disappear on the
+   terminal ground. Keep commands bright, with only comments and strings muted. */
+.md-typeset .terminal.highlight code span {
+  color: #e6e2dc !important;
+}
+.md-typeset .terminal.highlight code .c1,
+.md-typeset .terminal.highlight code .c {
+  color: #a8a39d !important;
+}
+.md-typeset .terminal.highlight code .s,
+.md-typeset .terminal.highlight code .s1,
+.md-typeset .terminal.highlight code .s2 {
+  color: #f0c9a8 !important;
+}
+.md-typeset .terminal.highlight .md-clipboard {
+  color: #a8a39d;
+}
+
 /* --- Termynal animated terminal ------------------------------------- */
 /* Control links (fast-forward / restart) ship a periwinkle default that's
    off-palette — recolor to brand teal-light. */
@@ -206,9 +439,68 @@ html { font-size: 100%; }
 }
 /* Kill the tall reserved void: let the block size to its content instead of
    the JS-injected min-height, and tighten padding. */
-[data-termynal] {
+.md-typeset [data-termynal] {
   min-height: 0 !important;
-  padding: 2.4rem 1.1rem 1.1rem !important;
+  padding: 2.1rem 0.8rem 0.8rem !important;
+  --color-bg: var(--orq-terminal-bg);
+  --color-text: #f1f5f4;
+  --color-text-subtle: #afc0bd;
+  border: 1px solid #3b4c4e;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  font-family: var(--md-code-font-family);
+  font-size: 0.85em;
+}
+.md-typeset [data-termynal][data-ty-macos]::before {
+  top: 0.85rem;
+  left: 1rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  background: #d97757;
+  box-shadow: 1.15rem 0 #d7ae57, 2.3rem 0 #78a76e;
+}
+[data-termynal] [data-terminal-control] { color: var(--orq-teal-light); }
+.terminal-session { position: relative; margin: 0.75em 0; }
+.terminal-session [data-ty] {
+  line-height: 1.35;
+}
+.terminal-session .terminal-copy {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.65rem;
+  z-index: 1;
+  background: transparent;
+  color: #afc0bd;
+}
+.terminal-session .terminal-copy:hover,
+.terminal-session .terminal-copy:focus-visible { color: #fff; }
+.terminal-session .terminal-copy::after {
+  -webkit-mask-image: var(--md-code-copy-icon);
+  mask-image: var(--md-code-copy-icon);
+}
+.terminal-copy-status {
+  position: absolute;
+  right: 2.5rem;
+  top: 0.65rem;
+  z-index: 1;
+  color: #f1f5f4;
+  font-size: 0.75rem;
+}
+
+/* Give lesson screenshots and diagrams space and a gentle lift from the page. */
+.md-typeset p:has(> img:only-child),
+.md-typeset p:has(> a.glightbox:only-child > img) {
+  margin: 1.7rem 0 2rem;
+}
+.md-typeset p > img:only-child,
+.md-typeset p > a.glightbox:only-child > img {
+  display: block;
+  border-radius: 0.4rem;
+  box-shadow: 0 3px 8px rgb(1 58 60 / 8%), 0 12px 28px rgb(1 58 60 / 12%);
+}
+[data-md-color-scheme="slate"] .md-typeset p > img:only-child,
+[data-md-color-scheme="slate"] .md-typeset p > a.glightbox:only-child > img {
+  box-shadow: 0 3px 8px rgb(0 0 0 / 20%), 0 12px 28px rgb(0 0 0 / 28%);
 }
 /* Dark mode: give the terminal an edge so it doesn't merge into the page. */
 [data-md-color-scheme="slate"] [data-termynal] {
@@ -331,11 +623,13 @@ html { font-size: 100%; }
   margin: 0.5em 0 1em;
 }
 
-/* --- "With your coding agent": Claude Code frame ----------------------
+/* --- "With your coding agent": agent prompt frame ---------------------
    Module READMEs are snippet-included, so no wrapper markup: pick the prompt
    blockquote by position — after the h2, before the next h2 ("Done when").
-   Always dark, in both schemes: it is a terminal. */
-.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) {
+   Always dark, in both schemes: it is a terminal. Deliberately generic, so it fits
+   orqi, Claude Code or any other agent a participant picked. */
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote),
+.md-typeset .agent-prompt-frame {
   background: #1a1917;
   color: #e6e2dc;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -347,9 +641,10 @@ html { font-size: 100%; }
   font-size: 0.85rem;
   line-height: 1.5;
 }
-/* Header: pixel logo + banner lines (SVG inline so no asset to ship). */
-.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote)::before {
-  content: "Claude Code\A orq launch claude · routed through the orq gateway\A ~/kickstarterai-techdays-workshop-2026";
+/* Header: prompt glyph + banner lines (SVG inline so no asset to ship). */
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote)::before,
+.md-typeset .agent-prompt-frame::before {
+  content: "Your coding agent\A orqi, Claude Code or any MCP client\A ~/kickstarterai-techdays-workshop-2026";
   display: block;
   white-space: pre;
   overflow: hidden;
@@ -357,17 +652,19 @@ html { font-size: 100%; }
   color: #a8a39d;
   min-height: 3.2rem;
   padding-left: 3.2rem;
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 8' shape-rendering='crispEdges'><g fill='%23d97757'><rect x='1' y='0' width='8' height='3'/><rect x='0' y='3' width='10' height='2'/><rect x='2' y='5' width='6' height='1'/><rect x='2' y='6' width='2' height='2'/><rect x='6' y='6' width='2' height='2'/></g><g fill='%231a1917'><rect x='2' y='1' width='1' height='1'/><rect x='7' y='1' width='1' height='1'/></g></svg>") no-repeat 0 0.15rem / 2.4rem auto;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 32' fill='none' stroke='%23299d8f' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'><path d='M6 6l12 10L6 26'/><path d='M22 27h14'/></svg>") no-repeat 0.1rem 0.35rem / 2rem auto;
 }
 /* The input box: dashed rules above and below, "›" prompt glyph. */
-.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) > p {
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) > p,
+.md-typeset .agent-prompt-frame > p {
   margin: 1.4rem 0 0.6rem;
   padding: 0.6rem 0 0.6rem 1.3rem;
   border-top: 1px dashed #4a4640;
   border-bottom: 1px dashed #4a4640;
   position: relative;
 }
-.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) > p::before {
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) > p::before,
+.md-typeset .agent-prompt-frame > p::before {
   content: "›";
   position: absolute;
   left: 0;
@@ -375,18 +672,13 @@ html { font-size: 100%; }
   font-weight: 600;
 }
 /* Inline code on the dark field: Material's sand chip would glow. */
-.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) code {
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) code,
+.md-typeset .agent-prompt-frame code {
   background: rgba(255, 255, 255, 0.08);
   color: #f0c9a8;
   border-radius: 3px;
 }
-.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) a {
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) a,
+.md-typeset .agent-prompt-frame a {
   color: var(--orq-teal-light);
-}
-/* Status line. */
-.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote)::after {
-  content: "? for shortcuts";
-  display: block;
-  color: #8a8580;
-  font-size: 0.78rem;
 }

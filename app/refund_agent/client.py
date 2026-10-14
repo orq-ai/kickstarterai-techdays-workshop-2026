@@ -34,6 +34,7 @@ class Turn:
     tool_calls: list[ToolCall] = field(default_factory=list)
     trace_id: str | None = None
     version: str = "latest"
+    span_id: str | None = None
 
     @property
     def tool_names(self) -> list[str]:
@@ -50,7 +51,7 @@ def _field(item: Any, name: str) -> Any:
 
 
 def parse_turn(response: Any, version: str = "latest") -> Turn:
-    """Answer text, every tool call with its arguments and result, and the trace id.
+    """Answer text, every tool call with its arguments and result, and telemetry IDs.
 
     A tool call arrives as a `function_call` item; orq runs it and adds an `orq:<tool key>` item
     with the same `call_id` carrying `result` (or `status: failed`).
@@ -83,6 +84,7 @@ def parse_turn(response: Any, version: str = "latest") -> Turn:
         answer="".join(texts).strip(),
         tool_calls=list(calls.values()),
         trace_id=_field(telemetry, "trace_id"),
+        span_id=_field(telemetry, "span_id"),
         version=version,
     )
 

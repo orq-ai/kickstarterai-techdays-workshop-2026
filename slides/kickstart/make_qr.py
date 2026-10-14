@@ -7,7 +7,7 @@ import segno
 INK, ORANGE, CARD = "#141319", "#DF5325", "#F7F3EF"
 CODES = {
     "qr-register.svg": "https://orq-kickstart.vercel.app",
-    "qr-github.svg": "https://github.com/orq-ai/orq-workshop",
+    "qr-github.svg": "https://github.com/orq-ai/kickstarterai-techdays-workshop-2026",
 }
 
 
