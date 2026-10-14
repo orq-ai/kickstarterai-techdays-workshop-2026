@@ -22,6 +22,29 @@ The standard path is deliberately simple:
 
 The listed post-window exceptions are damaged in transit, never received, and defective on arrival. Each needs evidence appropriate to the claim. If a request is outside the refund agent's scope, or cannot be established from the available evidence, it goes to human support rather than becoming a new automatic rule.
 
+## One refund decision
+
+This is the intended v1 decision shape. It is pseudocode, not a second implementation: the real checks remain in the code tools.
+
+```python {.code-frame}
+# 1. Start with facts the customer cannot choose.
+order = lookup_order(order_id)
+if not order["ok"]:
+    return explain("I cannot find that order")
+
+# 2. Use policy text when the eligibility path is unclear.
+if not order["order"]["within_standard_window"]:
+    policy = get_policy("post_window_exceptions")
+    if not eligible_exception(customer_reason, evidence, policy):
+        return route_to_human_review()
+
+# 3. Ask the enforcement tool to make the state change.
+refund = issue_refund(order_id, reason, post_window_exception=exception)
+return explain(refund)  # success and failure are both structured results
+```
+
+The model chooses what to say and which tool to call next. It does not calculate ownership, invent eligibility, or mark an order refunded itself.
+
 ## Where the rules live
 
 `app/data/kb/` holds the policy text. `app/refund_agent/tools.py` turns the non-negotiable parts into executable checks. The model can request an action, but it cannot bypass a tool's result.
@@ -51,6 +74,34 @@ The error value is part of the business contract. It lets the model explain the 
 | `issue_refund` | order ID, reason, exception flag | ownership, duplicate, limit, and window checks | `ok: true` and refunded amount, or an error |
 
 The schemas describe these contracts to the model. The hosted code tools are generated from the same local source, so the unit-tested rules in this repository are the rules orq.ai executes.
+
+```python {.code-frame}
+# lookup_order: reveal only a session-owned, public order.
+order = store.owned(order_id)
+if order is None:
+    return {"ok": False, "error": "not_found"}
+return {"ok": True, "order": public_order(order)}
+```
+
+```python {.code-frame}
+# get_policy: fetch one known policy topic.
+if topic not in POLICY_TOPICS:
+    return {"ok": False, "error": "unknown_topic"}
+return {"ok": True, "topic": topic, "text": policy_text(topic)}
+```
+
+```python {.code-frame}
+# issue_refund: make the state change only after deterministic checks.
+if not owned(order_id):
+    return {"ok": False, "error": "not_found"}
+if already_refunded(order_id):
+    return {"ok": False, "error": "already_refunded"}
+if amount(order_id) > REFUND_LIMIT_EUR:
+    return {"ok": False, "error": "above_limit_needs_human_review"}
+return issue_refund_result(order_id)
+```
+
+The exact tool schema is also available to the model:
 
 ```python {.code-frame}
 # app/refund_agent/tools.py
