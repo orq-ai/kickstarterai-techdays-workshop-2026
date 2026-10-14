@@ -57,9 +57,9 @@ orq doctor
 
 ### Step 3 · The Model Garden
 
-Open [my.orq.ai](https://my.orq.ai) and switch to the workshop workspace.
+Open the [workshop workspace in the Studio](https://my.orq.ai/kickstartai-workshop-2026). Select the project named by `ORQ_PROJECT` in your email's `.env` block; your API key creates resources and traces in that project.
 
-Open **AI Gateway** > **Models**, the Model Garden. These are the models the gateway serves to this workspace, each with its provider, type and price per token. A model id is always `provider/model`: `openai/gpt-6-luna` is the one in your `.env` as `MODEL`.
+Open [**AI Gateway** > **Models**](https://my.orq.ai/kickstartai-workshop-2026/router/models), the Model Garden. These are the models the gateway serves to this workspace, each with its provider, type and price per token. A model id is always `provider/model`: `openai/gpt-6-luna` is the one in your `.env` as `MODEL`.
 
 ![The Model Garden filtered to enabled models: GPT-6 Luna, DeepSeek, GLM, Kimi and Nemotron models, each with its provider/model id, price per token and capabilities.](assets/model-garden.png)
 
@@ -116,13 +116,14 @@ The gateway speaks the OpenAI API at `https://my.orq.ai/v3/router`. The same req
 
 The Python version is `app/gateway_check.py`, the last setup check:
 
-```bash {.terminal}
-uv run python -m app.gateway_check
-```
-
 This runs the last onboarding check in `app/gateway_check.py`. It sends one request to the configured model through the orq.ai AI Gateway and prints its trace ID. `make gateway-check` is the shortcut.
 
-```text
+Example session (your configured model, answer, tokens and trace ID can differ):
+
+<!-- termynal -->
+
+```console
+$ uv run python -m app.gateway_check
 ── Gateway check · one request through the gateway ───────
 endpoint : https://my.orq.ai/v3/router/responses
 model    : openai/gpt-6-luna
@@ -143,7 +144,7 @@ Pick another chat model from the Model Garden and send the same request; only th
 uv run python -m app.gateway_check deepseek/deepseek-flash
 ```
 
-Then open **Traces** in the Studio and search the two trace ids. Compare the model, tokens, cost and latency of the two calls.
+Then open [**Traces** in the Studio](https://my.orq.ai/kickstartai-workshop-2026/traces) and search the two trace ids. Compare the model, tokens, cost and latency of the two calls.
 
 ![The Traces page with the gateway check selected: one responses.openai trace with a gpt-6-luna span, its model, input, output and reasoning tokens, and estimated cost.](assets/gateway-trace.png)
 

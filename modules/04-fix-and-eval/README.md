@@ -19,16 +19,14 @@ Read the [Fix and eval concepts](https://orq-ai.github.io/kickstarterai-techdays
 
 Edit `app/data/instructions.md` to fix each behaviour on your list. By hand, or ask your coding agent (paste your list and the file). Keep the ordinary refund working.
 
-Then publish it:
+Then publish it. This calls `publish_version()` in `entities.py`: it compares the local instructions with the latest agent version, then publishes a major version only when they differ. `make publish-agent-version` is the shortcut.
 
-```bash {.terminal}
-uv run python -m app.refund_agent.entities publish \
-  --file app/data/instructions.md
-```
+Example session (your seat and next version can differ):
 
-This calls `publish_version()` in `entities.py`: it compares the local instructions with the latest agent version, then publishes a major version only when they differ. `make publish-agent-version` is the shortcut.
+<!-- termynal -->
 
-```text
+```console
+$ uv run python -m app.refund_agent.entities publish --file app/data/instructions.md
 ── Publish · your instructions as a new agent version ──
 agent    : ws07-refund-agent
 file     : app/data/instructions.md
@@ -37,7 +35,7 @@ version  : 2.0.0 (new)
 
 ![The Versions tab of the agent: v2.0.0 latest, "instructions from instructions.md", above v1.0.0, "Initial version".](assets/agent-versions.png)
 
-**How to read the version list.** Treat a version as immutable evidence. The version number identifies what ran; the description says why it was created; the configuration behind it contains the instructions, model, tool attachments, and limits. Compare the instructions before comparing outputs, otherwise a changed response is only an observation—not an explained change.
+**How to read the version list.** Open [**Agents**](https://my.orq.ai/kickstartai-workshop-2026/agents), find your `<WS_PREFIX>-refund-agent`, and select **Versions**. Treat a version as immutable evidence. The version number identifies what ran; the description says why it was created; the configuration behind it contains the instructions, model, tool attachments, and limits. Compare the instructions before comparing outputs, otherwise a changed response is only an observation—not an explained change.
 
 Run it again without editing: `(unchanged: ...)`, no new version. Every later edit you publish becomes 3.0.0, 4.0.0, and so on; use that number wherever this page says 2.0.0.
 
@@ -114,13 +112,7 @@ Done when none of the rules break, **including the control**: the ordinary refun
 
 ### Step 4 · The regression eval
 
-```bash {.terminal}
-# Candidate version: every scorer should meet its threshold (exit 0)
-uv run python -m evals.regression --version 2.0.0
-
-# First version: known failures should keep this below a threshold (exit 1)
-uv run python -m evals.regression --version 1.0.0
-```
+Run the candidate version first: every scorer should meet its threshold (exit 0). Then run the first version: known failures should keep it below a threshold (exit 1).
 
 The module path identifies the evaluation runner; `--version` pins the managed agent it invokes. `make regression-eval VERSION=<version>` is the shortcut.
 
@@ -135,7 +127,12 @@ The module path identifies the evaluation runner; `--version` pins the managed a
 
 The scorers read tool *results*, not tool names: calling `issue_refund` is not a refund, and a call with no result fails closed. Each mean must be at or above its threshold in `THRESHOLDS`:
 
-```text
+Example passing session (your scores can differ):
+
+<!-- termynal -->
+
+```console
+$ uv run python -m evals.regression --version 2.0.0
 ── Regression eval · ws07-refund-agent@2.0.0 ──────────
 rows     : 20 from dataset ws07-refund-eval
 pass     : refund_outcome 0.95 (threshold 0.85)
@@ -145,7 +142,13 @@ pass     : policy_judge 0.90 (threshold 0.70)
 verdict  : passed, every scorer at or above its threshold (exit 0)
 ```
 
-Every run is also an Experiment in the Studio, next to the previous ones.
+Compare it with the original version:
+
+```bash {.terminal}
+uv run python -m evals.regression --version 1.0.0
+```
+
+Every run also appears in [**Experiments** in the Studio](https://my.orq.ai/kickstartai-workshop-2026/experiments), next to the previous ones. Search for your seat prefix to find it.
 
 **Read the evaluatorq pipeline as data flow.** `DatasetIdInput` reads the rows from orq.ai, not from a local fixture. The `run_agent` job calls one pinned agent version per row and returns a stable dict: answer, tool calls, trace ID. The evaluators score that dict. Finally, the script averages each scorer and compares it with `THRESHOLDS`.
 
@@ -165,11 +168,11 @@ This separation is the takeaway: datasets define examples, jobs define the syste
 
 ![The judge ws01-refund-policy-judge in the Studio: boolean output, gpt-6-luna, and the prompt with the policy summary and the input.user_query, output.response and input.expected_output variables.](assets/judge.png)
 
-**Evaluator view — read the contract before trusting a score.** In the judge resource, inspect the output type (boolean), the model, and the prompt variables. Here `input.user_query` is the customer message, `output.response` is the agent answer, and `input.expected_output` is the row's reference. The judge has no magic policy knowledge beyond the prompt and those inputs. Its result is one signal in the gate, alongside deterministic code scorers.
+**Evaluator view — read the contract before trusting a score.** Open [**Evaluators**](https://my.orq.ai/kickstartai-workshop-2026/resources/evaluators) and find your `<WS_PREFIX>-refund-policy-judge`. In the judge resource, inspect the output type (boolean), the model, and the prompt variables. Here `input.user_query` is the customer message, `output.response` is the agent answer, and `input.expected_output` is the row's reference. The judge has no magic policy knowledge beyond the prompt and those inputs. Its result is one signal in the gate, alongside deterministic code scorers.
 
 ### Step 5 · The dataset in the Studio
 
-Open **Datasets** > `ws07-refund-eval`. These are the rows the eval just read.
+Open [**Datasets**](https://my.orq.ai/kickstartai-workshop-2026/datasets) > your `<WS_PREFIX>-refund-eval` (for example, `ws07-refund-eval`). These are the rows the eval just read.
 
 ![The dataset ws01-refund-eval in the Studio: 20 rows, each with its inputs (allowed_refunds, message, expected_decision) and expected output.](assets/dataset.png)
 

@@ -56,6 +56,10 @@ client.responses.create(
 
 ## Your agent
 
+Studio shortcuts: [Agents](https://my.orq.ai/kickstartai-workshop-2026/agents) · [Tools](https://my.orq.ai/kickstartai-workshop-2026/tools) · [Traces](https://my.orq.ai/kickstartai-workshop-2026/traces) · [Datasets](https://my.orq.ai/kickstartai-workshop-2026/datasets) · [Evaluators](https://my.orq.ai/kickstartai-workshop-2026/resources/evaluators) · [Experiments](https://my.orq.ai/kickstartai-workshop-2026/experiments) · [Models](https://my.orq.ai/kickstartai-workshop-2026/router/models).
+
+Select the project from your email's `ORQ_PROJECT`, then search for your seat prefix.
+
 | What | Value |
 |---|---|
 | Agent key | `<WS_PREFIX>-refund-agent`, e.g. `ws07-refund-agent` |

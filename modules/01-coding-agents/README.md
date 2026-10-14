@@ -103,7 +103,7 @@ Ask your agent:
   <p>List the chat models available to me through the connected orq.ai MCP server. Return their provider/model IDs.</p>
 </blockquote>
 
-The agent can answer this with its model-list tool. Its answer reflects the models exposed to the current MCP session and your permissions, so compare it with the **AI Gateway** > **Models** list you can see in the Studio. Do not ask it to identify the workspace: that is not a reliable MCP capability.
+The agent can answer this with its model-list tool. Its answer reflects the models exposed to the current MCP session and your permissions, so compare it with the [**AI Gateway** > **Models** list](https://my.orq.ai/kickstartai-workshop-2026/router/models) you can see in the Studio. Do not ask it to identify the workspace: that is not a reliable MCP capability.
 
 !!! warning "orqi answers 401 Token verification failed"
     You used orqi before with another account, and it reuses that stored login for model calls even with `ORQ_API_KEY` exported. Move it aside and retry: `mv ~/.orqi/agent/auth.json ~/.orqi/agent/auth.json.bak`.

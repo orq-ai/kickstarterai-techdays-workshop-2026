@@ -157,7 +157,7 @@ The **Workshop orders** panel shows the read-only data the code tools were built
 
 ![The chat UI: Workshop orders on the left with six read-only order cards, and a v1.0.0 refund conversation on the right with tool chips and an Open trace link.](assets/chat-ui.png)
 
-Open a trace link. The trace shows the model calls and one span per tool call, run in orq.ai.
+Open a trace link. The trace shows the model calls and one span per tool call, run in orq.ai. You can also find it in the [**Traces** overview](https://my.orq.ai/kickstartai-workshop-2026/traces) by searching the response's trace ID. Keep the Studio project picker on the project from your email.
 
 ![A refund trace in the Studio: the agent span, two gpt-6-luna calls and the lookup_order and issue_refund tool spans with a sandbox execute; the issue_refund span shows its arguments and the result amount_refunded 89.](assets/agent-trace.png)
 
@@ -223,7 +223,7 @@ The Python SDK, raw HTTP call, and CLI all use the same Responses API contract. 
 
 ### Step 6 · Read the resources in the Studio
 
-Open [**Agents** in the workshop workspace](https://my.orq.ai/kickstartai-workshop-2026/agents) > your `-refund-agent` > **Versions**. There is one version today. Then open one tool under **Tools**: the Python that orq.ai runs, generated from `tools.py`.
+Open [**Agents** in the workshop workspace](https://my.orq.ai/kickstartai-workshop-2026/agents) > your `-refund-agent` > **Versions**. There is one version today. Then open one tool under [**Tools**](https://my.orq.ai/kickstartai-workshop-2026/tools): the Python that orq.ai runs, generated from `tools.py`. Search for your `WS_PREFIX` to find your resources.
 
 **Agent view — read configuration, not source code.** On the agent version, inspect these fields in order: the **model** answers the question “which model is called?”, **instructions** answers “what is it told to do?”, **tools** answers “what actions can it request?”, and **limits** answers “when does the loop stop?”. An agent is a composed resource, so this is the best screen for understanding a version as a whole.
 
