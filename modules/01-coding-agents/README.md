@@ -26,6 +26,8 @@ The skills are workflows written for an agent (simulate an agent, build an evalu
 
     orqi does not read `.env` by itself: the `set -a` line exports the key for this shell only. Its header line ends with the credential it used; it must say `ORQ_API_KEY`.
 
+    ![orqi answering "which models are enabled in my workspace?": the header ends with ORQ_API_KEY, the answer lists the workshop workspace's enabled models with provider, context window and price.](assets/orqi-ready.png)
+
 === "Claude Code"
 
     ```bash
@@ -62,6 +64,9 @@ claude mcp add --transport http orq https://my.orq.ai/v2/mcp --header "Authoriza
 ```
 
 OAuth is the right path for your own workspace after today.
+
+!!! warning "orqi answers 401 Token verification failed"
+    You used orqi before with another account, and it reuses that stored login for model calls even with `ORQ_API_KEY` exported. Move it aside and retry: `mv ~/.orqi/agent/auth.json ~/.orqi/agent/auth.json.bak`.
 
 ### Step 3 · Keep it open
 
