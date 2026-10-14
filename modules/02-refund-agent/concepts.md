@@ -1,4 +1,4 @@
-# Refund agent concepts
+# Agent concepts
 
 A managed agent combines a model's judgment with tools that enforce the business rules.
 

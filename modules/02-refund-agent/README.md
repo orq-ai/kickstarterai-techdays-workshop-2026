@@ -1,4 +1,4 @@
-# Refund agent
+# Designing an agent
 
 | | |
 |---|---|
@@ -9,7 +9,7 @@
 
 The refund agent is a fully managed, versioned orq.ai agent: your app sends one message and gets one response, while orq.ai runs both the model loop and the code tools. The tools come from `app/refund_agent/tools.py`; instructions come from `app/data/instructions.md`.
 
-Read [Business logic](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-logic/) for the policy, tool contracts, and v1 design. Then read [Refund agent concepts](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-concepts/) for the managed loop, response items, and versions.
+Read [Business logic](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-logic/) for the policy, tool contracts, and v1 design. Then read [Agent concepts](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-concepts/) for the managed loop, response items, and versions.
 
 ## Steps
 
