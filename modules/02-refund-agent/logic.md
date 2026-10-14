@@ -101,18 +101,7 @@ if amount(order_id) > REFUND_LIMIT_EUR:
 return issue_refund_result(order_id)
 ```
 
-The exact tool schema is also available to the model:
-
-```python {.code-frame}
-# app/refund_agent/tools.py
-issue_refund_schema = TOOL_SCHEMAS[1]["function"]
-
-issue_refund_schema["parameters"]["required"]
-# ["order_id", "reason"]
-
-issue_refund_schema["parameters"]["properties"]
-# order_id, reason, post_window_exception
-```
+The tool schemas make those allowed arguments explicit to the model. The model can choose whether to call a tool; it cannot add an argument that the schema does not allow or turn a failed tool result into a successful state change.
 
 ## The v1 design
 
@@ -120,17 +109,7 @@ issue_refund_schema["parameters"]["properties"]
 
 The prompt is intentionally a **baseline**, not the source of truth. It guides the model through ambiguous language and tool selection. The tools enforce deterministic boundaries, and the next modules test whether the complete v1 system makes the right decisions and communicates them safely.
 
-```python {.code-frame}
-from app.refund_agent.config import settings
-
-# app/refund_agent/entities.py
-orq.agents.create(
-    key=settings.agent_key,
-    instructions=agent_instructions(),
-    model={"id": settings.model},
-    settings={"tools": [{"type": "code", "key": tool_key}]},
-)
-```
+![A customer message enters the version-one prompt and model; the model requests hosted code tools backed by policy and hard rules, receives structured results, and returns a response with a trace.](assets/refund-logic-system.png)
 
 Take away this separation: **policy text explains**, **prompt instructions guide**, and **tool code enforces**. A later evaluation can inspect both the final customer message and the tool-result trail.
 
