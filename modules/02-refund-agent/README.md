@@ -92,24 +92,7 @@ orq.agents.create(
 
 This v1 agent does not configure fallback models, memory stores, knowledge bases, cost caps, or interactive tool gates. That boundary is useful beyond this workshop: seed or provision entities in a controlled path, then make product code invoke stable keys.
 
-### Step 3 · Talk to it
-
-```bash {.terminal}
-uv run python -m app.web
-# Then open http://127.0.0.1:8002
-```
-
-This starts the local FastHTML chat application. `make agent-chat-ui` is its shortcut.
-
-The left panel, **Backend (mock) · read-only**, shows the data the code tools were built from: **Orders** (what `lookup_order` and `issue_refund` see) and **Policies** (what `get_policy` returns). The right panel is the chat. Click a **Try these** prompt, or write your own. Each answer shows a chip per tool call (a red chip is a tool that returned an error) and a **trace** link.
-
-![The chat UI: the mock backend on the left with the six orders of the logged-in customer, the chat on the right with an answer, its tool chips and the trace link.](assets/chat-ui.png)
-
-Open a trace link. The trace shows the model calls and one span per tool call, run in orq.ai.
-
-![A refund trace in the Studio: the agent span, two gpt-6-luna calls and the lookup_order and issue_refund tool spans with a sandbox execute; the issue_refund span shows its arguments and the result amount_refunded 89.](assets/agent-trace.png)
-
-### Step 4 · Inspect and call it from Python
+### Step 3 · Inspect and call it from Python
 
 Open `modules/02-refund-agent/run.py`. It has two TODOs: the call itself, and printing each tool result.
 
@@ -144,7 +127,7 @@ answer   : Your refund of €89 for order ord_a2 has been issued
 trace    : 879452279575c96235e1da68b34cd543
 ```
 
-A tool call is a `function_call` output item; orq.ai runs it and adds an `orq:<tool key>` item with the same `call_id` and the `result`. Stuck? See the hint at the end of this page.
+A tool call is a `function_call` output item; orq.ai runs it and adds an `orq:<tool key>` item with the same `call_id` and the `result`.
 
 **What to read in `run.py`.** The call itself is intentionally one line. The important learning is the response shape: application code should preserve the final answer, structured calls, structured results, and trace ID rather than flattening everything into text. That same structured record powers the chat UI, traces, simulations, and regression scorers later.
 
@@ -157,6 +140,23 @@ for call in turn.tool_calls:
     print(call.name, call.arguments, call.result)
 print(turn.trace_id)
 ```
+
+### Step 4 · Talk to it
+
+```bash {.terminal}
+uv run python -m app.web
+# Then open http://127.0.0.1:8002
+```
+
+This starts the local FastHTML chat application. `make agent-chat-ui` is its shortcut.
+
+The left panel, **Backend (mock) · read-only**, shows the data the code tools were built from: **Orders** (what `lookup_order` and `issue_refund` see) and **Policies** (what `get_policy` returns). The right panel is the chat. Click a **Try these** prompt, or write your own. Each answer shows a chip per tool call (a red chip is a tool that returned an error) and a **trace** link.
+
+![The chat UI: the mock backend on the left with the six orders of the logged-in customer, the chat on the right with an answer, its tool chips and the trace link.](assets/chat-ui.png)
+
+Open a trace link. The trace shows the model calls and one span per tool call, run in orq.ai.
+
+![A refund trace in the Studio: the agent span, two gpt-6-luna calls and the lookup_order and issue_refund tool spans with a sandbox execute; the issue_refund span shows its arguments and the result amount_refunded 89.](assets/agent-trace.png)
 
 ### Step 5 · The same call from Python, curl and the CLI
 
