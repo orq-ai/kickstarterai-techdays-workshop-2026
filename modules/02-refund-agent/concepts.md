@@ -2,7 +2,7 @@
 
 A managed agent combines a model's judgment with tools that enforce the business rules.
 
-Read [Business logic](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-logic/) for the policy, tool contracts, and v1 design this agent uses.
+Read the [Business case](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-logic/) for the policy requirements, then [Solution design](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-solution-design/) for the v1 prompt and tool contracts.
 
 ## What an agent is
 
@@ -14,39 +14,7 @@ An agent is a model, instructions, and tools running in a loop until it can answ
 
 Your application sends one customer message and receives one response. In between, orq.ai runs the model and the code tools in its sandbox. The result of each tool call is added to the model context before the next decision.
 
-The refund agent stops when it answers, after `max_iterations: 8`, or after `max_execution_time: 120` seconds. Those limits are part of `entities.ensure_agent`.
-
-| Setting | v1 value | Why it matters |
-|---|---|---|
-| Model | `settings.model` from `MODEL` in `.env` | The workshop can choose a model without editing module code. |
-| Reasoning effort | `none` | Required by the selected model when it uses hosted code tools. |
-| Maximum iterations | `8` | Caps model/tool-loop turns. |
-| Maximum execution time | `120` seconds | Caps the entire managed-agent run. |
-| Tools | three hosted `code` tools | orq.ai executes the order, policy, and refund code. |
-| Versioning | major increments on publish | Pins a complete agent configuration for comparison. |
-
-```python {.code-frame}
-# app/refund_agent/entities.py
-orq.agents.create(
-    key=settings.agent_key,
-    instructions=agent_instructions(),
-    path=settings.path,
-    model={
-        "id": settings.model,
-        "parameters": {"reasoning_effort": "none"},
-    },
-    settings={
-        "max_iterations": 8,
-        "max_execution_time": 120,
-        "tools": [
-            {"type": "code", "key": tool_key}
-            for tool_key in tool_keys
-        ],
-    },
-)
-```
-
-This v1 agent does not configure fallback models, memory stores, knowledge bases, cost caps, or interactive tool gates. The application does not dispatch its tools itself: it gives orq.ai the agent configuration; orq.ai owns the loop and the sandbox execution.
+The refund agent stops when it answers, after `max_iterations: 8`, or after `max_execution_time: 120` seconds. Those are v1 configuration choices; see [Solution design](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-solution-design/) for the prompt, tools, and full agent settings.
 
 ## One turn on the wire
 
