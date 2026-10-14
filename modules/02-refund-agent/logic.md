@@ -86,11 +86,21 @@ return {"ok": True, "order": public_order(order)}
 ```
 
 ```python {.code-frame}
-# get_policy: fetch one known policy topic.
-if topic not in POLICY_TOPICS:
-    return {"ok": False, "error": "unknown_topic"}
-return {"ok": True, "topic": topic, "text": policy_text(topic)}
+# app/refund_agent/tools.py
+POLICY_TOPICS = (
+    "refund_basics",
+    "post_window_exceptions",
+    "abuse_patterns",
+    "shipping_and_scope",
+)
+
+def get_policy(topic: str) -> dict:
+    if topic not in POLICY_TOPICS:
+        return {"ok": False, "error": "unknown_topic"}
+    return {"ok": True, "topic": topic, "text": policy_text(topic)}
 ```
+
+The **model** supplies `topic` when it calls `get_policy`. The v1 instructions name the available topics, and the tool schema exposes the same enum. For example, the model can ask for `refund_basics` before a standard decision or `post_window_exceptions` when the delivery window has passed. The tool validates that choice; it does not infer policy intent from the customer's text.
 
 ```python {.code-frame}
 # issue_refund: make the state change only after deterministic checks.
