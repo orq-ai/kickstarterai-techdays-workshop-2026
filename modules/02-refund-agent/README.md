@@ -27,7 +27,7 @@ Example session (your seat prefix and entity IDs will differ):
 $ make seed-workspace
 ── Seed · create this seat's agent ───────────────────
 seat     : ws07 → <your project>/workshop
-tools    : ws07-lookup_order, ws07-issue_refund, ws07-get_policy (code tools, run by orq)
+tools    : ws07-lookup_order, ws07-issue_refund, ws07-get_policy (code tools, run by orq.ai)
 agent    : ws07-refund-agent v1.0.0
 ```
 
