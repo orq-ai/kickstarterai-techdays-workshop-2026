@@ -1,0 +1,1 @@
+Read AGENTS.md and modules/02-refund-agent/README.md. Complete the two TODOs in modules/02-refund-agent/run.py: call my managed agent with `orq.responses.create(model=f"agent/{settings.agent_key}", input=QUESTION)`, and print each tool result from the `orq:<tool key>` output items. Run `make invoke-agent` and show me the output. Do not edit anything under app/.

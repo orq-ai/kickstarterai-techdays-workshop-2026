@@ -1,0 +1,392 @@
+/* --- Orq brand fonts (self-hosted, vendored from orquesta-web) ----------
+   Body = Avio Sans, headings = Kurrent, code = Kurrent Mono. `theme.font:
+   false` in mkdocs.yml stops Material loading Google Fonts so these win. */
+@font-face {
+  font-family: "Avio Sans";
+  src: url("fonts/AvioSans-Regular.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Avio Sans";
+  src: url("fonts/AvioSans-RegularItalic.woff2") format("woff2");
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: "Avio Sans";
+  src: url("fonts/AvioSans-Medium.woff2") format("woff2");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Avio Sans";
+  src: url("fonts/AvioSans-SemiBold.woff2") format("woff2");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Avio Sans";
+  src: url("fonts/AvioSans-Bold.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Kurrent";
+  src: url("fonts/ESKlarheitKurrent-Md.woff2") format("woff2");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Kurrent";
+  src: url("fonts/ESKlarheitKurrent-Smbd.woff2") format("woff2");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Kurrent Mono";
+  src: url("fonts/ESKlarheitKurrentMono-Md.woff2") format("woff2");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+:root {
+  --md-text-font-family: "Avio Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --md-code-font-family: "Kurrent Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+/* Headings in Kurrent (brand display face); body stays Avio Sans. */
+.md-typeset h1, .md-typeset h2, .md-typeset h3,
+.md-typeset h4, .md-typeset h5, .md-typeset h6,
+.md-header__title { font-family: "Kurrent", var(--md-text-font-family); }
+
+/* Orq brand palette + design language (see /DESIGN.md).
+   Rule: teal carries the interface, orange punctuates — one accent per view. */
+:root {
+  --orq-teal: #025558;
+  --orq-teal-light: #299d8f;
+  --orq-teal-dark: #013a3c;
+  --orq-orange: #ff8f34;
+  --orq-orange-deep: #df5325; /* orange for fills/buttons (white text on top) */
+  --orq-orange-text: #c4421a; /* orange for TEXT on light surfaces — ~4.6:1 AA */
+  --orq-ink: #25232e;
+  --orq-sand: #f9f8f6;
+  /* Sidebar group headings, both rails. color-mix, not rgba(), so slate follows. */
+  --orq-nav-heading: color-mix(in srgb, var(--md-default-fg-color) 70%, transparent);
+}
+
+/* Light scheme: teal identity, orange accent. */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: var(--orq-teal);
+  --md-primary-fg-color--light: var(--orq-teal-light);
+  --md-primary-fg-color--dark: var(--orq-teal-dark);
+  --md-accent-fg-color: var(--orq-orange-deep); /* hover accent, AA on white */
+  --md-typeset-a-color: var(--orq-teal);
+  --md-code-bg-color: var(--orq-sand);
+}
+
+/* Dark scheme: lighten teal so it stays legible on slate. */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: var(--orq-teal-light);
+  --md-primary-fg-color--light: #3db8a8;
+  --md-primary-bg-color: #ffffff; /* text/icons on the primary header */
+  --md-accent-fg-color: var(--orq-orange);
+  --md-typeset-a-color: var(--orq-teal-light); /* teal-light, not blinding cyan */
+}
+
+/* Headings in brand teal (light only — slate handles its own contrast). */
+[data-md-color-scheme="default"] .md-typeset h1,
+[data-md-color-scheme="default"] .md-typeset h2 {
+  color: var(--orq-teal);
+}
+
+/* Widen the content column (Material default is 61rem). */
+.md-grid { max-width: 70rem; }
+
+/* --- Typography scale -------------------------------------------------
+   Material defaults to 125% root, upscaling to 150% on wide screens —
+   reads oversized. Pin body to ~16px, gentle wide-screen bump. */
+html { font-size: 100%; }
+@media screen and (min-width: 100em) { html { font-size: 106.25%; } }
+@media screen and (min-width: 125em) { html { font-size: 112.5%; } }
+.md-typeset { font-size: 0.98rem; }           /* ~15.7px body — 15% up from 0.85rem */
+.md-typeset h1 { font-size: 1.75rem; line-height: 1.25; font-weight: 700; }
+.md-typeset h2 { font-size: 1.35rem; margin-top: 2.2rem; }
+.md-typeset h3 { font-size: 1.1rem; }
+/* Material pins admonitions/tables/footnotes to a fixed 0.64rem that ignores the
+   body bump above. Pull them to the exact body size so all prose reads uniform. */
+.md-typeset .admonition,
+.md-typeset details,
+.md-typeset table:not([class]),
+.md-typeset .footnote { font-size: 0.98rem; }
+/* word-break: a mid-token break in `ORQ_API_KEY` reads as a typo. */
+.md-typeset table:not([class]) code { word-break: normal; }
+/* The module metadata block (Time / Prerequisites / You will have) is written as a
+   two-column table with an empty header, because Python-Markdown's `tables` requires a
+   header row. Material renders that as a real thead, so the page opens on an empty grey
+   band. Hide a thead only when every cell is blank: module 15's `| | Advisor | Sidekick |`
+   has one empty cell and must keep its header.
+   ponytail: CSS over rewriting 19 files; drop this if the metadata block becomes a list. */
+.md-typeset table:not([class]) thead:not(:has(th:not(:empty))) { display: none; }
+
+/* A diff of two prompt files is a diff of prose: the lines run to ~200 characters, and a
+   horizontal scrollbar hides exactly the half of the sentence that changed. Wrap them.
+   Matched by content (Pygments .gd/.gi) because Material emits no language class here, so
+   ordinary code blocks, where column alignment carries meaning, keep scrolling. */
+.md-typeset .highlight:has(.gd, .gi) code { white-space: pre-wrap; }
+
+/* Sidebar nav + TOC: ~content size, a touch bigger so the menu reads as chrome. */
+.md-nav { font-size: 1rem; }
+.md-nav__title { font-size: 1rem; }
+.md-nav__link { font-size: 1rem; }
+.md-tabs__link { font-size: 0.95rem; }
+
+/* --- Logo: circular mark, square aspect ------------------------------ */
+.md-header__button.md-logo img,
+.md-nav__button.md-logo img {
+  height: 1.6rem;
+  width: auto;
+}
+
+/* --- Grid cards: teal field, teal accent on hover -------------------
+   Design language: cards are neutral at rest; the brand teal appears
+   as the hover accent (uniform border + arrow). */
+.md-typeset .grid.cards > ul > li {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.4rem;
+  padding: 1rem 1.1rem;
+  transition: border-color 120ms, box-shadow 120ms, transform 120ms;
+}
+.md-typeset .grid.cards > ul > li:hover {
+  border-color: var(--orq-teal);
+  box-shadow: 0 2px 12px rgba(2, 85, 88, 0.1);
+  transform: translateY(-2px);
+}
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li:hover {
+  border-color: var(--orq-teal-light);
+}
+/* Card title icon in teal. */
+.md-typeset .grid.cards .lg.middle {
+  color: var(--orq-teal);
+}
+[data-md-color-scheme="slate"] .md-typeset .grid.cards .lg.middle {
+  color: var(--orq-teal-light);
+}
+/* The :octicons-arrow-right: "go" links — teal at REST, brightening to
+   teal-light on hover/focus so each card's accent lifts when engaged. */
+.md-typeset .grid.cards a:last-child {
+  color: var(--orq-teal);
+  font-weight: 600;
+}
+[data-md-color-scheme="slate"] .md-typeset .grid.cards a:last-child {
+  color: var(--orq-teal-light);
+}
+.md-typeset .grid.cards > ul > li:hover a:last-child,
+.md-typeset .grid.cards a:last-child:hover,
+.md-typeset .grid.cards a:last-child:focus {
+  color: var(--orq-teal-light);
+}
+
+/* --- Links: teal, orange on hover (one consistent interaction) ------- */
+.md-typeset a:hover { color: var(--md-accent-fg-color); }
+
+/* --- "Get Started" primary button: the one orange CTA --------------- */
+/* Hero buttons: Material's default is oversized — tighten. */
+.md-typeset .md-button {
+  font-size: 0.7rem;
+  padding: 0.35em 0.9em;
+}
+.md-typeset .md-button--primary {
+  background-color: var(--orq-orange-deep);
+  border-color: var(--orq-orange-deep);
+  color: #fff;
+}
+.md-typeset .md-button--primary:hover {
+  background-color: var(--orq-orange);
+  border-color: var(--orq-orange);
+}
+
+/* --- Termynal animated terminal ------------------------------------- */
+/* Control links (fast-forward / restart) ship a periwinkle default that's
+   off-palette — recolor to brand teal-light. */
+[data-terminal] a,
+[data-termynal] a,
+.termynal-control {
+  color: var(--orq-teal-light) !important;
+}
+/* Kill the tall reserved void: let the block size to its content instead of
+   the JS-injected min-height, and tighten padding. */
+[data-termynal] {
+  min-height: 0 !important;
+  padding: 2.4rem 1.1rem 1.1rem !important;
+}
+/* Dark mode: give the terminal an edge so it doesn't merge into the page. */
+[data-md-color-scheme="slate"] [data-termynal] {
+  border: 1px solid var(--md-default-fg-color--lightest);
+}
+
+/* --- Search: ⌘K hint badge (binding lives in js/keyboard.js) --------- */
+.md-search__form { position: relative; }
+.md-search__form::after {
+  content: "⌘K";
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  transform: translateY(-50%);
+  font-size: 0.62rem;
+  font-weight: 600;
+  line-height: 1;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 0.2rem;
+  padding: 0.15rem 0.32rem;
+  pointer-events: none;
+  opacity: 0.75;
+}
+.md-search__form:focus-within::after { display: none; } /* hide once typing */
+@media screen and (max-width: 76.1875em) {
+  .md-search__form::after { display: none; }            /* mobile uses overlay */
+}
+
+/* ponytail: NOT overriding Material's sidebar-collapse breakpoint (76.25em).
+   A CSS-only override leaves a broken half-state — drawer-mode and sidebar-mode
+   render different DOM. Widen the window past ~1220px for the permanent sidebar. */
+
+/* --- Sidebars: parent bigger and darker, children indented and lighter -----
+   Desktop only — below this breakpoint both rails become the off-canvas drawer. */
+@media screen and (min-width: 76.25em) {
+  /* -- Table of contents (right). Material's 12.1rem rail wraps every entry. */
+  .md-sidebar--secondary { width: 14.5rem; }
+
+  .md-nav--secondary .md-nav__title[for="__toc"] {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--md-default-fg-color--light);
+  }
+
+  /* A guide rule at every depth — TOC levels are ~1px of type apart, h2..h6 is 5 deep. */
+  .md-nav--secondary .md-nav {
+    margin-left: 0.75rem;
+    border-left: 1px solid var(--md-default-fg-color--lightest);
+  }
+  /* Indent comes from the rules now — drop Material's per-level padding. */
+  .md-nav--secondary .md-nav .md-nav__list { padding-left: 0; }
+  .md-nav--secondary .md-nav .md-nav__link {
+    padding-left: 0.55rem;
+    padding-right: 0;
+  }
+
+  .md-nav--secondary .md-nav__link {
+    font-size: 0.66rem;
+    line-height: 1.35;
+    color: var(--md-default-fg-color--light);
+  }
+  /* h2s carry the page structure. */
+  .md-nav--secondary > .md-nav__list > .md-nav__item > .md-nav__link {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--orq-nav-heading);
+    margin-top: 0.9em;
+  }
+
+  .md-nav--secondary .md-nav__link--active,
+  .md-nav--secondary .md-nav__link--active code { font-weight: 600; }
+  /* Accent-colour the guide rule next to the active item. */
+  .md-nav--secondary .md-nav .md-nav__link--active {
+    box-shadow: -1px 0 0 0 var(--md-typeset-a-color);
+  }
+
+  /* -- Site navigation (left). Material separates section labels by weight alone. */
+  .md-nav--primary .md-nav__item--section > .md-nav__link {
+    font-size: 1.08rem;   /* nav links are 1rem here (see .md-nav__link above) */
+    font-weight: 600;
+    color: var(--orq-nav-heading);
+    margin-bottom: 0.3rem;
+  }
+  /* Equal air both sides, or a nested group glues to the parent's next page. */
+  .md-nav--primary .md-nav__item--section { margin: 1.4rem 0; }
+  /* -0.6rem is Material's own bleed for section children — indent instead. */
+  .md-nav--primary .md-nav__item--section > .md-nav {
+    margin-left: 0;
+    padding-left: 0.6rem;
+  }
+  /* Pages only — :not() keeps a nested section's own label at label size. */
+  .md-nav--primary .md-nav__item--section > .md-nav .md-nav__item:not(.md-nav__item--section) > .md-nav__link {
+    font-size: 0.94rem;
+    color: var(--md-default-fg-color--light);
+  }
+
+  /* Same chain as the page rule above, or it loses on specificity. */
+  .md-nav--primary .md-nav__item--section > .md-nav .md-nav__item:not(.md-nav__item--section) > .md-nav__link--active {
+    font-weight: 600;
+    color: var(--md-typeset-a-color);
+  }
+}
+
+/* Dashboard guide screenshots — subtle framing so captures sit apart from prose. */
+.dashboard-shot {
+  border-radius: 8px;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  margin: 1em 0;
+}
+
+/* Diagrams (modules/*/assets/*.png, exported from the diagram-design HTML sources).
+   The PNG carries its own sand paper, so round it off and edge it on dark pages. */
+.md-typeset img[alt^="Diagram"] {
+  border-radius: 8px;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  margin: 0.5em 0 1em;
+}
+
+/* --- "With your coding agent": Claude Code frame ----------------------
+   Module READMEs are snippet-included, so no wrapper markup: pick the prompt
+   blockquote by position — after the h2, before the next h2 ("Done when").
+   Always dark, in both schemes: it is a terminal. */
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) {
+  background: #1a1917;
+  color: #e6e2dc;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  margin: 1em 0 1.4em;
+  padding: 1rem 1.25rem 0.75rem;
+  font-family: var(--md-code-font-family);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+/* Header: pixel logo + banner lines (SVG inline so no asset to ship). */
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote)::before {
+  content: "Claude Code\A orq launch claude · routed through the orq gateway\A ~/kickstarterai-techdays-workshop-2026";
+  display: block;
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #a8a39d;
+  min-height: 3.2rem;
+  padding-left: 3.2rem;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 8' shape-rendering='crispEdges'><g fill='%23d97757'><rect x='1' y='0' width='8' height='3'/><rect x='0' y='3' width='10' height='2'/><rect x='2' y='5' width='6' height='1'/><rect x='2' y='6' width='2' height='2'/><rect x='6' y='6' width='2' height='2'/></g><g fill='%231a1917'><rect x='2' y='1' width='1' height='1'/><rect x='7' y='1' width='1' height='1'/></g></svg>") no-repeat 0 0.15rem / 2.4rem auto;
+}
+/* The input box: dashed rules above and below, "›" prompt glyph. */
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) > p {
+  margin: 1.4rem 0 0.6rem;
+  padding: 0.6rem 0 0.6rem 1.3rem;
+  border-top: 1px dashed #4a4640;
+  border-bottom: 1px dashed #4a4640;
+  position: relative;
+}
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) > p::before {
+  content: "›";
+  position: absolute;
+  left: 0;
+  color: #fff;
+  font-weight: 600;
+}
+/* Inline code on the dark field: Material's sand chip would glow. */
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) code {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f0c9a8;
+  border-radius: 3px;
+}
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) a {
+  color: var(--orq-teal-light);
+}
+/* Status line. */
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote)::after {
+  content: "? for shortcuts";
+  display: block;
+  color: #8a8580;
+  font-size: 0.78rem;
+}

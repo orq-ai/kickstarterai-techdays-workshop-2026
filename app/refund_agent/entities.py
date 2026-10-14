@@ -1,0 +1,435 @@
+"""Create, version and delete the orq entities this workshop uses, all under your seat prefix.
+
+What `make seed-workspace` creates (idempotent: each `ensure_*` looks for its key first):
+    <seat>-lookup_order, <seat>-issue_refund, <seat>-get_policy   code tools, run by orq
+    <seat>-refund-agent                                           the agent, v1.0.0 from app/data/instructions.md
+    <seat>-refund-eval                                            the regression dataset (module 04)
+    <seat>-refund-policy-judge                                    the LLM judge (module 04)
+
+`make publish-agent-version` sends your edited instructions as the next major version.
+`make reset-workspace` deletes exactly those kinds, and only keys that start with `<seat>-`.
+
+    uv run python -m app.refund_agent.entities seed
+    uv run python -m app.refund_agent.entities publish [--file path/to/instructions.md]
+    uv run python -m app.refund_agent.entities reset
+"""
+
+from __future__ import annotations
+
+import argparse
+import inspect
+import json
+import sys
+import time
+from pathlib import Path
+from typing import Any
+
+import httpx
+
+from . import tools
+from .client import make_orq
+from .config import DATA_DIR, INSTRUCTIONS, settings
+
+K = settings.key  # K("refund-agent") -> "ws07-refund-agent"
+TOOL_NAMES = [schema["function"]["name"] for schema in tools.TOOL_SCHEMAS]
+
+
+# ---------------------------------------------------------------- REST
+
+
+def rest(method: str, path: str, body: dict[str, Any] | None = None) -> Any:
+    """Raw call with the same key, for the few payloads SDK 4.14 cannot serialize or parse."""
+    response = httpx.request(
+        method,
+        f"{settings.base_url}{path}",
+        json=body,
+        headers={"Authorization": f"Bearer {settings.api_key}"},
+        timeout=60,
+    )
+    if response.status_code >= 300:
+        raise RuntimeError(f"{method} {path} -> {response.status_code}: {response.text[:300]}")
+    if not response.content:
+        return {}
+    payload = response.json()
+    return payload.get("document", payload) if isinstance(payload, dict) else payload
+
+
+# ---------------------------------------------------------------- dataset + judge (module 04)
+
+
+def ensure_dataset(orq=None, rows: Path = DATA_DIR / "dataset.jsonl") -> str:
+    """The dataset `<seat>-refund-eval`, filled once from the JSONL file. Returns its id.
+
+    Idempotency key: `display_name`. An existing dataset is returned as is, rows are not re-added.
+    """
+    orq = orq or make_orq()
+    key = K("refund-eval")
+    for dataset in orq.datasets.list(limit=100).data or []:
+        if dataset.display_name == key:
+            return dataset.id
+    created = orq.datasets.create(request={"display_name": key, "path": settings.path})
+    points = [json.loads(line) for line in rows.read_text().splitlines() if line.strip()]
+    orq.datasets.create_datapoint(dataset_id=created.id, request_body=points)
+    return created.id
+
+
+def _find_eval(orq, key: str) -> str | None:
+    """The id of the evaluator with this exact key, or None. `search` is a substring match, hence the check."""
+    for evaluator in orq.evals.all(limit=50, search=key).data or []:
+        if getattr(evaluator, "key", None) == key:
+            return getattr(evaluator, "id", None) or evaluator.model_dump().get("_id")
+    return None
+
+
+def ensure_llm_judge(orq=None) -> str:
+    """Binary judge `<seat>-refund-policy-judge`: did the answer follow the refund policy? Returns its id.
+
+    The prompt is app/data/judge_prompt.md. It scores, it does not block.
+    """
+    orq = orq or make_orq()
+    key = K("refund-policy-judge")
+    existing = _find_eval(orq, key)
+    if existing:
+        return existing
+    evaluator = orq.evals.create(
+        request={
+            "type": "llm_eval",
+            "key": key,
+            "description": "Pass when the refund decision matches policy, fail otherwise.",
+            "path": settings.path,
+            "prompt": (DATA_DIR / "judge_prompt.md").read_text(),
+            "model": settings.judge_model,
+            "mode": "single",
+            "output_type": "boolean",
+            "guardrail_config": {"enabled": False, "type": "boolean", "value": True},
+        }
+    )
+    return evaluator.id
+
+
+# ---------------------------------------------------------------- code tools
+
+
+def hosted_tool_code(name: str) -> str:
+    """Python for the orq code tool `name`: only what that tool needs from tools.py, inlined.
+
+    orq runs it with the call's arguments in `params` and returns whatever it leaves in `result`.
+    The function bodies are copied from tools.py, so the business rules have one source; the
+    orders and the policy texts are written out one entry per line, readable in the Studio.
+    ponytail: a fresh OrderStore per call, so a refund is not remembered between calls (only
+    ord_a4, refunded in the fixture, answers already_refunded); persisting needs an external store.
+    """
+    header = (
+        f"# {name}: orq code tool, generated by `make seed-workspace` from app/refund_agent/tools.py.\n"
+        "# orq passes the call's arguments in `params` and returns what is left in `result`."
+    )
+    if name != "get_policy":
+        header += "\n# Every call starts from the orders below: a refund is not remembered between calls."
+    # No `from __future__` import: orq prepends its own code, so it would not be first.
+    imports = "from copy import deepcopy\nfrom typing import Any"
+    fixture = "_FIXTURE = {\n" + "".join(  # one order per line
+        f"    {key!r}: [\n" + "".join(f"        {row!r},\n" for row in value) + "    ],\n"
+        if isinstance(value, list)
+        else f"    {key!r}: {value!r},\n"
+        for key, value in tools._FIXTURE.items()
+    ) + "}"
+    store = inspect.getsource(tools.OrderStore)
+    if name == "lookup_order":
+        parts = [
+            imports,
+            f"WINDOW_DAYS = {tools.WINDOW_DAYS!r}",
+            fixture,
+            store,
+            inspect.getsource(tools.lookup_order),
+            "result = lookup_order(OrderStore(), **params)",
+        ]
+    elif name == "issue_refund":
+        parts = [
+            imports,
+            (
+                f"WINDOW_DAYS = {tools.WINDOW_DAYS!r}\n"
+                f"REFUND_LIMIT_EUR = {tools.REFUND_LIMIT_EUR!r}\n"
+                f"POST_WINDOW_REASONS = {tools.POST_WINDOW_REASONS!r}"
+            ),
+            fixture,
+            store,
+            inspect.getsource(tools.issue_refund),
+            "result = issue_refund(OrderStore(), **params)",
+        ]
+    else:  # get_policy: the policy files as strings, the same answers as tools.get_policy
+        texts = {topic: (tools.KB_DIR / f"{topic}.md").read_text() for topic in tools.POLICY_TOPICS}
+        assert not any('"""' in t or "\\" in t for t in texts.values()), "policy text breaks the quoting"
+        policy = "\n".join(f'    {topic!r}: """{text}""",' for topic, text in texts.items())
+        parts = [
+            f"POLICY_TOPICS = {tools.POLICY_TOPICS!r}",
+            f"POLICY = {{\n{policy}\n}}",
+            (
+                "def get_policy(topic):\n"
+                "    if topic not in POLICY:\n"
+                "        return {'ok': False, 'error': 'unknown_topic', 'topics': list(POLICY_TOPICS)}\n"
+                "    return {'ok': True, 'topic': topic, 'text': POLICY[topic], 'source': 'orq_code_tool'}"
+            ),
+            "result = get_policy(**params)",
+        ]
+    return "\n\n\n".join([header, *parts]) + "\n"
+
+
+def strict_parameters(function: dict[str, Any]) -> dict[str, Any]:
+    """The JSON schema orq's gateway accepts for a code tool: every property required, no `default`,
+    no extra properties. Anything looser is a 400 invalid_function_parameters at call time."""
+    properties = {
+        name: {k: v for k, v in spec.items() if k != "default"}
+        for name, spec in function["parameters"]["properties"].items()
+    }
+    return {
+        "type": "object",
+        "properties": properties,
+        "required": list(properties),
+        "additionalProperties": False,
+    }
+
+
+def ensure_tools(orq=None) -> list[str]:
+    """The three code tools `<seat>-lookup_order`, ... Existing ones are left as is. Returns the keys."""
+    orq = orq or make_orq()
+    existing = {getattr(tool, "key", None) for tool in _all_tools(orq)}
+    keys = []
+    for schema in tools.TOOL_SCHEMAS:
+        function = schema["function"]
+        key = K(function["name"])  # the model sees the key as the tool name
+        keys.append(key)
+        if key in existing:
+            continue
+        orq.tools.create(
+            request={
+                "type": "code",
+                "key": key,
+                "path": settings.path,
+                "description": function["description"],
+                "code_tool": {
+                    "language": "python",
+                    "code": hosted_tool_code(function["name"]),
+                    "parameters": strict_parameters(function),
+                },
+            }
+        )
+    return keys
+
+
+# ---------------------------------------------------------------- the agent and its versions
+
+
+def agent_instructions(path: Path = INSTRUCTIONS) -> str:
+    """The instructions file plus one line naming the tools: the model sees `<seat>-lookup_order`, not `lookup_order`."""
+    return path.read_text().rstrip() + "\n\nYour tools are named " + ", ".join(K(n) for n in TOOL_NAMES) + "."
+
+
+def ensure_agent(orq=None) -> str:
+    """The refund agent `<seat>-refund-agent`, created at v1.0.0 from app/data/instructions.md. Returns its key.
+
+    Idempotency key: the agent key. An existing agent is left as is; new versions come from
+    `publish_version`, never from seeding again.
+    """
+    orq = orq or make_orq()
+    key = settings.agent_key
+    if current_agent(orq) is not None:
+        return key
+    tool_keys = ensure_tools(orq)
+    orq.agents.create(
+        key=key,
+        display_name="Refund agent",
+        role="Customer-service refund agent for Lumen Goods.",
+        description="Handles refund requests for logged-in retail customers. Tools: lookup_order, get_policy, issue_refund.",
+        instructions=agent_instructions(),
+        path=settings.path,
+        # Code tools need reasoning effort none on this model (the gateway rejects tools with reasoning).
+        model={"id": settings.model, "parameters": {"reasoning_effort": "none"}},
+        settings={
+            "max_iterations": 8,
+            "max_execution_time": 120,
+            "tools": [{"type": "code", "key": tool_key} for tool_key in tool_keys],
+        },
+    )
+    return key
+
+
+def current_agent(orq=None) -> dict[str, Any] | None:
+    """The latest version of your agent as a dict, or None when it does not exist yet."""
+    orq = orq or make_orq()
+    try:
+        return orq.agents.retrieve(agent_key=settings.agent_key).model_dump()
+    except Exception:  # noqa: BLE001  the SDK raises a typed 404 body; anything else surfaces on create
+        return None
+
+
+def versions(agent: dict[str, Any] | None) -> list[str]:
+    """Every version the picker offers, newest first: 1.0.0 up to the current one.
+
+    ponytail: there is no list-versions endpoint; this assumes major bumps only, which is all
+    `publish_version` does. A minor version made in the Studio shows only when it is the latest.
+    """
+    if not agent or not agent.get("version"):
+        return []
+    current = agent["version"]
+    majors = [f"{n}.0.0" for n in range(int(current.split(".")[0]), 0, -1)]
+    return [current, *(v for v in majors if v != current)]
+
+
+def publish_version(orq=None, path: Path = INSTRUCTIONS) -> tuple[str, bool]:
+    """Send `path` as the next major version of your agent. Returns (version, changed).
+
+    Unchanged instructions are a no-op, so running it twice does not create a version.
+    """
+    orq = orq or make_orq()
+    agent = current_agent(orq)
+    if agent is None:
+        raise SystemExit("No agent yet. Run `make seed-workspace` first.")
+    instructions = agent_instructions(path)
+    if agent.get("instructions") == instructions:
+        return agent["version"], False
+    updated = orq.agents.update(
+        agent_key=settings.agent_key,
+        instructions=instructions,
+        version_increment="major",
+        version_description=f"instructions from {path.name}",
+    )
+    return updated.version, True
+
+
+# ---------------------------------------------------------------- reset
+
+
+def _paged(list_page) -> list[Any]:
+    """Every page of an SDK list call that takes `limit` and `starting_after`."""
+    items, after = [], None
+    while True:
+        page = list_page(limit=100, starting_after=after).data or []
+        items += page
+        if len(page) < 100:
+            return items
+        last = page[-1].model_dump(by_alias=True)
+        after = last.get("_id") or last.get("id")
+
+
+def _all_tools(orq) -> list[Any]:
+    return _paged(orq.tools.list)
+
+
+def reset(orq=None) -> int:
+    """Delete this seat's agent, code tools, dataset and judge. Returns the number of failures.
+
+    Only keys starting with `<seat>-` are touched, and only these four kinds. A list or delete
+    that fails is reported and counted, never skipped silently: the exit code says whether the
+    seat is clean.
+    """
+    settings.require_seat()
+    orq = orq or make_orq()
+    prefix = settings.prefix + "-"
+    removed = failed = 0
+    print("── Reset · delete this seat's entities ────────────────")
+    print(f"prefix   : {prefix}")
+    for kind, list_items, delete_item, key_of, id_of in [
+        (
+            "agent",
+            lambda: _paged(orq.agents.list),
+            lambda i: rest("DELETE", f"/v2/agents/{i}"),  # the SDK delete raises on its own 2xx body
+            lambda x: x.key,
+            lambda x: x.key,
+        ),
+        (  # after the agent: an agent pins its tools by id
+            "tool",
+            lambda: _all_tools(orq),
+            lambda i: orq.tools.delete(tool_id=i),
+            lambda x: getattr(x, "key", "") or "",
+            lambda x: x.id,
+        ),
+        (
+            "evaluator",
+            lambda: orq.evals.all(limit=100, search=prefix).data,
+            lambda i: orq.evals.delete(id=i),
+            lambda x: getattr(x, "key", "") or "",
+            lambda x: getattr(x, "id", None) or x.model_dump().get("_id"),
+        ),
+        (
+            "dataset",
+            lambda: orq.datasets.list(limit=100).data,
+            lambda i: orq.datasets.delete(dataset_id=i),
+            lambda x: x.display_name or "",
+            lambda x: x.id,
+        ),
+    ]:
+        try:
+            items = list_items() or []
+        except Exception as exc:  # noqa: BLE001
+            print(f"failed   : listing {kind}s: {str(exc)[:160]}")
+            failed += 1
+            continue
+        for item in items:
+            if not key_of(item).startswith(prefix):
+                continue
+            try:
+                delete_item(id_of(item))
+                print(f"deleted  : {kind} {key_of(item)}")
+                removed += 1
+            except Exception as exc:  # noqa: BLE001
+                print(f"failed   : {kind} {key_of(item)}: {str(exc)[:160]}")
+                failed += 1
+    print(f"removed  : {removed}")
+    if failed:
+        print(f"verdict  : incomplete, {failed} failure(s) above; this seat is not clean")
+    else:
+        print("next     : `make seed-workspace` creates v1.0.0 again")
+    return failed
+
+
+# ---------------------------------------------------------------- seed
+
+
+def seed(orq=None) -> None:
+    """Create everything the modules expect, for this seat. Safe to rerun."""
+    settings.require_seat()
+    orq = orq or make_orq()
+    started = time.time()
+    print("── Seed · create this seat's entities ─────────────────")
+    print(f"seat     : {settings.prefix} → {settings.path}")
+    try:
+        print(f"tools    : {', '.join(ensure_tools(orq))} (code tools, run by orq)")
+        print(f"agent    : {ensure_agent(orq)} v{current_agent(orq)['version']}")
+        print(f"dataset  : {K('refund-eval')} ({ensure_dataset(orq)})")
+        print(f"judge    : {K('refund-policy-judge')} ({ensure_llm_judge(orq)})")
+    except Exception as exc:
+        raise SystemExit(
+            f"seed failed: {str(exc)[:300]}\nfix: check that ORQ_API_KEY, ORQ_PROJECT and WS_PREFIX are the ones from your email"
+        ) from exc
+    print(f"elapsed  : {time.time() - started:.0f}s")
+    print(f"next     : `make smoke-test`; everything sits under {settings.path} in the Studio")
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("command", choices=["seed", "publish", "reset"])
+    parser.add_argument("--file", default=str(INSTRUCTIONS), help="instructions to publish (publish only)")
+    args = parser.parse_args(argv)
+    if args.command == "seed":
+        seed()
+        return 0
+    if args.command == "reset":
+        return 1 if reset() else 0
+    settings.require_seat()
+    path = Path(args.file)
+    if not path.is_file():
+        raise SystemExit(f"{path} is not a file")
+    version, changed = publish_version(path=path)
+    print("── Publish · your instructions as a new agent version ──")
+    print(f"agent    : {settings.agent_key}")
+    print(f"file     : {path}")
+    if changed:
+        print(f"version  : {version} (new)")
+        print(f"next     : `make agent-chat-ui` and pick @{version}, or `make simulate-agent VERSION={version}`")
+    else:
+        print(f"version  : {version} (unchanged: the latest version already has these instructions)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,16 @@
+{
+  "now": "2026-09-08",
+  "session_user_id": "user_001",
+  "orders": [
+    {"id": "ord_a1", "owner_id": "user_001", "amount": 24.99, "item": "Desk lamp Nord", "delivered_days_ago": 3, "status": "delivered", "refunded": false, "notes": ""},
+    {"id": "ord_a2", "owner_id": "user_001", "amount": 89.00, "item": "Charging dock Duo", "delivered_days_ago": 15, "status": "delivered", "refunded": false, "notes": ""},
+    {"id": "ord_a3", "owner_id": "user_001", "amount": 42.50, "item": "Cable organiser set", "delivered_days_ago": 45, "status": "delivered", "refunded": false, "notes": ""},
+    {"id": "ord_a4", "owner_id": "user_001", "amount": 14.99, "item": "USB-C cable 2m", "delivered_days_ago": 8, "status": "delivered", "refunded": true, "notes": "Refunded 2 days ago, damaged_in_transit"},
+    {"id": "ord_a5", "owner_id": "user_001", "amount": 350.00, "item": "Studio monitor pair", "delivered_days_ago": 70, "status": "delivered", "refunded": false, "notes": "Customer note: contact me at jane.doe@example.com or +31 6 1234 5678"},
+    {"id": "ord_a6", "owner_id": "user_001", "amount": 620.00, "item": "Standing desk frame", "delivered_days_ago": 5, "status": "delivered", "refunded": false, "notes": "Above single-refund limit, needs human approval"},
+    {"id": "ord_b1", "owner_id": "user_002", "amount": 19.99, "item": "Phone stand", "delivered_days_ago": 10, "status": "delivered", "refunded": false, "notes": ""},
+    {"id": "ord_b2", "owner_id": "user_002", "amount": 75.00, "item": "Bluetooth speaker Mini", "delivered_days_ago": 2, "status": "delivered", "refunded": false, "notes": ""},
+    {"id": "ord_b3", "owner_id": "user_003", "amount": 220.00, "item": "Headphones Air", "delivered_days_ago": 20, "status": "delivered", "refunded": false, "notes": ""},
+    {"id": "ord_b4", "owner_id": "user_003", "amount": 99.00, "item": "Smart plug 4-pack", "delivered_days_ago": 100, "status": "delivered", "refunded": false, "notes": ""}
+  ]
+}

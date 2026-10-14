@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Refund agent chat · Lumen Goods support</title>
+<link rel="icon" href="data:,">
+<style>
+  /* Colours from docs/stylesheets/extra.css */
+  :root {
+    --teal: #025558; --teal-light: #299d8f; --orange-deep: #df5325; --orange-text: #c4421a;
+    --ink: #25232e; --muted: #6b6875; --sand: #f9f8f6; --line: #dcd9d3;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink); background: var(--sand);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; height: 100vh; display: grid; grid-template-columns: 300px 1fr; }
+  :focus-visible { outline: 3px solid var(--orange-deep); outline-offset: 2px; }
+
+  /* ── Backend (mock) · read-only ── */
+  aside { border-right: 1px solid var(--line); background: #fff; display: flex; flex-direction: column; min-height: 0; }
+  aside > h2 { font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase; margin: 0;
+               padding: 0.9rem 1rem 0.5rem; color: var(--muted); }
+  [role=tablist] { display: flex; gap: 0.25rem; padding: 0 1rem; border-bottom: 1px solid var(--line); }
+  [role=tab] { font: inherit; font-size: 0.9rem; background: none; border: 0; padding: 0.5rem 0.6rem;
+               border-bottom: 3px solid transparent; cursor: pointer; color: var(--muted); }
+  [role=tab][aria-selected=true] { color: var(--teal); border-bottom-color: var(--teal); font-weight: 600; }
+  [role=tabpanel] { overflow-y: auto; padding: 0.75rem 1rem 1rem; flex: 1; }
+  .caption { font-size: 0.8rem; color: var(--muted); margin: 0 0 0.6rem; }
+  .caption code { font-size: 0.78rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { text-align: left; font-weight: 600; color: var(--muted); font-size: 0.75rem; padding: 0.3rem 0.2rem; }
+  td { padding: 0.4rem 0.2rem; border-top: 1px solid var(--line); vertical-align: top; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .policy { margin-bottom: 0.6rem; }
+  .policy summary { cursor: pointer; font-weight: 600; font-size: 0.85rem; }
+  .policy pre { white-space: pre-wrap; font-size: 0.78rem; line-height: 1.4; margin: 0.4rem 0 0; }
+
+  /* ── Agent chat ── */
+  .chat { display: flex; flex-direction: column; min-height: 0; }
+  header { background: var(--teal); color: #fff; padding: 0.75rem 1.25rem;
+           display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  header h1 { font-size: 1rem; margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  header p { margin: 0; font-size: 0.8rem; opacity: 0.85; }
+  header :focus-visible { outline-color: #fff; }
+  .controls { display: flex; align-items: flex-end; gap: 0.75rem; }
+  .controls label { display: block; font-size: 0.75rem; opacity: 0.85; margin-bottom: 0.2rem; }
+  select { font: inherit; padding: 0.4rem 0.5rem; border-radius: 8px; border: 1px solid var(--line); background: #fff; color: var(--ink); }
+  button { font: inherit; font-weight: 600; padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid transparent; cursor: pointer; }
+  #reset { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.6); }
+  #drawer-toggle { display: none; background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.6); }
+  main { flex: 1; overflow-y: auto; padding: 1rem; }
+  #log { list-style: none; margin: 0 auto; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; max-width: 46rem; }
+  .msg { padding: 0.75rem 1rem; border-radius: 10px; line-height: 1.45; white-space: pre-wrap; max-width: 85%; }
+  .user { align-self: flex-end; background: var(--teal); color: #fff; }
+  .agent { align-self: flex-start; background: #fff; border: 1px solid var(--line); }
+  .note { align-self: center; font-size: 0.8rem; color: var(--muted); }
+  .error { align-self: flex-start; background: #fff; border: 1px solid var(--orange-deep); color: var(--orange-text); }
+  .meta { margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; white-space: normal; font-size: 0.8rem; }
+  .chip { background: var(--sand); border: 1px solid var(--line); border-radius: 999px; padding: 0.1rem 0.55rem;
+          font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .chip.failed { border-color: var(--orange-deep); color: var(--orange-text); }
+  .used { color: var(--muted); }
+  .meta a { color: var(--teal); font-weight: 600; margin-left: auto; }
+  form { border-top: 1px solid var(--line); padding: 0.75rem 1rem; background: var(--sand); }
+  .row { max-width: 46rem; margin: 0 auto; display: flex; gap: 0.5rem; align-items: flex-end; }
+  .grow { flex: 1; }
+  form label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; }
+  input { width: 100%; font: inherit; padding: 0.6rem 0.75rem; border: 1px solid #8a8792; border-radius: 8px; background: #fff; color: var(--ink); }
+  #send { background: var(--orange-deep); color: #fff; }
+  #send:disabled { opacity: 0.6; cursor: progress; }
+  details.examples { max-width: 46rem; margin: 0 auto 0.6rem; }
+  details.examples summary { cursor: pointer; font-weight: 600; font-size: 0.9rem; }
+  .prompts { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+  .prompts button { font-weight: 400; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 999px;
+                    background: #fff; border-color: var(--line); color: var(--teal); }
+  .prompts button:hover { border-color: var(--teal); }
+  .prompts button:disabled { opacity: 0.6; cursor: progress; }
+
+  /* Narrow screens: one column, the backend becomes a drawer above the chat. */
+  @media (max-width: 760px) {
+    body { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+    aside { border-right: 0; border-bottom: 1px solid var(--line); max-height: 50vh; }
+    aside[hidden] { display: none; }
+    #drawer-toggle { display: inline-block; }
+  }
+</style>
+</head>
+<body>
+<aside id="backend" aria-labelledby="backend-title">
+  <h2 id="backend-title">Backend (mock) · read-only</h2>
+  <div role="tablist" aria-label="Backend data">
+    <button role="tab" id="tab-orders" aria-controls="panel-orders" aria-selected="true">Orders</button>
+    <button role="tab" id="tab-policies" aria-controls="panel-policies" aria-selected="false" tabindex="-1">Policies</button>
+  </div>
+  <div role="tabpanel" id="panel-orders" aria-labelledby="tab-orders" tabindex="0">
+    <p class="caption">Data used by <code>lookup_order</code> / <code>issue_refund</code>. You are logged in as this customer. A refund in the chat does not change this table: every tool call starts from these orders.</p>
+    <table>
+      <thead><tr><th scope="col">Order</th><th scope="col">Item</th><th scope="col" class="num">EUR</th><th scope="col" class="num">Days</th><th scope="col">Refunded</th></tr></thead>
+      <tbody id="orders"></tbody>
+    </table>
+  </div>
+  <div role="tabpanel" id="panel-policies" aria-labelledby="tab-policies" tabindex="0" hidden>
+    <p class="caption">Policy documents returned by <code>get_policy(topic)</code>.</p>
+    <div id="policies"></div>
+  </div>
+</aside>
+
+<section class="chat" aria-label="Agent chat">
+  <header>
+    <div>
+      <h1 id="agent">agent/…</h1>
+      <p>Your managed agent in orq. Each answer links to its trace.</p>
+    </div>
+    <div class="controls">
+      <button id="drawer-toggle" type="button" aria-controls="backend" aria-expanded="false">Backend (mock)</button>
+      <div>
+        <label for="version">Version</label>
+        <select id="version"><option value="latest">@latest</option></select>
+      </div>
+      <button id="reset" type="button">New conversation</button>
+    </div>
+  </header>
+  <main>
+    <ol id="log" aria-live="polite" aria-label="Conversation"></ol>
+  </main>
+  <form id="form">
+    <details class="examples" id="examples" open>
+      <summary>Try these</summary>
+      <div class="prompts" id="prompts"></div>
+    </details>
+    <div class="row">
+      <div class="grow">
+        <label for="message">Message</label>
+        <input id="message" name="message" autocomplete="off" required
+               placeholder="Hi, I want a refund for order ord_a1, I changed my mind.">
+      </div>
+      <button id="send" type="submit">Send</button>
+    </div>
+  </form>
+</section>
+<script>
+  const $ = (id) => document.getElementById(id);
+  const log = $("log"), form = $("form"), input = $("message"), send = $("send"), versionSelect = $("version");
+  let history = [];
+
+  // Ordinary requests: one refund that succeeds, a few the policy refuses.
+  const PROMPTS = [
+    ["Refund ord_a1, changed my mind", "Hi, I want a refund for order ord_a1, I changed my mind."],
+    ["Refund ord_a2, it doesn't fit", "Please refund ord_a2, the dock does not fit my laptop."],
+    ["Refund ord_a6 (wobbly desk)", "I want to refund ord_a6, the desk frame is wobbly."],
+    ["Refund ord_a4", "Refund ord_a4 please, the cable broke."],
+    ["Where is ord_a2?", "Where is my order ord_a2? It should have arrived yesterday."],
+  ];
+  for (const [label, text] of PROMPTS) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = label;
+    button.title = text;
+    button.addEventListener("click", () => { input.value = text; form.requestSubmit(); });
+    $("prompts").appendChild(button);
+  }
+
+  // ── Backend (mock): static, read-only ──
+  fetch("/api/backend").then((r) => r.json()).then((data) => {
+    for (const o of data.orders) {
+      const tr = document.createElement("tr");
+      for (const [value, cls] of [[o.id], [o.item], [o.amount.toFixed(2), "num"], [o.delivered_days_ago, "num"], [o.refunded ? "yes" : "no"]]) {
+        const td = document.createElement("td");
+        td.textContent = value;
+        if (cls) td.className = cls;
+        tr.appendChild(td);
+      }
+      $("orders").appendChild(tr);
+    }
+    for (const p of data.policies) {
+      const d = document.createElement("details");
+      d.className = "policy";
+      const s = document.createElement("summary");
+      s.textContent = p.topic;
+      const pre = document.createElement("pre");
+      pre.textContent = p.text;
+      d.append(s, pre);
+      $("policies").appendChild(d);
+    }
+  });
+
+  // Tabs: arrow keys move between them (WAI-ARIA tabs pattern).
+  const tabs = [$("tab-orders"), $("tab-policies")];
+  function selectTab(tab) {
+    for (const t of tabs) {
+      const on = t === tab;
+      t.setAttribute("aria-selected", on);
+      t.tabIndex = on ? 0 : -1;
+      $(t.getAttribute("aria-controls")).hidden = !on;
+    }
+    tab.focus();
+  }
+  tabs.forEach((t, i) => {
+    t.addEventListener("click", () => selectTab(t));
+    t.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") selectTab(tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length]);
+    });
+  });
+
+  // Drawer on narrow screens: closed by default, the chat works without it.
+  const drawer = $("backend"), toggle = $("drawer-toggle");
+  const narrow = window.matchMedia("(max-width: 760px)");
+  function syncDrawer() { drawer.hidden = narrow.matches && toggle.getAttribute("aria-expanded") !== "true"; }
+  toggle.addEventListener("click", () => {
+    toggle.setAttribute("aria-expanded", toggle.getAttribute("aria-expanded") !== "true");
+    syncDrawer();
+  });
+  narrow.addEventListener("change", syncDrawer);
+  syncDrawer();
+
+  // ── Agent and versions ──
+  fetch("/api/agent").then(async (r) => {
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail);
+    $("agent").textContent = "agent/" + data.key;
+    versionSelect.replaceChildren(...data.versions.map((v) => new Option("@" + v, v)));
+  }).catch((err) => add("error", "Error: " + err.message));
+
+  function add(kind, text) {  // textContent only: model output is never parsed as HTML
+    const li = document.createElement("li");
+    li.className = "msg " + kind;
+    li.textContent = text;
+    log.appendChild(li);
+    li.scrollIntoView({ block: "end" });
+    return li;
+  }
+
+  function addMeta(li, data) {
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    for (const call of data.tool_calls) {
+      const chip = document.createElement("span");
+      chip.className = "chip" + (call.ok ? "" : " failed");
+      chip.textContent = call.name + (call.ok ? "" : " ✗");
+      chip.title = call.ok ? "tool returned ok" : "tool returned an error";
+      meta.appendChild(chip);
+    }
+    const used = document.createElement("span");
+    used.className = "used";
+    used.textContent = "@" + data.version + " · " + data.seconds + "s";
+    meta.appendChild(used);
+    if (data.trace_url) {
+      const link = document.createElement("a");
+      link.href = data.trace_url;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = "trace";
+      link.title = "Open trace " + data.trace_id + " in orq.ai";
+      meta.appendChild(link);
+    }
+    li.appendChild(meta);
+  }
+
+  function setBusy(busy) {
+    send.disabled = busy;
+    versionSelect.disabled = busy;
+    for (const b of document.querySelectorAll(".prompts button")) b.disabled = busy;
+  }
+
+  function newConversation(note) {
+    history = [];
+    log.replaceChildren();
+    if (note) add("note", note);
+    $("examples").open = true;
+    input.focus();
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const message = input.value.trim();
+    if (!message || send.disabled) return;
+    add("user", message);
+    input.value = "";
+    $("examples").open = false;
+    setBusy(true);
+    const pending = add("agent", "Thinking…");
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message, history, version: versionSelect.value }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail ?? res.statusText);
+      history = data.history;
+      pending.textContent = data.answer || "(no answer)";
+      addMeta(pending, data);
+    } catch (err) {
+      pending.className = "msg error";
+      pending.textContent = "Error: " + err.message;
+    } finally {
+      setBusy(false);
+      input.focus();
+    }
+  });
+
+  // A version is a different agent: never continue one version's conversation on another.
+  versionSelect.addEventListener("change", () => newConversation("New conversation for @" + versionSelect.value));
+  $("reset").addEventListener("click", () => newConversation());
+  input.focus();
+</script>
+</body>
+</html>

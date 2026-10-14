@@ -1,0 +1,22 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+site/
+slides/*.html
+slides/*.pdf
+.evaluatorq/
+# FastHTML session key, written into the repo root by `eq dashboard`
+.sesskey
+evals/results/
+.context/
+.DS_Store
+node_modules/
+.playwright-mcp/
+# installed by coding-agent plugins and `orq connect`: symlinks and per-agent MCP config
+.claude/
+.agents/
+.kimi-code/
+.mcp.json
