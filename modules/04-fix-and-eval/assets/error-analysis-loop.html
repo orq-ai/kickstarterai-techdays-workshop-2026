@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error analysis loop</title>
+  <!-- Adapted for this workshop from orq-ai/orq-workshop module 07. -->
+  <style>
+    /* orq brand fonts, self-hosted in docs/stylesheets/fonts (see docs/stylesheets/extra.css). */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:  #f9f8f6;   /* orq sand */
+      --color-ink:    #25232e;   /* orq ink */
+      --color-muted:  #025558;   /* orq teal */
+      --color-accent: #df5325;   /* orq orange-deep */
+      --font-sans:  'Avio Sans', system-ui, sans-serif;
+      --font-title: 'Kurrent', 'Avio Sans', sans-serif;
+      --font-mono:  'Kurrent Mono', ui-monospace, monospace;
+    }
+    body { font-family: var(--font-sans); background: var(--color-paper); color: var(--color-ink); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 3rem 2rem; }
+    .frame { max-width: 1200px; width: 100%; }
+    .eyebrow { font-family: var(--font-mono); font-size: 0.66rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-muted); margin-bottom: 0.5rem; }
+    h1 { font-family: var(--font-title); font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; color: var(--color-ink); margin-bottom: 1.5rem; }
+    svg { width: 100%; min-width: 900px; display: block; }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Loop · Module 07</p>
+    <h1>Error analysis comes before evaluators</h1>
+
+    <svg viewBox="0 0 960 684" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="error-analysis-loop-title error-analysis-loop-desc">
+      <title id="error-analysis-loop-title">Error analysis loop: simulation evidence to regression gate</title>
+      <desc id="error-analysis-loop-desc">Loop diagram showing simulation transcripts moving through open and axial coding into a failure taxonomy and binary scorers, then a pinned regression evaluation and a new instruction version that produces new evidence.</desc>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#025558"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#df5325"/></marker>
+        <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#299d8f"/></marker>
+        <marker id="arrow-soft" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#6b6975"/></marker>
+      </defs>
+
+      <rect width="100%" height="100%" fill="#f9f8f6"/>
+
+      <!-- Ring flow (clockwise arcs), then write-back spokes, then labels, then stations, then hub -->
+      <path d="M 560.000,85.726 A 240 240 0 0 1 664.969,159.073" fill="none" stroke="#025558" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 703.285,224.000 A 240 240 0 0 1 703.722,398.882" fill="none" stroke="#025558" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 665.731,464.000 A 240 240 0 0 1 561.130,537.871" fill="none" stroke="#025558" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 400.000,538.274 A 240 240 0 0 1 295.031,464.927" fill="none" stroke="#025558" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 256.715,400.000 A 240 240 0 0 1 256.278,225.118" fill="none" stroke="#025558" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 294.269,160.000 A 240 240 0 0 1 398.870,86.129" fill="none" stroke="#025558" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 480.000,104.000 L 480.000,254.000" fill="none" stroke="#6b6975" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#arrow-soft)"/>
+      <path d="M 632.574,224.000 L 575.263,257.000" fill="none" stroke="#6b6975" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#arrow-soft)"/>
+      <path d="M 632.574,400.000 L 575.263,367.000" fill="none" stroke="#6b6975" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#arrow-soft)"/>
+      <path d="M 480.000,520.000 L 480.000,370.000" fill="none" stroke="#6b6975" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#arrow-soft)"/>
+      <path d="M 327.426,400.000 L 384.737,367.000" fill="none" stroke="#6b6975" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#arrow-soft)"/>
+      <path d="M 327.426,224.000 L 384.737,257.000" fill="none" stroke="#6b6975" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#arrow-soft)"/>
+      <rect x="616" y="232" width="38" height="12" rx="2" fill="#f9f8f6"/>
+      <text x="620" y="241" fill="#6b6975" font-size="8" font-family="'Kurrent Mono', monospace" letter-spacing="0.06em">NOTES</text>
+      <rect x="616" y="376" width="38" height="12" rx="2" fill="#f9f8f6"/>
+      <text x="620" y="385" fill="#6b6975" font-size="8" font-family="'Kurrent Mono', monospace" letter-spacing="0.06em">MODES</text>
+      <rect x="492" y="436" width="68" height="12" rx="2" fill="#f9f8f6"/>
+      <text x="496" y="445" fill="#6b6975" font-size="8" font-family="'Kurrent Mono', monospace" letter-spacing="0.06em">1 PER MODE</text>
+      <rect x="400" y="40" width="160" height="64" rx="6" fill="#f9f8f6"/>
+      <rect x="400" y="40" width="160" height="64" rx="6" fill="#ffffff" stroke="#25232e" stroke-width="1"/>
+      <text x="480" y="74" fill="#25232e" font-size="12" font-weight="600" font-family="'Avio Sans', sans-serif" text-anchor="middle">Traces</text>
+      <text x="480" y="90" fill="#025558" font-size="9" font-family="'Kurrent Mono', monospace" text-anchor="middle">simulation transcripts</text>
+      <rect x="608" y="160" width="160" height="64" rx="6" fill="#f9f8f6"/>
+      <rect x="608" y="160" width="160" height="64" rx="6" fill="rgba(223,83,37,0.08)" stroke="#df5325" stroke-width="1"/>
+      <text x="688" y="194" fill="#25232e" font-size="12" font-weight="600" font-family="'Avio Sans', sans-serif" text-anchor="middle">Open coding</text>
+      <text x="688" y="210" fill="#025558" font-size="9" font-family="'Kurrent Mono', monospace" text-anchor="middle">one note per trace</text>
+      <rect x="608" y="400" width="160" height="64" rx="6" fill="#f9f8f6"/>
+      <rect x="608" y="400" width="160" height="64" rx="6" fill="#ffffff" stroke="#25232e" stroke-width="1"/>
+      <text x="688" y="434" fill="#25232e" font-size="12" font-weight="600" font-family="'Avio Sans', sans-serif" text-anchor="middle">Axial coding</text>
+      <text x="688" y="450" fill="#025558" font-size="9" font-family="'Kurrent Mono', monospace" text-anchor="middle">2–8 named modes</text>
+      <rect x="400" y="520" width="160" height="64" rx="6" fill="#f9f8f6"/>
+      <rect x="400" y="520" width="160" height="64" rx="6" fill="#ffffff" stroke="#25232e" stroke-width="1"/>
+      <text x="480" y="554" fill="#25232e" font-size="12" font-weight="600" font-family="'Avio Sans', sans-serif" text-anchor="middle">Evaluators</text>
+      <text x="480" y="570" fill="#025558" font-size="9" font-family="'Kurrent Mono', monospace" text-anchor="middle">one binary per mode</text>
+      <rect x="192" y="400" width="160" height="64" rx="6" fill="#f9f8f6"/>
+      <rect x="192" y="400" width="160" height="64" rx="6" fill="#ffffff" stroke="#25232e" stroke-width="1"/>
+      <text x="272" y="434" fill="#25232e" font-size="12" font-weight="600" font-family="'Avio Sans', sans-serif" text-anchor="middle">Experiment</text>
+      <text x="272" y="450" fill="#025558" font-size="9" font-family="'Kurrent Mono', monospace" text-anchor="middle">pinned agent version</text>
+      <rect x="192" y="160" width="160" height="64" rx="6" fill="#f9f8f6"/>
+      <rect x="192" y="160" width="160" height="64" rx="6" fill="#ffffff" stroke="#25232e" stroke-width="1"/>
+      <text x="272" y="194" fill="#25232e" font-size="12" font-weight="600" font-family="'Avio Sans', sans-serif" text-anchor="middle">Instructions</text>
+      <text x="272" y="210" fill="#025558" font-size="9" font-family="'Kurrent Mono', monospace" text-anchor="middle">publish a new version</text>
+      <rect x="380" y="260" width="200" height="104" rx="8" fill="#25232e"/>
+      <text x="480" y="310" fill="#f9f8f6" font-size="12" font-weight="600" font-family="'Avio Sans', sans-serif" text-anchor="middle">Failure taxonomy</text>
+      <text x="480" y="326" fill="rgba(249,248,246,0.72)" font-size="9" font-family="'Kurrent Mono', monospace" text-anchor="middle">named modes · Pass/Fail each</text>
+
+      <!-- Legend strip -->
+      <line x1="40" y1="624" x2="920" y2="624" stroke="rgba(37,35,46,0.10)" stroke-width="0.8"/>
+      <text x="40" y="640" fill="#025558" font-size="8" font-family="'Kurrent Mono', monospace" letter-spacing="0.18em">LEGEND</text>
+      <rect x="40" y="656" width="14" height="10" rx="2" fill="rgba(223,83,37,0.08)" stroke="#df5325" stroke-width="1"/>
+      <text x="60" y="664" fill="#025558" font-size="8" font-family="'Avio Sans', sans-serif">Do this first</text>
+      <rect x="160" y="656" width="14" height="10" rx="2" fill="#ffffff" stroke="#25232e" stroke-width="1"/>
+      <text x="180" y="664" fill="#025558" font-size="8" font-family="'Avio Sans', sans-serif">Step in the loop</text>
+      <rect x="300" y="656" width="14" height="10" rx="2" fill="#25232e"/>
+      <text x="320" y="664" fill="#025558" font-size="8" font-family="'Avio Sans', sans-serif">Shared state</text>
+      <line x1="420" y1="662" x2="448" y2="662" stroke="#025558" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <text x="456" y="664" fill="#025558" font-size="8" font-family="'Avio Sans', sans-serif">Next step, clockwise</text>
+      <line x1="600" y1="662" x2="628" y2="662" stroke="#6b6975" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#arrow-soft)"/>
+      <text x="636" y="664" fill="#025558" font-size="8" font-family="'Avio Sans', sans-serif">Writes back to the taxonomy</text>
+    </svg>
+  </div>
+</body>
+</html>
