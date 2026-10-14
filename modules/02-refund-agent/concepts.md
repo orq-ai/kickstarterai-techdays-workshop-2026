@@ -16,18 +16,37 @@ Your application sends one customer message and receives one response. In betwee
 
 The refund agent stops when it answers, after `max_iterations: 8`, or after `max_execution_time: 120` seconds. Those limits are part of `entities.ensure_agent`.
 
+| Setting | v1 value | Why it matters |
+|---|---|---|
+| Model | `settings.model` from `MODEL` in `.env` | The workshop can choose a model without editing module code. |
+| Reasoning effort | `none` | Required by the selected model when it uses hosted code tools. |
+| Maximum iterations | `8` | Caps model/tool-loop turns. |
+| Maximum execution time | `120` seconds | Caps the entire managed-agent run. |
+| Tools | three hosted `code` tools | orq.ai executes the order, policy, and refund code. |
+| Versioning | major increments on publish | Pins a complete agent configuration for comparison. |
+
 ```python {.code-frame}
 # app/refund_agent/entities.py
-from app.refund_agent.config import settings
-
-settings={"},{
-    "max_iterations": 8,
-    "max_execution_time": 120,
-    "tools": [{"type": "code", "key": tool_key} for tool_key in tool_keys],
-}
+orq.agents.create(
+    key=settings.agent_key,
+    instructions=agent_instructions(),
+    path=settings.path,
+    model={
+        "id": settings.model,
+        "parameters": {"reasoning_effort": "none"},
+    },
+    settings={
+        "max_iterations": 8,
+        "max_execution_time": 120,
+        "tools": [
+            {"type": "code", "key": tool_key}
+            for tool_key in tool_keys
+        ],
+    },
+)
 ```
 
-The application does not dispatch these tools itself. It gives orq.ai the agent configuration; orq.ai owns the loop and the sandbox execution.
+This v1 agent does not configure fallback models, memory stores, knowledge bases, cost caps, or approval gates. The application does not dispatch its tools itself: it gives orq.ai the agent configuration; orq.ai owns the loop and the sandbox execution.
 
 ## One turn on the wire
 
