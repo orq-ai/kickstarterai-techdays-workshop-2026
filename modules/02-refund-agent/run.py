@@ -4,9 +4,10 @@ The agent lives in orq: instructions, model and three code tools, versioned. Cal
 Responses API call with `model="agent/<seat>-refund-agent"`; orq runs the model loop AND the
 tools, and returns every tool call with its result next to the answer.
 
-Fill in the two TODOs. The script runs as is and tells you what is missing.
 Run it with `make invoke-agent` (or `uv run python modules/02-refund-agent/run.py`).
 """
+
+import json
 
 from app.refund_agent.client import make_orq
 from app.refund_agent.config import settings
@@ -28,10 +29,7 @@ print(f"limits   : max_iterations {agent.settings.max_iterations}, max_execution
 # ── Step 2 · Call it ──
 # The same call works from curl and the CLI (see the README). `@latest` is implied; pin a
 # version with `agent/<key>@1.0.0`.
-# TODO 1: call your agent with QUESTION: orq.responses.create(model=..., input=...)
-response = None
-if response is None:
-    raise SystemExit("TODO 1: call orq.responses.create with model=f\"agent/{settings.agent_key}\" and input=QUESTION")
+response = orq.responses.create(model=f"agent/{settings.agent_key}", input=QUESTION)
 
 # ── Step 3 · Read what it did ──
 # Each tool call is a `function_call` item, followed by an `orq:<tool key>` item with the same
@@ -42,7 +40,8 @@ for item in response.model_dump()["output"]:
     kind = item["type"]
     if kind == "function_call":
         print(f"call     : {item['name']}({item['arguments']})")
-    # TODO 2: print each tool result: items whose type starts with "orq:" carry it in item["result"]
+    elif kind.startswith("orq:"):
+        print(f"result   : {item['name']} -> {json.dumps(item.get('result'))[:100]}")
     elif kind == "message":
         print(f"answer   : {''.join(part.get('text', '') for part in item['content'])}")
 print(f"trace    : {response.telemetry.trace_id}")
