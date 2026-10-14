@@ -2,6 +2,8 @@
 
 A managed agent combines a model's judgment with tools that enforce the business rules.
 
+Read [Refund logic](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-logic/) for the policy, tool contracts, and v1 design this agent uses.
+
 ## What an agent is
 
 An agent is a model, instructions, and tools running in a loop until it can answer. The model decides whether it has enough information, needs a tool, or should respond to the customer.
