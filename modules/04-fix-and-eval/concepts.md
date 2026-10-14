@@ -29,7 +29,7 @@ Use code for checkable facts: `refund_outcome`, `no_unauthorized_attempt`, and t
 # evals/scorers.py: helpers are defined in the same scorer module.
 calls = _refund_calls(params)
 if missing := _missing_results(calls):
-    return fail_result(f"no tool result for {missing}")
+    return _fail(f"no tool result for {missing}")
 
 # A successful tool result, not merely a tool call, is a refund.
 succeeded = {call["arguments"]["order_id"] for call in calls

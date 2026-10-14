@@ -116,7 +116,7 @@ Open [**Agents** in the workshop workspace](https://my.orq.ai/kickstartai-worksh
 2. Three constants: the 30-day window, the EUR 500 limit and the allowed post-window reasons.
 3. `_FIXTURE`, the sample orders. It is long, so scroll past it; it is visible on purpose, so you can tell example data from enforcement logic.
 4. `OrderStore`, which decides whether an order belongs to the signed-in customer.
-5. `issue_refund(...)`: the ordered early returns (`not_found`, `already_refunded`, `above_limit_needs_human_review`, `outside_window`) and then the successful result. This is the part that decides.
+5. `issue_refund(...)`: the ordered early returns (`not_found`, `already_refunded`, `above_limit_needs_human_review`, `outside_window`, `reason_not_in_exception_list`) and then the successful result. This is the part that decides.
 6. The last line calls it with `params` and leaves the outcome in `result`.
 
 A model has no equivalent code editor: it is selected as a configuration value on the agent. The code you can inspect lives in the tool resource; the prompt you can inspect lives in the agent version; the request and result you can inspect live in the trace.
