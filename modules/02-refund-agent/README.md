@@ -13,7 +13,17 @@ Read [Agent concepts](https://orq-ai.github.io/kickstarterai-techdays-workshop-2
 
 ## Steps
 
-### Step 1 · Create your agent
+### Step 1 · Run a hello agent
+
+Run the smallest managed-agent example before adding refund policy or tools:
+
+```bash {.terminal}
+uv run python modules/02-refund-agent/hello_agent.py
+```
+
+`hello_agent.py` creates `agent/<WS_PREFIX>-hello-agent` only if it does not exist, then sends it `Hello`. Its configuration has one instruction, one model, no tools, `max_iterations: 1`, and a 30-second limit. The response includes a trace ID, just like the refund agent will.
+
+### Step 2 · Create the refund agent
 
 Your seat prefix from the email (`WS_PREFIX=ws07`) goes in front of every entity you create, keeping your agent and evaluation resources separate from other participants:
 
@@ -71,7 +81,7 @@ orq.agents.create(
 
 This v1 agent does not configure fallback models, memory stores, knowledge bases, cost caps, or interactive tool gates. That boundary is useful beyond this workshop: seed or provision entities in a controlled path, then make product code invoke stable keys.
 
-### Step 2 · Talk to it
+### Step 3 · Talk to it
 
 ```bash {.terminal}
 uv run python -m app.web
@@ -88,7 +98,7 @@ Open a trace link. The trace shows the model calls and one span per tool call, r
 
 ![A refund trace in the Studio: the agent span, two gpt-6-luna calls and the lookup_order and issue_refund tool spans with a sandbox execute; the issue_refund span shows its arguments and the result amount_refunded 89.](assets/agent-trace.png)
 
-### Step 3 · Inspect and call it from Python
+### Step 4 · Inspect and call it from Python
 
 Open `modules/02-refund-agent/run.py`. It has two TODOs: the call itself, and printing each tool result.
 
@@ -137,7 +147,7 @@ for call in turn.tool_calls:
 print(turn.trace_id)
 ```
 
-### Step 4 · The same call from Python, curl and the CLI
+### Step 5 · The same call from Python, curl and the CLI
 
 === "Python SDK"
 
@@ -197,7 +207,7 @@ In every case, `model="agent/<key>[@<version>]"` selects the managed agent, `inp
 
 The Python SDK, raw HTTP call, and CLI all use the same Responses API contract. Use the SDK in application code for typed clients and convenient entity management; use HTTP or the CLI when debugging an exact request, automating a shell workflow, or comparing raw output items.
 
-### Step 5 · Read the resources in the Studio
+### Step 6 · Read the resources in the Studio
 
 Open **Agents** > your `-refund-agent` > **Versions**. There is one version today. Then open one tool under **Tools**: the Python that orq.ai runs, generated from `tools.py`.
 

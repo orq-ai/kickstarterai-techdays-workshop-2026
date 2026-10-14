@@ -25,7 +25,7 @@ response = orq.responses.create(
 )
 ```
 
-The instructions tell the model what to do; the model supplies the language. The application sends one input and receives one response. That is already a managed agent, even without tools.
+The instructions tell the model what to do; the model supplies the language. The application sends one input and receives one response. That is already a managed agent, even without tools. The Tutorial's `modules/02-refund-agent/hello_agent.py` is the runnable version of this example.
 
 ![Inside orq.ai, the model either returns an answer or calls a code tool; the tool result returns to the model, and the loop ends on an answer or its configured limits.](assets/agent-loop.png)
 
