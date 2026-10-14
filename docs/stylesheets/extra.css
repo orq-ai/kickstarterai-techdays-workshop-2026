@@ -61,6 +61,7 @@
   --orq-orange-text: #c4421a; /* orange for TEXT on light surfaces — ~4.6:1 AA */
   --orq-ink: #25232e;
   --orq-sand: #f9f8f6;
+  --orq-terminal-bg: #202b2d;
   /* Sidebar group headings, both rails. color-mix, not rgba(), so slate follows. */
   --orq-nav-heading: color-mix(in srgb, var(--md-default-fg-color) 70%, transparent);
 }
@@ -170,7 +171,7 @@ html { font-size: 100%; }
 /* Fenced code has its own frame; commands stand apart from sample output.
    Language classes come from pymdownx.highlight.pygments_lang_class. */
 .md-typeset .highlight {
-  --md-code-bg-color: #202b2d;
+  --md-code-bg-color: var(--orq-terminal-bg);
   --md-code-fg-color: #f1f5f4;
   --md-code-hl-color: #344648;
   --md-code-hl-number-color: #f4b183;
@@ -297,6 +298,7 @@ html { font-size: 100%; }
 /* --- Python snippets: framed code surface in both color schemes -------- */
 /* Source snippets share the dark surface and compact spacing of commands. */
 .md-typeset .code-frame.highlight {
+  --md-code-bg-color: var(--orq-terminal-bg);
   position: relative;
   margin: 0.75em 0;
   padding: 1.8rem 0 0;
@@ -306,16 +308,7 @@ html { font-size: 100%; }
   border-radius: 0.4rem;
 }
 .md-typeset .code-frame.highlight::before {
-  content: "</>";
-  padding: 0;
-  border: 0;
-  position: absolute;
-  top: 0.68rem;
-  left: 1rem;
-  color: #8fdbcc;
-  font-family: var(--md-code-font-family);
-  font-size: 0.78rem;
-  font-weight: 700;
+  display: none;
 }
 .md-typeset .code-frame.highlight::after {
   content: "python";
@@ -386,7 +379,7 @@ html { font-size: 100%; }
 /* Shell fences opt into this with `{.terminal}`. Keep Python and other
    explanatory code on the normal documentation surface. */
 .md-typeset .terminal.highlight {
-  --terminal-bg: #202b2d;
+  --terminal-bg: var(--orq-terminal-bg);
   position: relative;
   margin: 0.75em 0;
   padding: 1.8rem 0 0;
@@ -446,16 +439,25 @@ html { font-size: 100%; }
 }
 /* Kill the tall reserved void: let the block size to its content instead of
    the JS-injected min-height, and tighten padding. */
-[data-termynal] {
+.md-typeset [data-termynal] {
   min-height: 0 !important;
   padding: 2.1rem 0.8rem 0.8rem !important;
-  --color-bg: #202b2d;
+  --color-bg: var(--orq-terminal-bg);
   --color-text: #f1f5f4;
   --color-text-subtle: #afc0bd;
   border: 1px solid #3b4c4e;
-  border-radius: 0.4rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
   font-family: var(--md-code-font-family);
   font-size: 0.85em;
+}
+.md-typeset [data-termynal][data-ty-macos]::before {
+  top: 0.85rem;
+  left: 1rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  background: #d97757;
+  box-shadow: 1.15rem 0 #d7ae57, 2.3rem 0 #78a76e;
 }
 [data-termynal] [data-terminal-control] { color: var(--orq-teal-light); }
 .terminal-session { position: relative; margin: 0.75em 0; }
