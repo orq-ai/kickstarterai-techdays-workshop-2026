@@ -15,7 +15,7 @@ Read [Agent concepts](https://orq-ai.github.io/kickstarterai-techdays-workshop-2
 
 ### Step 1 · Create your agent
 
-Thirty people share this workspace. Your seat prefix from the email (`WS_PREFIX=ws07`) goes in front of every entity you create, so nobody overwrites anybody:
+Your seat prefix from the email (`WS_PREFIX=ws07`) goes in front of every entity you create, keeping your agent and evaluation resources separate from other participants:
 
 ```bash {.terminal}
 uv run python -m app.refund_agent.entities seed
