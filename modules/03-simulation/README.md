@@ -111,12 +111,12 @@ Example startup output (the local URL can change if you choose another port):
 <!-- termynal -->
 
 ```console
-$ uv run eq dashboard
+$ make evaluatorq-dashboard
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8080 (Press CTRL+C to quit)
 ```
 
-This opens evaluatorq's local dashboard over the saved run files. `make evaluatorq-dashboard` is the shortcut.
+This opens evaluatorq's local dashboard over the saved run files. Start it with the make target: it loads `.env` first, so `eq` gets your key and the `EVALUATORQ_*` models. A bare `uv run eq dashboard` only sees what is exported in your shell, which can be an older key.
 
 !!! info "Find your simulation runs"
 
