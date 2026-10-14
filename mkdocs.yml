@@ -95,9 +95,10 @@ nav:
   - Workshop:
       - Onboarding: modules/00.md
       - Coding agents: modules/01.md
-      - Refund agent:
-          - Business logic: modules/02-logic.md
+      - Designing an agent:
           - Concepts: modules/02-concepts.md
+          - Business case: modules/02-logic.md
+          - Solution design: modules/02-solution-design.md
           - Tutorial: modules/02.md
       - Simulation:
           - Concepts: modules/03-concepts.md

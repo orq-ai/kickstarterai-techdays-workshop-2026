@@ -1,4 +1,4 @@
-# Refund agent
+# Designing an agent
 
 | | |
 |---|---|
@@ -9,13 +9,23 @@
 
 The refund agent is a fully managed, versioned orq.ai agent: your app sends one message and gets one response, while orq.ai runs both the model loop and the code tools. The tools come from `app/refund_agent/tools.py`; instructions come from `app/data/instructions.md`.
 
-Read [Business logic](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-logic/) for the policy, tool contracts, and v1 design. Then read [Refund agent concepts](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-concepts/) for the managed loop, response items, and versions.
+Read [Agent concepts](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-concepts/) for the managed loop, response items, and versions. Then read the [Business case](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-logic/) for the policy requirements and [Solution design](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-solution-design/) for the v1 prompt, tools, and configuration.
 
 ## Steps
 
-### Step 1 · Create your agent
+### Step 1 · Run a hello agent
 
-Thirty people share this workspace. Your seat prefix from the email (`WS_PREFIX=ws07`) goes in front of every entity you create, so nobody overwrites anybody:
+Run the smallest managed-agent example before adding refund policy or tools:
+
+```bash {.terminal}
+uv run python modules/02-refund-agent/hello_agent.py
+```
+
+`hello_agent.py` creates `agent/<WS_PREFIX>-hello-agent` only if it does not exist, then sends it `Hello`. Its configuration has one instruction, one model, no tools, `max_iterations: 1`, and a 30-second limit. The response includes a trace ID, just like the refund agent will.
+
+### Step 2 · Create the refund agent
+
+Your seat prefix from the email (`WS_PREFIX=ws07`) goes in front of every entity you create, keeping your agent and evaluation resources separate from other participants:
 
 ```bash {.terminal}
 uv run python -m app.refund_agent.entities seed
@@ -35,23 +45,54 @@ judge    : ws07-refund-policy-judge (01M4…)
 
 The dataset and the judge are for the fix-and-eval module. The seed command is safe to run again: it only creates what is missing and never changes an existing agent. It refuses to run with an empty or made-up `WS_PREFIX`. `uv run python -m app.refund_agent.entities reset` deletes your seat's entities, and only those.
 
-**What the seeder teaches.** `app/refund_agent/entities.py` is deliberately an infrastructure boundary. It turns the local source files into durable orq.ai entities once: `tools.py` becomes code tools, `instructions.md` becomes the initial agent version, and `dataset.jsonl` becomes the evaluation dataset. The rest of the application uses their keys; it does not carry API payloads or tool implementations around.
+### What this command creates
+
+The seed script reads the local source files and creates the matching orq.ai resources:
+
+| Local source | Resource created in orq.ai |
+|---|---|
+| `app/refund_agent/tools.py` | Three hosted code tools |
+| `app/data/instructions.md` | The first refund-agent version |
+| `app/data/dataset.jsonl` | The regression-evaluation dataset |
+| `app/data/judge_prompt.md` | The policy evaluator |
+
+Afterward, the chat UI and scripts use the resource keys. They invoke the managed agent; they do not run the tool implementation on your laptop.
+
+### What seed configures
+
+| Setting | v1 value | Why it matters |
+|---|---|---|
+| Model | `settings.model` from `MODEL` in `.env` | The workshop can choose a model without editing module code. |
+| Reasoning effort | `none` | Required by the selected model when it uses hosted code tools. |
+| Maximum iterations | `8` | Caps model/tool-loop turns. |
+| Maximum execution time | `120` seconds | Caps the entire managed-agent run. |
+| Tools | three hosted `code` tools | orq.ai executes the order, policy, and refund code. |
+| Versioning | major increments on publish | Pins a complete agent configuration for comparison. |
 
 ```python {.code-frame}
-from app.refund_agent.entities import ensure_tools
-
-# The agent configuration stores references to hosted code tools.
-tool_keys = ensure_tools(orq)
-settings={"},{
-    "max_iterations": 8,
-    "max_execution_time": 120,
-    "tools": [{"type": "code", "key": tool_key} for tool_key in tool_keys],
-}
+# app/refund_agent/entities.py
+orq.agents.create(
+    key=settings.agent_key,
+    instructions=agent_instructions(),
+    path=settings.path,
+    model={
+        "id": settings.model,
+        "parameters": {"reasoning_effort": "none"},
+    },
+    settings={
+        "max_iterations": 8,
+        "max_execution_time": 120,
+        "tools": [
+            {"type": "code", "key": tool_key}
+            for tool_key in tool_keys
+        ],
+    },
+)
 ```
 
-That boundary is useful beyond this workshop: seed or provision entities in a controlled path, then make product code invoke stable keys.
+This v1 agent does not configure fallback models, memory stores, knowledge bases, cost caps, or interactive tool gates. That boundary is useful beyond this workshop: seed or provision entities in a controlled path, then make product code invoke stable keys.
 
-### Step 2 · Talk to it
+### Step 3 · Talk to it
 
 ```bash {.terminal}
 uv run python -m app.web
@@ -68,7 +109,7 @@ Open a trace link. The trace shows the model calls and one span per tool call, r
 
 ![A refund trace in the Studio: the agent span, two gpt-6-luna calls and the lookup_order and issue_refund tool spans with a sandbox execute; the issue_refund span shows its arguments and the result amount_refunded 89.](assets/agent-trace.png)
 
-### Step 3 · Inspect and call it from Python
+### Step 4 · Inspect and call it from Python
 
 Open `modules/02-refund-agent/run.py`. It has two TODOs: the call itself, and printing each tool result.
 
@@ -117,7 +158,7 @@ for call in turn.tool_calls:
 print(turn.trace_id)
 ```
 
-### Step 4 · The same call from Python, curl and the CLI
+### Step 5 · The same call from Python, curl and the CLI
 
 === "Python SDK"
 
@@ -177,7 +218,7 @@ In every case, `model="agent/<key>[@<version>]"` selects the managed agent, `inp
 
 The Python SDK, raw HTTP call, and CLI all use the same Responses API contract. Use the SDK in application code for typed clients and convenient entity management; use HTTP or the CLI when debugging an exact request, automating a shell workflow, or comparing raw output items.
 
-### Step 5 · Read the resources in the Studio
+### Step 6 · Read the resources in the Studio
 
 Open **Agents** > your `-refund-agent` > **Versions**. There is one version today. Then open one tool under **Tools**: the Python that orq.ai runs, generated from `tools.py`.
 
@@ -190,11 +231,6 @@ Open **Agents** > your `-refund-agent` > **Versions**. There is one version toda
 ![The ws01-issue_refund code tool in the Studio: the generated header comment, the window and limit constants, and the start of the order fixture.](assets/tool-code.png)
 
 A model has no equivalent code editor: it is selected as a configuration value on the agent. The code you can inspect lives in the tool resource; the prompt you can inspect lives in the agent version; the request and result you can inspect live in the trace.
-
-## Hint
-
-??? tip "TODO 1 and 2"
-    The call is `orq.responses.create(model=f"agent/{settings.agent_key}", input=QUESTION)`. For TODO 2, `item["result"]` is a dict; `json.dumps` it. The complete file is on the public `solution` branch: `git show origin/solution:modules/02-refund-agent/run.py`.
 
 ## Official docs
 

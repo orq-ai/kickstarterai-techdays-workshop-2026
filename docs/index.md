@@ -45,7 +45,7 @@ You do **not** need to install these packages individually with `pip`; `uv` uses
 |---|---|---|---|
 | Onboarding | Gateway access and traces | Verify a model request from curl, CLI, and Python | [Onboarding](modules/00.md) |
 | Coding agents | Optional coding-agent setup | Connect orqi, Claude Code, or another MCP client | [Coding agents](modules/01.md) |
-| Refund agent | Managed agent fundamentals | Seed, invoke, inspect, and trace the agent | [Refund agent](modules/02.md) |
+| Designing an agent | Managed agent fundamentals | Seed, invoke, inspect, and trace the agent | [Designing an agent](modules/02.md) |
 | Simulation | Conversation evidence | Define cases and inspect judged transcripts | [Simulation](modules/03.md) |
 | Fix and eval | Versioned improvement | Publish, replay, simulate, and gate a new version | [Fix and eval](modules/04.md) |
 
