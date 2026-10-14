@@ -3,7 +3,7 @@
 | Symptom | Cause | Fix |
 |---|---|---|
 | `WS_PREFIX='…' is not a seat prefix` | `.env` still has the default or an empty prefix | paste `WS_PREFIX=ws<NN>` from your kickstart email |
-| `401 API key is not valid for this workspace` | a typo in the key, or a stale `ORQ_API_KEY` in your shell picked up by another tool | the repo reads `.env` and wins over the shell; for the CLI and orqi run `set -a; source .env; set +a` first |
+| `401 API key is not valid for this workspace` | a typo in the key, or a stale `ORQ_API_KEY` in your shell picked up by another tool | the repo reads `.env` and wins over the shell; for the CLI and orqi, rerun the once-per-terminal environment setup from Onboarding |
 | `400` invalid model on a gateway call | the model id has no provider, or the model is not enabled in the workspace | copy it from the Model Garden as `provider/model` |
 | `make orq-doctor` shows another workspace under `auth` | your own `orq auth login` session | `orq whoami` above it says `source: ORQ_API_KEY`: that is the key that counts |
 | orqi: `401 Token verification failed` although `make smoke-test` works | orqi reuses an older stored login for model calls | `mv ~/.orqi/agent/auth.json ~/.orqi/agent/auth.json.bak`, then run orqi again with `.env` exported |

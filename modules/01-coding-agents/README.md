@@ -4,7 +4,7 @@
 |---|---|
 | **Time** | 10 min |
 | **Prerequisites** | onboarding done; one coding agent of your choice, or none (orqi below needs nothing else) |
-| **You will have** | a coding agent that answers questions about your orq workspace |
+| **You will have** | a coding agent that answers questions about your orq.ai workspace |
 
 ## Why
 
@@ -16,69 +16,106 @@ The skills are workflows written for an agent (simulate an agent, build an evalu
 
 === "orqi"
 
-    [orqi](https://github.com/orq-ai/orqi) is the orq helper agent for the terminal, with the orq tools and skills already wired in.
+    [orqi](https://github.com/orq-ai/orqi) is the orq.ai helper agent for the terminal, with the orq.ai tools and skills already wired in.
 
-    ```bash
-    curl -fsSL https://raw.githubusercontent.com/orq-ai/orqi/main/install.sh | sh
-    set -a; source .env; set +a     # export your workshop key into this shell
-    orqi "which models are enabled in my workspace?"
+    ```bash {.terminal}
+    curl -fsSL \
+      https://raw.githubusercontent.com/orq-ai/orqi/main/install.sh |
+      sh
+
+    orqi \
+      "List the chat models available through the connected \
+      orq.ai MCP server."
     ```
 
-    orqi does not read `.env` by itself: the `set -a` line exports the key for this shell only. Its header line ends with the credential it used; it must say `ORQ_API_KEY`.
+    orqi does not read `.env` by itself. Complete the once-per-terminal environment setup in Onboarding before running it; its header line must say `ORQ_API_KEY`.
 
-    ![orqi answering "which models are enabled in my workspace?": the header ends with ORQ_API_KEY, the answer lists the workshop workspace's enabled models with provider, context window and price.](assets/orqi-ready.png)
+    Example output, abbreviated. The exact list reflects the connected MCP session and your permissions:
+
+    ```text {.terminal}
+    $ orqi "List the chat models available through the connected orq.ai MCP server."
+
+    Chat models available to this MCP session:
+    openai/gpt-6-luna
+    baseten/deepseek-v4.1-flash
+    deepseek/deepseek-flash
+    nvidia/moonshotai/kimi-k3
+    ...
+
+    12 chat models available.
+    ```
 
 === "Claude Code"
 
-    ```bash
+    ```bash {.terminal}
     claude plugin marketplace add orq-ai/assistant-plugins
     claude plugin install orq-skills@orq-claude-plugin
     ```
 
     The plugin brings the skills, the MCP server and slash commands such as `/orq:traces`.
 
+    If OAuth does not expose the workshop models, complete the once-per-terminal environment setup in Onboarding, then add the workshop bearer-key connection:
+
+    ```bash {.terminal}
+    claude mcp add \
+      --transport http \
+      orq \
+      https://my.orq.ai/v2/mcp \
+      --header "Authorization: Bearer ${ORQ_API_KEY}"
+    ```
+
 === "Other agents"
 
-    ```bash
+    ```bash {.terminal}
     npx skills add orq-ai/assistant-plugins
     ```
 
-    Then add the MCP server `https://my.orq.ai/v2/mcp` (HTTP transport) in your agent's MCP settings. It signs you in with OAuth on first use.
+    Then add the MCP server `https://my.orq.ai/v2/mcp` (HTTP transport) in your agent's MCP settings. It signs you in with OAuth on first use. If OAuth does not expose the workshop models, configure the same URL with the header `Authorization: Bearer ${ORQ_API_KEY}` after completing the once-per-terminal environment setup in Onboarding.
+
+    **Manual MCP with `npx`.** If your coding agent accepts only local stdio MCP servers, use [`mcp-remote`](https://github.com/punkpeye/mcp-remote) as a local proxy. Add this to that agent's MCP configuration, then restart or reload its MCP servers:
+
+    ```json
+    {
+      "mcpServers": {
+        "orq": {
+          "command": "npx",
+          "args": [
+            "-y",
+            "mcp-remote",
+            "https://my.orq.ai/v2/mcp"
+          ]
+        }
+      }
+    }
+    ```
+
+    The first connection opens the orq.ai OAuth flow in the browser. `npx` downloads the proxy on demand; no global installation is required.
 
 !!! warning "One MCP path only"
     Install the MCP server through the plugin **or** by hand, not both, or it registers twice and every tool shows up double.
 
-### Step 2 · Check which workspace it sees
+### Step 2 · Check which models it can access
 
 Ask your agent:
 
-```text
-Which orq workspace are you connected to? List the chat models enabled there.
-```
+<blockquote class="claude-code-frame">
+  <p>List the chat models available to me through the connected orq.ai MCP server. Return their provider/model IDs.</p>
+</blockquote>
 
-The answer must name the workshop workspace and the same models you saw in the Model Garden. OAuth signs in as *you*, and your kickstart key is not a workspace membership: an agent connected over OAuth may land in your own workspace instead of the workshop one. If it does, connect the MCP server with your workshop key instead. For Claude Code:
-
-```bash
-set -a; source .env; set +a
-claude mcp add --transport http orq https://my.orq.ai/v2/mcp --header "Authorization: Bearer ${ORQ_API_KEY}"
-```
-
-OAuth is the right path for your own workspace after today.
+The agent can answer this with its model-list tool. Its answer reflects the models exposed to the current MCP session and your permissions, so compare it with the **AI Gateway** > **Models** list you can see in the Studio. Do not ask it to identify the workspace: that is not a reliable MCP capability.
 
 !!! warning "orqi answers 401 Token verification failed"
     You used orqi before with another account, and it reuses that stored login for model calls even with `ORQ_API_KEY` exported. Move it aside and retry: `mv ~/.orqi/agent/auth.json ~/.orqi/agent/auth.json.bak`.
 
-### Step 3 · Keep it open
-
-The simulation and fix-and-eval modules each end with an **Ask your assistant** box: questions to hand to this agent once you have results.
+The simulation and fix-and-eval modules each include a Claude Code frame you can hand to the same agent once you have results.
 
 ## Official docs
 
-- [Orq MCP server](https://docs.orq.ai/ai-studio/integrations/code-assistants/orq-mcp): tools on your workspace for any MCP client, OAuth or bearer key
-- [Orq Skills](https://docs.orq.ai/ai-studio/integrations/code-assistants/orq-skills): the workflows, and the Claude Code plugin
+- [orq.ai MCP server](https://docs.orq.ai/ai-studio/integrations/code-assistants/orq-mcp): tools on your workspace for any MCP client, OAuth or bearer key
+- [orq.ai Skills](https://docs.orq.ai/ai-studio/integrations/code-assistants/orq-skills): the workflows, and the Claude Code plugin
 - [Automate evals and observability in Claude Code](https://docs.orq.ai/ai-studio/cookbooks/evaluation-safety/automate-evals-and-observability-with-claude-code): a worked example
-- [orq CLI](https://docs.orq.ai/reference/cli)
+- [orq.ai CLI](https://docs.orq.ai/reference/cli)
 
 ## Done when
 
-Your coding agent (or orqi) names the workshop workspace and its models.
+Your coding agent (or orqi) lists chat-model provider/model IDs available through its connected orq.ai MCP session.

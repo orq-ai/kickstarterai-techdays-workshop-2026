@@ -196,6 +196,110 @@ html { font-size: 100%; }
   border-color: var(--orq-orange);
 }
 
+/* --- Python snippets: framed code surface in both color schemes -------- */
+/* Python fences opt into this with `{.code-frame}`. This is intentionally
+   lighter than a terminal: it shows source code, not a shell session. */
+.md-typeset .code-frame.highlight {
+  position: relative;
+  margin: 1em 0;
+  padding: 2.5rem 1.1rem 1.1rem;
+  overflow: hidden;
+  background: #f1efeb;
+  border: 1px solid #cfcdc8;
+  border-radius: 8px;
+}
+.md-typeset .code-frame.highlight::before {
+  content: "</>";
+  position: absolute;
+  top: 0.68rem;
+  left: 1rem;
+  color: var(--orq-teal);
+  font-family: var(--md-code-font-family);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.md-typeset .code-frame.highlight::after {
+  content: "python";
+  position: absolute;
+  top: 0.68rem;
+  left: 0;
+  width: 100%;
+  color: #6b6975;
+  font-family: var(--md-code-font-family);
+  font-size: 0.72rem;
+  text-align: center;
+}
+.md-typeset .code-frame.highlight pre,
+.md-typeset .code-frame.highlight code {
+  background: transparent;
+}
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight {
+  background: #2f2d3a;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight::after {
+  color: #a8a39d;
+}
+
+/* --- Static shell snippets: terminal frame in both color schemes ------- */
+/* Shell fences opt into this with `{.terminal}`. Keep Python and other
+   explanatory code on the normal documentation surface. */
+.md-typeset .terminal.highlight {
+  --terminal-bg: #1a1917;
+  position: relative;
+  margin: 1em 0;
+  padding: 2.75rem 1.1rem 1.1rem;
+  overflow: hidden;
+  background: var(--terminal-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+}
+.md-typeset .terminal.highlight::before {
+  content: "";
+  position: absolute;
+  top: 0.85rem;
+  left: 1rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: #d97757;
+  box-shadow: 1.15rem 0 #d7ae57, 2.3rem 0 #78a76e;
+}
+.md-typeset .terminal.highlight::after {
+  content: "terminal";
+  position: absolute;
+  top: 0.68rem;
+  left: 0;
+  width: 100%;
+  color: #a8a39d;
+  font-family: var(--md-code-font-family);
+  font-size: 0.72rem;
+  text-align: center;
+}
+.md-typeset .terminal.highlight pre,
+.md-typeset .terminal.highlight code {
+  background: transparent;
+  color: #e6e2dc;
+}
+/* Pygments' light-theme token colors include dark blues that disappear on the
+   terminal ground. Keep commands bright, with only comments and strings muted. */
+.md-typeset .terminal.highlight code span {
+  color: #e6e2dc !important;
+}
+.md-typeset .terminal.highlight code .c1,
+.md-typeset .terminal.highlight code .c {
+  color: #a8a39d !important;
+}
+.md-typeset .terminal.highlight code .s,
+.md-typeset .terminal.highlight code .s1,
+.md-typeset .terminal.highlight code .s2 {
+  color: #f0c9a8 !important;
+}
+.md-typeset .terminal.highlight .md-clipboard {
+  color: #a8a39d;
+}
+
 /* --- Termynal animated terminal ------------------------------------- */
 /* Control links (fast-forward / restart) ship a periwinkle default that's
    off-palette — recolor to brand teal-light. */
@@ -335,7 +439,8 @@ html { font-size: 100%; }
    Module READMEs are snippet-included, so no wrapper markup: pick the prompt
    blockquote by position — after the h2, before the next h2 ("Done when").
    Always dark, in both schemes: it is a terminal. */
-.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) {
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote),
+.md-typeset .claude-code-frame {
   background: #1a1917;
   color: #e6e2dc;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -348,8 +453,9 @@ html { font-size: 100%; }
   line-height: 1.5;
 }
 /* Header: pixel logo + banner lines (SVG inline so no asset to ship). */
-.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote)::before {
-  content: "Claude Code\A orq launch claude · routed through the orq gateway\A ~/kickstarterai-techdays-workshop-2026";
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote)::before,
+.md-typeset .claude-code-frame::before {
+  content: "Claude Code\A orq.ai launch claude · routed through the orq.ai gateway\A ~/kickstarterai-techdays-workshop-2026";
   display: block;
   white-space: pre;
   overflow: hidden;
@@ -360,14 +466,16 @@ html { font-size: 100%; }
   background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 8' shape-rendering='crispEdges'><g fill='%23d97757'><rect x='1' y='0' width='8' height='3'/><rect x='0' y='3' width='10' height='2'/><rect x='2' y='5' width='6' height='1'/><rect x='2' y='6' width='2' height='2'/><rect x='6' y='6' width='2' height='2'/></g><g fill='%231a1917'><rect x='2' y='1' width='1' height='1'/><rect x='7' y='1' width='1' height='1'/></g></svg>") no-repeat 0 0.15rem / 2.4rem auto;
 }
 /* The input box: dashed rules above and below, "›" prompt glyph. */
-.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) > p {
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) > p,
+.md-typeset .claude-code-frame > p {
   margin: 1.4rem 0 0.6rem;
   padding: 0.6rem 0 0.6rem 1.3rem;
   border-top: 1px dashed #4a4640;
   border-bottom: 1px dashed #4a4640;
   position: relative;
 }
-.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) > p::before {
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) > p::before,
+.md-typeset .claude-code-frame > p::before {
   content: "›";
   position: absolute;
   left: 0;
@@ -375,16 +483,19 @@ html { font-size: 100%; }
   font-weight: 600;
 }
 /* Inline code on the dark field: Material's sand chip would glow. */
-.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) code {
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) code,
+.md-typeset .claude-code-frame code {
   background: rgba(255, 255, 255, 0.08);
   color: #f0c9a8;
   border-radius: 3px;
 }
-.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) a {
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote) a,
+.md-typeset .claude-code-frame a {
   color: var(--orq-teal-light);
 }
 /* Status line. */
-.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote)::after {
+.md-typeset h2#with-your-coding-agent ~ blockquote:not(h2#with-your-coding-agent ~ h2 ~ blockquote)::after,
+.md-typeset .claude-code-frame::after {
   content: "? for shortcuts";
   display: block;
   color: #8a8580;

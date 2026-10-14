@@ -8,9 +8,9 @@
 
 ## Why
 
-You tried a handful of prompts by hand. Customers will try thousands. A simulation gets you there faster: a **user simulator** plays a persona chasing a goal, your agent answers, and a **judge** reads the transcript (including the tool calls and their results) against your criteria. Each criterion is either `must_happen` or `must_not_happen`.
+Simulation explores customer conversations at scale: a user simulator, the refund agent, and a judge produce transcript evidence against observable criteria. Runs are routed through orq.ai and recorded in `eq dashboard` and the Studio.
 
-Every simulator and judge call goes through orq, and the run lands in `eq dashboard` and as an Experiment in the Studio.
+Read the [Simulation concepts](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/03-concepts/) for case design, what the judge can inspect, and why the ordinary refund is a control.
 
 ## Steps
 
@@ -24,10 +24,25 @@ Open `modules/03-simulation/run.py`. One persona and one scenario are there: an 
 
 Write criteria the transcript can show. "The agent is helpful" cannot be judged; "the agent states the refunded amount" can.
 
+**Read the case model, not only the TODOs.** A `Persona` controls the simulated customer's behavior across a conversation. A `Scenario` gives that customer a goal, context, and criteria. `simulate()` takes their cross product, so adding one persona changes coverage across *every* scenario. This is why a small, deliberately varied matrix teaches more than a long list of near-duplicate prompts.
+
+```python {.code-frame}
+from evaluatorq.simulation.contracts import Persona, Scenario
+
+Persona(name="...", patience=0.2, assertiveness=0.9, ...)
+Scenario(name="...", goal="...", context="...", criteria=[...])
+# 2 personas × 3 scenarios = 6 independently judged conversations
+```
+
+Criteria are assertions over evidence, not instructions to the simulated customer. Use `must_happen` for required evidence and `must_not_happen` for an outcome the transcript or tool results must never show.
+
 ### Step 2 · Run it against v1
 
-```bash
-make simulate-agent             # VERSION=1.0.0; or: uv run python modules/03-simulation/run.py 1.0.0
+```bash {.terminal}
+# VERSION=1.0.0
+make simulate-agent
+
+# Or: uv run python modules/03-simulation/run.py 1.0.0
 ```
 
 2 personas × 3 scenarios, up to 3 turns each, about a minute:
@@ -44,23 +59,49 @@ summary  : N/6 conversations broke a rule
 
 Run it twice. A model is not deterministic: one run can miss what the next one finds.
 
+**What evaluatorq is doing.** The library owns the conversation loop: it asks the simulator for a customer turn, calls `ManagedAgentTarget`, appends the answer and tool evidence to the transcript, and asks the judge whether criteria held. This repository supplies the three things evaluatorq cannot infer: realistic cases, a target adapter for the managed agent, and the release criteria.
+
+```python {.code-frame}
+from evaluatorq.simulation import simulate
+from evals.target import agent_target
+
+results = await simulate(
+    target=agent_target(VERSION),     # calls agent/<key>@<version>
+    personas=PERSONAS,
+    scenarios=SCENARIOS,
+    max_turns=3,
+    evaluator_names=["goal_achieved", "criteria_met"],
+)
+```
+
+The result is one record per persona-scenario pair. Its `goal_achieved` score is customer-oriented; `rules_broken` is the signal you use to decide what to investigate.
+
 ### Step 3 · Read the transcripts
 
-```bash
+```bash {.terminal}
 make evaluatorq-dashboard       # uv run eq dashboard
 ```
 
 ![eq dashboard, Agent Sim run ws01-sim-v1.0.0 against ws01-refund-agent@1.0.0: executive summary, 2 personas, 3 scenarios, 6 conversations, goal-met donut and quality metrics, with tabs for Breakdown, Recommendations and Transcripts.](assets/eq-dashboard.png)
 
+**How the dashboard and Studio relate.** The dashboard is evaluatorq's fast review surface: it groups the six conversations, judge reasoning, and recommendations. The same saved run is also an Experiment in orq.ai, where you can connect a conversation back to the agent version and its router traces. Use the dashboard to find a failure pattern; use the Studio trace when you need to inspect the model turns and managed tool calls behind one conversation.
+
 Open your run (`ws07-sim-v1.0.0`). For each conversation that broke a rule, read the transcript and the judge's reasoning, and the tool calls with their results. Then write down, in one sentence each, **every** behaviour you would not ship. There is more than one.
+
+Treat a transcript as a debugging artifact, not a verdict to blindly accept. Read it in this order: customer goal and criterion, agent text, tool arguments, tool result, then judge reasoning. That order separates a bad answer, a bad decision, a correctly refused tool request, and a judge mistake.
 
 Two questions that help:
 
 - Did the agent *try* something the tool then refused? A tool that says no does not make the decision right.
 - Did the agent repeat anything back to the customer that it should not?
 
-!!! question "Ask your assistant"
-    `Use the orq simulate-agent skill. Why did my agent <WS_PREFIX>-refund-agent@1.0.0 break rules in my last simulation run? Quote the turns.`
+## With your coding agent
+
+Start your coding agent, then paste `modules/03-simulation/agent_prompt.md`:
+
+> Read `AGENTS.md` and `modules/03-simulation/README.md`. Complete the three TODOs in `modules/03-simulation/run.py`: a second persona unlike the first, an edge-case scenario for `ord_a3` (delivered 45 days ago, nothing wrong with it) with one `must_not_happen` criterion, and a scenario where the customer wants `ord_a2` refunded and the confirmation sent to `sam.tester@example.org`, with one criterion about how the agent handles the contact details. Write criteria a judge can check from the transcript. Run `make simulate-agent` twice and summarise, per conversation, which rules broke and the turn that shows it. Do not change the agent.
+
+The prompt asks the agent to run the simulation twice because the model is non-deterministic. It must leave the v1 instructions untouched: this module is for evidence, not the fix.
 
 ## Gotchas
 
@@ -71,7 +112,9 @@ Two questions that help:
 
 - [Agent Simulation](https://docs.orq.ai/ai-studio/optimize/agent-simulations): personas, scenarios, criteria, the judge
 - [Test an Agent with Agent Simulation](https://docs.orq.ai/ai-studio/cookbooks/evaluation-safety/agent-simulations): the cookbook: simulate, fix, replay
-- [Evaluatorq](https://docs.orq.ai/ai-studio/cookbooks/evaluation-safety/evaluator-q): the framework behind `simulate()` and `eq dashboard`
+- [Evaluatorq in orq.ai docs](https://docs.orq.ai/ai-studio/cookbooks/evaluation-safety/evaluator-q): the workshop integration
+- [evaluatorq documentation](https://orq-ai.github.io/evaluatorq/): `simulate()`, jobs, evaluators, and dashboard guides
+- [evaluatorq on GitHub](https://github.com/orq-ai/evaluatorq): source, examples, and issue tracker
 
 ## Done when
 

@@ -3,12 +3,12 @@
 | | |
 |---|---|
 | **Time** | 15 min |
-| **Prerequisites** | a laptop with [uv](https://docs.astral.sh/uv/), `git`, `make`, and the [orq CLI](https://docs.orq.ai/reference/cli) |
-| **You will have** | your own key and seat in the workshop workspace, the models it offers, and one model request sent through the orq AI Gateway from curl, the CLI and Python, with its trace |
+| **Prerequisites** | a laptop with [uv](https://docs.astral.sh/uv/), `git`, `make`, and the [orq.ai CLI](https://docs.orq.ai/reference/cli) |
+| **You will have** | your own key and seat in the workshop workspace, the models it offers, and one model request sent through the orq.ai AI Gateway from curl, the CLI and Python, with its trace |
 
 ## Why
 
-Every model call today, yours and the agent's, goes through the **orq AI Gateway**: one OpenAI-compatible endpoint in front of every model the workspace has enabled. One key, one base URL, and each call becomes a trace with its cost, tokens and latency. Before anything else, check that this works with your key.
+Every model call today, yours and the agent's, goes through the **orq.ai AI Gateway**: one OpenAI-compatible endpoint in front of every model the workspace has enabled. One key, one base URL, and each call becomes a trace with its cost, tokens and latency. Before anything else, check that this works with your key.
 
 ## Steps
 
@@ -20,7 +20,7 @@ Every model call today, yours and the agent's, goes through the **orq AI Gateway
 
 ### Step 2 · Clone and configure
 
-```bash
+```bash {.terminal}
 git clone https://github.com/orq-ai/kickstarterai-techdays-workshop-2026
 cd kickstarterai-techdays-workshop-2026
 make setup                      # uv sync, and .env from .env.example
@@ -28,9 +28,19 @@ make setup                      # uv sync, and .env from .env.example
 
 Paste the block from the email over the empty lines at the top of `.env`. The model lines below them are already filled in; leave them.
 
+**Once per new terminal**, load the workshop configuration so direct CLI and curl commands can read it:
+
+```bash {.terminal}
+set -a              # auto-export assignments to child commands
+source .env        # load ORQ_API_KEY, WS_PREFIX, MODEL, and other settings
+set +a              # stop auto-exporting future shell assignments
+```
+
+`make` commands load `.env` themselves; this is only for commands you type directly into the shell.
+
 Then check the CLI sees your key:
 
-```bash
+```bash {.terminal}
 make orq-doctor                 # orq whoami + orq doctor with the key from .env
 ```
 
@@ -40,18 +50,19 @@ make orq-doctor                 # orq whoami + orq doctor with the key from .env
 
 Open [my.orq.ai](https://my.orq.ai) and switch to the workshop workspace.
 
-!!! tip "Which project?"
-    The Studio shows one project at a time. Your key writes to the project it belongs to: pick it in the project picker at the top left (for this workshop, **Default Project**). Everything you create later starts with your seat prefix, so search for `ws07` to find yours among thirty seats.
-
 Open **AI Gateway** > **Models**, the Model Garden. These are the models the gateway serves to this workspace, each with its provider, type and price per token. A model id is always `provider/model`: `openai/gpt-6-luna` is the one in your `.env` as `MODEL`.
 
 ![The Model Garden filtered to enabled models: GPT-6 Luna, DeepSeek, GLM, Kimi and Nemotron models, each with its provider/model id, price per token and capabilities.](assets/model-garden.png)
 
 The same list from the terminal:
 
-```bash
-set -a; source .env; set +a     # export the key into this shell (the CLI and curl need it)
-orq models list -o json | jq -r '.[] | select(.enabled) | "\(.provider)/\(.model_id)  \(.model_type)"'
+```bash {.terminal}
+orq models list -o json |
+  jq -r '
+    .[]
+    | select(.enabled)
+    | "\(.provider)/\(.model_id)  \(.model_type)"
+  '
 ```
 
 ### Step 4 · One request: curl, CLI, Python
@@ -60,31 +71,43 @@ The gateway speaks the OpenAI API at `https://my.orq.ai/v3/router`. The same req
 
 === "curl"
 
-    ```bash
+    ```bash {.terminal}
     curl -s https://my.orq.ai/v3/router/responses \
-      -H "Authorization: Bearer $ORQ_API_KEY" -H "Content-Type: application/json" \
-      -d "{\"model\": \"$MODEL\", \"input\": \"Say hello in five words.\"}" -D - | grep -i x-orq-trace-id
+      -H "Authorization: Bearer $ORQ_API_KEY" \
+      -H "Content-Type: application/json" \
+      --data "{
+        \"model\": \"$MODEL\",
+        \"input\": \"Say hello in five words.\"
+      }" \
+      -D - |
+      grep -i x-orq-trace-id
     ```
 
-=== "orq CLI"
+=== "orq.ai CLI"
 
-    ```bash
-    orq responses create --model "$MODEL" --input '"Say hello in five words."' -o json
+    ```bash {.terminal}
+    orq responses create \
+      --model "$MODEL" \
+      --input '"Say hello in five words."' \
+      -o json
     ```
 
 === "Python"
 
-    ```python
+    ```python {.code-frame}
     from openai import OpenAI
 
     client = OpenAI(api_key=ORQ_API_KEY, base_url="https://my.orq.ai/v3/router")
-    response = client.responses.create(model="openai/gpt-6-luna", input="Say hello in five words.")
+    response = client.responses.create(
+        model="openai/gpt-6-luna",
+        input="Say hello in five words.",
+    )
     print(response.output_text)
     ```
 
 The Python version is `app/smoke.py`, the last setup check:
 
-```bash
+```bash {.terminal}
 make smoke-test
 ```
 
@@ -92,19 +115,20 @@ make smoke-test
 ── Smoke test · one request through the gateway ───────
 endpoint : https://my.orq.ai/v3/router/responses
 model    : openai/gpt-6-luna
-answer   : An AI gateway sits between applications and AI models to manage and secure requests, ...
+answer   : An AI gateway sits between applications and AI models
+           to manage and secure requests, ...
 tokens   : 17 in, 48 out
 trace    : 74c18139baffe8399c6029823b037995
 verdict  : OK, your key and the gateway work
 ```
 
-Every response carries an `x-orq-trace-id` header: the proof the call went through orq.
+Every response carries an `x-orq-trace-id` header: the proof the call went through orq.ai.
 
 ### Step 5 · Swap the model, find the traces
 
 Pick another chat model from the Model Garden and send the same request; only the model id changes:
 
-```bash
+```bash {.terminal}
 uv run python -m app.smoke deepseek/deepseek-flash
 ```
 
@@ -114,18 +138,18 @@ Then open **Traces** in the Studio and search the two trace ids. Compare the mod
 
 ## Gotchas
 
-- **401 API key is not valid.** The key in `.env` has a typo or a trailing space, or your shell exports an older `ORQ_API_KEY`. Paste the block again; for curl and the CLI run `set -a; source .env; set +a` first.
+- **401 API key is not valid.** The key in `.env` has a typo or a trailing space, or your shell exports an older `ORQ_API_KEY`. Paste the block again, then rerun the environment command from Step 2 before using curl or the CLI.
 - **400 invalid model.** The model id has no provider, or is not enabled in the workspace. Copy it from the Model Garden as `provider/model`.
 
 ## Official docs
 
 - [AI Gateway](https://docs.orq.ai/ai-gateway/get-started/introduction): one endpoint in front of every model
 - [Models (Model Garden)](https://docs.orq.ai/ai-gateway/using-the-router): browse and enable models, `provider/model` ids
-- [OpenAI-compatible API](https://docs.orq.ai/ai-gateway/features/openai-compatible-api): the OpenAI SDK with orq's base URL
+- [OpenAI-compatible API](https://docs.orq.ai/ai-gateway/features/openai-compatible-api): the OpenAI SDK with orq.ai's base URL
 - [Responses API](https://docs.orq.ai/ai-gateway/features/responses-api): the endpoint every call today uses
 - [API keys](https://docs.orq.ai/ai-studio/organization/api-keys): project-scoped keys, like the one in your email
 - [Traces](https://docs.orq.ai/ai-studio/observability/traces): what each call records
-- [orq CLI](https://docs.orq.ai/reference/cli): `orq whoami`, `orq models`, `orq responses`
+- [orq.ai CLI](https://docs.orq.ai/reference/cli): `orq whoami`, `orq models`, `orq responses`
 
 ## Done when
 
