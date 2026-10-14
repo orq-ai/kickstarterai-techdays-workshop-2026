@@ -105,21 +105,11 @@ response = orq.responses.create(
 
 ![A managed agent entity in orq.ai contains its instructions, model, optional tools, limits, and version history; an application starts a conversation and receives its result.](assets/managed-agent-loop.png)
 
-## Where the rules live
+## Prompt guidance and tool evidence
 
-Tools enforce hard constraints: order ownership, one refund only, the EUR 500 ceiling, and the refund window. The prompt supplies judgment about how and when to use them. That separation matters: the prompt can make a bad decision even while a tool correctly refuses the resulting call.
+A tool schema is a contract with the model: its name, argument shape, and description constrain what the model can request. The tool result is evidence the model can use in the next loop turn.
 
-A tool schema is also a contract with the model: its name, argument shape, and description constrain what the model can request. Its returned `ok` and `error` fields are the contract with the rest of the system. This is why traces and evaluators inspect structured tool results instead of guessing from prose.
-
-```python {.code-frame}
-# app/refund_agent/tools.py — the tool is the hard boundary
-# issue_refund(store: OrderStore, order_id: str, ...) -> dict
-order = store.owned(order_id)
-if order is None:
-    return {"ok": False, "error": "not_found"}
-if order["amount"] > REFUND_LIMIT_EUR:
-    return {"ok": False, "error": "above_limit_needs_human_review"}
-```
+In the weather illustration, the prompt can decide **when** to ask `get_weather`. It cannot invent the weather result. The hosted tool returns structured data, and the model turns that data into a customer-facing answer. The refund solution applies the same separation to its business-specific policy tools.
 
 ## Next
 

@@ -33,6 +33,18 @@ The model chooses what to say and which tool to call next. It does not calculate
 
 `app/data/kb/` holds policy text. `app/refund_agent/tools.py` turns the non-negotiable parts into executable checks.
 
+```python {.code-frame}
+# app/refund_agent/tools.py — the tool is the hard boundary
+# issue_refund(store: OrderStore, order_id: str, ...) -> dict
+order = store.owned(order_id)
+if order is None:
+    return {"ok": False, "error": "not_found"}
+if order["amount"] > REFUND_LIMIT_EUR:
+    return {"ok": False, "error": "above_limit_needs_human_review"}
+```
+
+Tools enforce ownership, refund state, the EUR 500 ceiling, and the refund window. The prompt supplies judgment about how and when to use them. A tool schema is also a contract with the model: its name, argument shape, and description constrain what the model can request. Its returned `ok` and `error` fields are the contract with the rest of the system.
+
 | Tool | Model asks for | Tool guarantees | Important result |
 |---|---|---|---|
 | `lookup_order` | an order ID | ownership check; internal fields removed; window computed | public order data or `not_found` |
