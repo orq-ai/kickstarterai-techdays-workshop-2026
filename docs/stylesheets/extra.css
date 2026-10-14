@@ -488,12 +488,6 @@ html { font-size: 100%; }
 }
 
 /* Give lesson screenshots and diagrams space and a gentle lift from the page. */
-.md-typeset img.tool-code-crop {
-  width: 100%;
-  aspect-ratio: 1100 / 577;
-  object-fit: cover;
-  object-position: left top;
-}
 .md-typeset p:has(> img:only-child),
 .md-typeset p:has(> a.glightbox:only-child > img) {
   margin: 1.7rem 0 2rem;
