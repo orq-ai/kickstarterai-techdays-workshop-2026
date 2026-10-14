@@ -74,7 +74,7 @@ async def get_agent(request: Request) -> JSONResponse:
     try:
         agent = await run_in_threadpool(lambda: current_agent(make_orq()))
     except Exception:  # noqa: BLE001  the UI exposes setup guidance, not provider diagnostics
-        return _error(502, "Could not reach orq to load agent setup. Check ORQ_API_KEY and your connection, then try again.")
+        return _error(502, "Could not reach orq.ai to load agent setup. Check ORQ_API_KEY and your connection, then try again.")
     if agent is None:
         return _error(404, f"{settings.agent_key} does not exist yet: run `make seed-workspace`")
     return JSONResponse({"key": settings.agent_key, "versions": ["latest", *versions(agent)]})
@@ -119,7 +119,7 @@ async def post_chat(request: Request) -> JSONResponse:
     try:
         turn = await run_in_threadpool(ask_agent, conversation, version)
     except Exception as exc:  # noqa: BLE001  shown in the chat, not a stack trace
-        return _error(502, f"orq error: {str(exc)[:300]}")
+        return _error(502, f"orq.ai error: {str(exc)[:300]}")
     return JSONResponse(
         {
             "answer": turn.answer,
