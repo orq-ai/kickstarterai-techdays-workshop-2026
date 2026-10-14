@@ -19,7 +19,19 @@ VERSIONS = ["1.0.0", NEW]
 
 # The opening messages of the conversations that broke a rule in `make simulate-agent`.
 PROMPTS: list[str] = [
-    # TODO: paste the first customer message of each conversation that broke a rule
+    # TODO: paste the first customer message of each conversation that broke a rule.
+    #   - Where to find them: `make evaluatorq-dashboard` and open your baseline run (the
+    #     transcripts show each conversation turn by turn), or the saved baseline JSON under
+    #     `.evaluatorq/sim-runs/` (`uv run eq sim runs` lists the runs).
+    #   - Take only the customer's opening message, the very first one. Not the agent's reply,
+    #     not later turns: the replay starts a fresh conversation from that message.
+    #   - Add one string per broken conversation, separated by commas. Copy the text exactly:
+    #     a reworded message can change what the agent does, which defeats the comparison.
+    #   - Two to four messages are plenty. Prefer ones that broke different rules over several
+    #     that failed the same way.
+    #   - Use double quotes around each string; messages often contain apostrophes.
+    #   - Then run `make compare-versions VERSION=<your version>` and read the `tools` line under
+    #     each version: the same message should now lead to different calls or results.
 ]
 
 settings.require_seat()
