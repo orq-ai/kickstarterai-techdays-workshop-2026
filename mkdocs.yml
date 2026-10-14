@@ -94,12 +94,12 @@ nav:
   - Home: index.md
   - Workshop:
       - Onboarding: modules/00.md
-      - Coding agents: modules/01.md
       - Designing an agent:
           - Concepts: modules/02-concepts.md
           - Business case: modules/02-logic.md
           - Solution design: modules/02-solution-design.md
           - Tutorial: modules/02.md
+      - Coding agents (optional): modules/01.md
       - Simulation:
           - Concepts: modules/03-concepts.md
           - Tutorial: modules/03.md
