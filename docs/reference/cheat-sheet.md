@@ -14,6 +14,9 @@ make agent-chat-ui
 # Simulation and prompt versions
 make simulate-agent [VERSION=1.0.0]
 make evaluatorq-dashboard
+uv run eq sim runs  # saved reports: .evaluatorq/sim-runs/ (or $EVALUATORQ_DIR/sim-runs/)
+# Reuse a specific v1 report's cases and opening messages against v2:
+make simulate-agent VERSION=2.0.0 REPLAY=".evaluatorq/sim-runs/<your-v1-baseline>.json"
 make publish-agent-version [FILE=...]
 make compare-versions [VERSION=latest]
 

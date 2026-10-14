@@ -8,13 +8,17 @@ lands in `eq dashboard` and as an Experiment in the Studio.
 Fill in the three TODOs; the script runs with what is there and says what is missing.
 Run it with `make simulate-agent` (v1.0.0) or `make simulate-agent VERSION=2.0.0`,
 or `uv run python modules/03-simulation/run.py 2.0.0`.
+Add `--replay <saved-run.json>` to reuse a baseline's cases and opening messages.
 """
 
 # isort: skip_file
 # app.refund_agent.config must load .env before evaluatorq is imported (it reads ORQ_API_KEY then)
 import asyncio
+import argparse
 import os
-import sys
+from datetime import datetime, timezone
+from pathlib import Path
+from uuid import uuid4
 
 os.environ.setdefault("LOGURU_LEVEL", "WARNING")  # evaluatorq logs every turn at INFO
 
@@ -27,13 +31,14 @@ from evaluatorq.simulation.contracts import (
     Criterion,
     Persona,
     Scenario,
+    SimulationResult,
+    SimulationRun,
     StartingEmotion,
 )
 from openai import AsyncOpenAI
 
 from evals.target import agent_target
 
-VERSION = (sys.argv[1:] or [os.environ.get("VERSION") or "1.0.0"])[0]
 ROUTER = AsyncOpenAI(base_url=settings.router_url, api_key=settings.api_key)
 SIM_LLM = LLMCallConfig(model=settings.judge_model, client=ROUTER)  # user simulator + judge
 
@@ -74,45 +79,88 @@ SCENARIOS = [
 ]
 
 
-async def main() -> None:
+def parse_args(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("version", nargs="?", default=os.environ.get("VERSION") or "1.0.0")
+    parser.add_argument("--replay", type=Path, help="Saved simulation run JSON; reuses its cases and opening messages")
+    return parser.parse_args(argv)
+
+
+def rule_status(result: SimulationResult) -> tuple[str, bool, bool]:
+    """Keep confirmed violations separate from missing audits and execution failures."""
+    criteria = result.metadata.get("criteria_meta") or []
+    broken = [c["description"] for c in criteria if c.get("audited") is True and c.get("passed") is False]
+    unknown = []
+    if result.terminated_by.value in ("error", "timeout"):
+        unknown.append(f"conversation ended in {result.terminated_by.value}")
+    if result.criteria_verified is not True or not criteria or any(c.get("audited") is not True for c in criteria):
+        unknown.append("criteria not fully audited")
+    if result.metadata.get("evaluator_errors"):
+        unknown.append("an evaluator failed")
+    labels = []
+    if broken:
+        labels.append("BROKEN: " + "; ".join(broken))
+    if unknown:
+        labels.append("UNKNOWN: " + "; ".join(unknown))
+    return " | ".join(labels) or "all held", bool(broken), bool(unknown)
+
+
+async def main(argv=None) -> None:
+    args = parse_args(argv)
     settings.require_seat()
     todo = [t for t, done in (("TODO 1", len(PERSONAS) > 1), ("TODO 2 and 3", len(SCENARIOS) > 2)) if not done]
-    if todo:
+    if todo and not args.replay:
         print(f"missing  : {', '.join(todo)} (running with what is there)")
-    name = settings.key(f"sim-v{VERSION}")
-    print(f"── Simulation · agent/{settings.agent_key}@{VERSION} ".ljust(55, "─"))
-    print(f"runs     : {len(PERSONAS)} personas × {len(SCENARIOS)} scenarios, max 3 turns each")
+    name = settings.key(f"sim-v{args.version}")
+    if args.replay:
+        previous = SimulationRun.model_validate_json(args.replay.read_text())
+        if not previous.datapoints:
+            raise SystemExit("This report has no replayable cases. Save a new baseline run first.")
+        expected = len(previous.datapoints)
+        max_turns = previous.max_turns or 3
+        cases = {"previous_run": str(args.replay)}
+    else:
+        expected = len(PERSONAS) * len(SCENARIOS)
+        max_turns = 3
+        cases = {"personas": PERSONAS, "scenarios": SCENARIOS}
+    store = Path(os.environ.get("EVALUATORQ_DIR") or ".evaluatorq") / "sim-runs"
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+    report = store / f"{name}_{stamp}-{uuid4().hex[:8]}.json"
+    print(f"── Simulation · agent/{settings.agent_key}@{args.version} ".ljust(55, "─"))
+    print(f"runs     : {expected} conversations, max {max_turns} turns each")
+    if args.replay:
+        print(f"replay   : {args.replay} (same personas, scenarios and opening messages)")
     results = await simulate(
-        evaluation_name=name,
-        target=agent_target(VERSION),
-        personas=PERSONAS,
-        scenarios=SCENARIOS,
-        max_turns=3,
+        run_name=name,
+        target=agent_target(args.version),
+        **cases,
+        max_turns=max_turns,
         llm_config=SIM_LLM,
-        evaluator_names=["goal_achieved", "criteria_met"],
         upload_results=True,
-        exit_on_failure=False,
+        raise_on_execution_failure=False,  # exploratory: report incomplete results as UNKNOWN below
         executive_summary=False,
         save=True,  # without it `eq dashboard` has no run to show
+        report_path=report,
     )
-    broken = 0
+    broken = unknown = 0
     for result in results:
-        rules = [
-            SCENARIOS_BY_NAME[result.metadata.get("scenario")].criteria[int(r.split("_")[-1])].description[:70]
-            if r.startswith("criteria_") else r
-            for r in result.rules_broken or []
-        ]
-        broken += bool(rules)
+        label, has_broken, has_unknown = rule_status(result)
+        broken += has_broken
+        unknown += has_unknown
         last = next((m for m in reversed(result.messages) if m.role == "assistant" and m.content), None)
         print(f"run      : {result.metadata.get('persona')} × {result.metadata.get('scenario')}")
-        print(f"  rules  : {'BROKEN: ' + '; '.join(rules) if rules else 'all held'}")
+        print(f"  rules  : {label}")
+        print(f"  stop   : {result.terminated_by.value} — {result.reason}")
         if last:
             print(f"  agent  : {str(last.content)[:140]!r}")
-    print(f"summary  : {broken}/{len(results)} conversations broke a rule")
+    print(f"summary  : {broken}/{len(results)} broke a rule; {unknown}/{len(results)} incomplete or unverified")
+    if len(results) != expected:
+        print(f"coverage : INCOMPLETE — expected {expected} conversations, received {len(results)}")
+    if report.is_file():
+        print(f"saved    : {report}")
+    else:
+        print(f"saved    : FAILED — no report at {report}; do not use it for replay")
     print(f"next     : `make evaluatorq-dashboard` and open {name}; read the transcripts of the broken ones")
-
-
-SCENARIOS_BY_NAME = {scenario.name: scenario for scenario in SCENARIOS}
 
 if __name__ == "__main__":
     asyncio.run(main())

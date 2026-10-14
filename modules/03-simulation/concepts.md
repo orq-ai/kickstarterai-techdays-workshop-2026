@@ -8,7 +8,7 @@ Hand-written transcripts are useful examples, but they go stale and cover only t
 
 ## Three models, one transcript
 
-A user simulator plays a persona with a goal. The agent under test responds. A judge evaluates the completed conversation against explicit criteria. Every model call goes through the router, where it is traced and costed, and the conversation can continue up to `max_turns`.
+A user simulator plays a persona with a goal. The agent under test responds. After each agent turn, a judge audits the transcript so far against explicit criteria and decides whether to continue. Every model call goes through the router, where it is traced and costed. `max_turns` caps the conversation if the judge has not already ended it.
 
 ```python {.code-frame}
 from evaluatorq.simulation import simulate
@@ -16,17 +16,16 @@ from evals.target import agent_target
 
 # modules/03-simulation/run.py
 results = await simulate(
-    target=agent_target(VERSION),
+    target=agent_target("1.0.0"),
     personas=PERSONAS,
     scenarios=SCENARIOS,
     max_turns=3,
     llm_config=SIM_LLM,               # simulator and judge through the router
-    evaluator_names=["goal_achieved", "criteria_met"],
     save=True,
 )
 ```
 
-![Cases feed a user simulator that exchanges a transcript with the refund agent; a judge evaluates the completed transcript and its criteria, while all model calls pass through the router.](assets/simulation-loop.png)
+![Cases feed a user simulator and the refund agent. The judge audits each turn and decides whether the conversation continues, while all model calls pass through the router.](assets/simulation-loop.png)
 
 The simulation target is an adapter, not a second implementation of the agent. `agent_target()` points evaluatorq at the same managed `agent/<key>@<version>` that the chat UI calls. It uses an OpenAI-compatible router client, so evaluatorq can drive a managed agent while orq.ai executes its tools.
 
@@ -69,9 +68,30 @@ Scenario(
 
 ![Two personas and three scenarios form six conversations; each scenario carries observable must-happen and must-not-happen criteria for the judge.](assets/case-grid.png)
 
+## Criteria accumulate across turns
+
+The judge checks what occurred; evaluatorq derives pass or fail from the criterion's type:
+
+- **`must_happen`** is satisfied once the required behaviour occurs on any turn. If the conversation finishes normally without it occurring, it fails.
+- **`must_not_happen`** is violated if the prohibited behaviour occurs on any turn. A later apology or correction does not erase that violation.
+
+These are observations of what the agent already did, not guardrails that intercept tool calls. A violation can stop the simulation, but it cannot undo an action.
+
+## Why the conversation stopped
+
+| `terminated_by` | What to inspect |
+|---|---|
+| `judge` | Read `reason`: the judge may have ended the conversation after success, a violation, or an unusable judge reply. This label alone is not a pass. |
+| `max_turns` | The turn budget ran out. Inspect whether the agent was progressing or stuck; an unfinished goal can reflect the budget. Audited criteria still apply. |
+| `error` or `timeout` | Execution did not finish normally. Treat missing verdicts as unknown and investigate `reason` before drawing a quality conclusion. |
+
+An empty `rules_broken` list does not establish that every rule held. Check `criteria_verified` and each entry's `audited` value in `metadata["criteria_meta"]`. Missing or false audit flags mean the evidence is incomplete. A failed evaluator is also an incomplete result. The starter labels these cases **UNKNOWN**, preserving any violations that were already confirmed.
+
 ## What the judge can see
 
 Text alone can make a confident but incorrect answer look persuasive. This workshop's `evals/target.py` keeps the managed agent's code-tool calls and their results on the transcript passed to the judge. The judge can therefore use execution evidence, not just the final wording.
+
+This only works when the agent returns those intermediate outputs and they are passed to the judge. If the agent returns only its final answer, the judge can evaluate only that answer; it cannot inspect tool calls or results that were not returned.
 
 ```python {.code-frame}
 import json
@@ -96,6 +116,8 @@ Take away a second distinction: `goal_achieved` describes whether the simulated 
 
 ## Official docs
 
+- [Evaluatorq simulation: per-turn criteria and saved-case replay](https://orq-ai.github.io/evaluatorq/guides/agent-simulation/)
+- [Simulation output reference: termination, audits, and saved runs](https://orq-ai.github.io/evaluatorq/guides/agent-simulation-output/)
 - [Agent Simulation](https://docs.orq.ai/ai-studio/optimize/agent-simulations)
 - [Test an Agent with Agent Simulation](https://docs.orq.ai/ai-studio/cookbooks/evaluation-safety/agent-simulations)
 - [Evaluatorq](https://docs.orq.ai/ai-studio/cookbooks/evaluation-safety/evaluator-q)

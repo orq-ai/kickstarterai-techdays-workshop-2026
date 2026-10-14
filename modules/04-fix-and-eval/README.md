@@ -100,15 +100,28 @@ The positional argument is the candidate version to compare with `@1.0.0`. `make
 
 The comparison reuses the example replies from the earlier screenshot, rendered in the current UI; it is not a new live comparison run.
 
-### Step 3 · Re-run the simulation on v2
+### Step 3 · Replay the saved simulation on v2
+
+Find your v1 baseline's **`saved:`** path from the previous module, or run `uv run eq sim runs`. By default, reports live in **`.evaluatorq/sim-runs/`** in the repo root. Pick a specific v1 report; do not select a newer candidate run by mistake.
+
+Replace the example path below with that exact baseline JSON path, then run:
 
 ```bash {.terminal}
-uv run python modules/03-simulation/run.py 2.0.0
+make simulate-agent VERSION=2.0.0 REPLAY=".evaluatorq/sim-runs/<your-v1-baseline>.json"
 ```
 
-This is the same simulation script from the previous module, now pointed at the published version.
+The equivalent Python command is:
 
-Done when none of the rules break, **including the control**: the ordinary refund must still be issued. Run it twice.
+```bash {.terminal}
+uv run python modules/03-simulation/run.py 2.0.0 \
+  --replay ".evaluatorq/sim-runs/<your-v1-baseline>.json"
+```
+
+`--replay` passes the report to evaluatorq's `previous_run=` option. It reuses the saved personas, scenarios, opening messages, and turn budget instead of generating new cases. The target changes to your published v2. It does **not** replay the old assistant answers: both the agent and simulated customer's later messages are generated again, so results can still vary. Each replay prints its own new `saved:` report path and leaves the baseline intact.
+
+You can also replay that baseline against v1 by changing `VERSION=1.0.0`. Running without `REPLAY` makes a fresh simulation from the definitions in `modules/03-simulation/run.py`; that explores variation but does not hold the opening messages fixed. Reports from older evaluatorq versions that lack saved cases cannot be replayed; make a new baseline if the runner reports this.
+
+Run the v2 replay twice using the **same baseline path**. Done when all expected cases return, no results are UNKNOWN, and none of the rules break, **including the control**: the ordinary refund must still be issued. Inspect the termination reason if a conversation reaches `max_turns` without finishing. This is diagnostic evidence; the regression eval in the next step supplies the release gate.
 
 ### Step 4 · The regression eval
 
@@ -188,7 +201,7 @@ Add a row for a case your simulation found and the dataset does not cover yet; t
 
 Start your coding agent, then paste `modules/04-fix-and-eval/agent_prompt.md`, replacing the placeholder with your own list of behaviours:
 
-> Read `AGENTS.md` and `modules/04-fix-and-eval/README.md`. Here is the list of behaviours my simulation found in v1.0.0: `<paste your list>`. Edit `app/data/instructions.md` to fix each one without breaking an ordinary in-window refund. Keep the tone and keep it short. Then run `uv run python -m app.refund_agent.entities publish`, `uv run python modules/03-simulation/run.py <new version>` and `uv run python -m evals.regression --version <new version>`, and report what passed and what did not.
+> Read `AGENTS.md` and `modules/04-fix-and-eval/README.md`. Use the specific v1 baseline report path from the simulation module for replay. Here is the list of behaviours my simulation found in v1.0.0: `<paste your list>`. Edit `app/data/instructions.md` to fix each one without breaking an ordinary in-window refund. Keep the tone and keep it short. Then run `uv run python -m app.refund_agent.entities publish`, `uv run python modules/03-simulation/run.py <new version> --replay "<saved-v1-baseline.json>"` and `uv run python -m evals.regression --version <new version>`, and report what passed and what did not.
 
 Keep the agent focused on the observed behaviours: it should not broaden the policy or edit the tools. Review the published version and the regression result before accepting the change.
 
