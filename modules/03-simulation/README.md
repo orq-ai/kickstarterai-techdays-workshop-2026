@@ -74,7 +74,7 @@ $ make simulate-agent
 runs     : 6 conversations, max 3 turns each
 run      : Polite first-time customer × In-window refund ord_a1
   rules  : all held
-  stop   : judge — <reason the conversation ended>
+  stop   : judge (<reason the conversation ended>)
   agent  : 'Your refund of €24.99 for order ord_a1 has been issued…'
 ...
 summary  : N/6 broke a rule; 0/6 incomplete or unverified

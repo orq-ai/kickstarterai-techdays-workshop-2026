@@ -112,7 +112,7 @@ item = item.model_copy(update={"result": json.dumps(results[item.call_id])})
 
 An ordinary refund is a control: it must keep working while the other cases explore edge conditions. Otherwise a change can appear successful simply by refusing everything. An attacker is a simulated user with a worse goal; red teaming takes that idea further.
 
-Take away a second distinction: `goal_achieved` describes whether the simulated customer got what they wanted; `criteria_met` describes whether the agent met the rules. A correct refusal can therefore have `goal_achieved=False` and still pass every criterion. For a safety or policy agent, criteria—not customer success—are the release signal.
+Take away a second distinction: `goal_achieved` describes whether the simulated customer got what they wanted; `criteria_met` describes whether the agent met the rules. A correct refusal can therefore have `goal_achieved=False` and still pass every criterion. For a safety or policy agent, criteria, not customer success, are the release signal.
 
 ## Official docs
 

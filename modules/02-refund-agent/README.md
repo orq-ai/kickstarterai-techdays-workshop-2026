@@ -50,7 +50,7 @@ Afterward, the chat UI and scripts use the resource keys. They invoke the manage
     `ensure_tools()` creates each hosted code tool from the local Python source. `ensure_agent()` attaches those tool keys to the managed agent.
 
     ```python {.code-frame}
-    # app/refund_agent/entities.py — one hosted code tool per schema
+    # app/refund_agent/entities.py: one hosted code tool per schema
     orq.tools.create(
         request={
             "type": "code",

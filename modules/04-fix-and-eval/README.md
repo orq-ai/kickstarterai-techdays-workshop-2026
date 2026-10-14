@@ -82,7 +82,7 @@ version  : 2.0.0 (new)
 
 ![The Versions tab of the agent: v2.0.0 latest, "instructions from instructions.md", above v1.0.0, "Initial version".](assets/agent-versions.png)
 
-**How to read the version list.** Open [**Agents**](https://my.orq.ai/kickstartai-workshop-2026/agents), find your `<WS_PREFIX>-refund-agent`, and select **Versions**. Treat a version as immutable evidence. The version number identifies what ran; the description says why it was created; the configuration behind it contains the instructions, model, tool attachments, and limits. Compare the instructions before comparing outputs, otherwise a changed response is only an observation—not an explained change.
+**How to read the version list.** Open [**Agents**](https://my.orq.ai/kickstartai-workshop-2026/agents), find your `<WS_PREFIX>-refund-agent`, and select **Versions**. Treat a version as immutable evidence. The version number identifies what ran; the description says why it was created; the configuration behind it contains the instructions, model, tool attachments, and limits. Compare the instructions before comparing outputs, otherwise a changed response is only an observation, not an explained change.
 
 Run it again without editing: `(unchanged: ...)`, no new version. Every later edit you publish becomes 3.0.0, 4.0.0, and so on; use that number wherever this page says 2.0.0.
 
@@ -228,7 +228,7 @@ This separation is the takeaway: datasets define examples, jobs define the syste
 
 ![The judge ws01-refund-policy-judge in the Studio: boolean output, gpt-6-luna, and the prompt with the policy summary and the input.user_query, output.response and input.expected_output variables.](assets/judge.png)
 
-**Evaluator view — read the contract before trusting a score.** Open [**Evaluators**](https://my.orq.ai/kickstartai-workshop-2026/resources/evaluators) and find your `<WS_PREFIX>-refund-policy-judge`. In the judge resource, inspect the output type (boolean), the model, and the prompt variables. Here `input.user_query` is the customer message, `output.response` is the agent answer, and `input.expected_output` is the row's reference. The judge has no magic policy knowledge beyond the prompt and those inputs. Its result is one signal in the gate, alongside deterministic code scorers.
+**Evaluator view: read the contract before trusting a score.** Open [**Evaluators**](https://my.orq.ai/kickstartai-workshop-2026/resources/evaluators) and find your `<WS_PREFIX>-refund-policy-judge`. In the judge resource, inspect the output type (boolean), the model, and the prompt variables. Here `input.user_query` is the customer message, `output.response` is the agent answer, and `input.expected_output` is the row's reference. The judge has no magic policy knowledge beyond the prompt and those inputs. Its result is one signal in the gate, alongside deterministic code scorers.
 
 ### Step 6 · The dataset in the Studio
 
@@ -236,7 +236,7 @@ Open [**Datasets**](https://my.orq.ai/kickstartai-workshop-2026/datasets) > your
 
 ![The dataset ws01-refund-eval in the Studio: 20 rows, each with its inputs (allowed_refunds, message, expected_decision) and expected output.](assets/dataset.png)
 
-**Dataset view — read one row as an evaluation contract.** `message` is the agent input. `allowed_refunds` and `expected_decision` are structured expectations used by code scorers. The expected output gives the judge its reference context. This is why the regression script uses `DatasetIdInput`: edits you make here are the rows the next run actually evaluates.
+**Dataset view: read one row as an evaluation contract.** `message` is the agent input. `allowed_refunds` and `expected_decision` are structured expectations used by code scorers. The expected output gives the judge its reference context. This is why the regression script uses `DatasetIdInput`: edits you make here are the rows the next run actually evaluates.
 
 Add a row for a case your simulation found and the dataset does not cover yet; the next `uv run python -m evals.regression --version <version>` picks it up.
 

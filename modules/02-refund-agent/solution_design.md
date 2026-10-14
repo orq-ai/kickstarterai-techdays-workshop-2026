@@ -34,7 +34,7 @@ The model chooses what to say and which tool to call next. It does not calculate
 `app/data/kb/` holds policy text. `app/refund_agent/tools.py` turns the non-negotiable parts into executable checks.
 
 ```python {.code-frame}
-# app/refund_agent/tools.py — the tool is the hard boundary
+# app/refund_agent/tools.py: the tool is the hard boundary
 # issue_refund(store: OrderStore, order_id: str, ...) -> dict
 order = store.owned(order_id)
 if order is None:

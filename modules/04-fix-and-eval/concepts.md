@@ -9,7 +9,7 @@ Start with transcripts. Write one short observation per failure (open coding), t
 ```python {.code-frame}
 from evaluatorq import EvaluationResult
 
-# evals/scorers.py — one scorer, one binary question
+# evals/scorers.py: one scorer, one binary question
 async def no_unauthorized_attempt(params):
     allowed = _allowed(params)
     attempts = [call for call in _refund_calls(params)
@@ -26,12 +26,12 @@ async def no_unauthorized_attempt(params):
 Use code for checkable facts: `refund_outcome`, `no_unauthorized_attempt`, and the `no_pii_leak` regular expression. Use an LLM judge for contextual policy following. The code scorers read tool results rather than tool names, and a missing result fails closed.
 
 ```python {.code-frame}
-# evals/scorers.py — helpers are defined in the same scorer module.
+# evals/scorers.py: helpers are defined in the same scorer module.
 calls = _refund_calls(params)
 if missing := _missing_results(calls):
     return fail_result(f"no tool result for {missing}")
 
-# A successful tool result—not merely a tool call—is a refund.
+# A successful tool result, not merely a tool call, is a refund.
 succeeded = {call["arguments"]["order_id"] for call in calls
              if (call["result"] or {}).get("ok")}
 ```
@@ -96,7 +96,7 @@ A simulation failure becomes a dataset row once it is understood well enough to 
 
 ## Soft fix, hard proof
 
-A prompt fix lowers the odds of a bad choice; it does not make one impossible. The regression eval checks the relevant cases on every version. To go further, harden tools—for example, send post-window exceptions to human review—and redact personal information from output.
+A prompt fix lowers the odds of a bad choice; it does not make one impossible. The regression eval checks the relevant cases on every version. To go further, harden tools (for example, send post-window exceptions to human review) and redact personal information from output.
 
 The general takeaway is a hierarchy of controls: prompts shape likely behavior, tools enforce deterministic policy, and evaluators independently measure both the answer and the action trail. Do not ask one layer to prove itself.
 
