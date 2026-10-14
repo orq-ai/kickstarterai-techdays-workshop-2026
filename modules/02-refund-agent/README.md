@@ -103,6 +103,8 @@ Open `modules/02-refund-agent/run.py`. Complete these two TODOs before you run i
 
 Do not change the inspection code or the message branch. The exercise is about seeing the raw Responses API output shape: request items, managed tool results, final message, and trace ID.
 
+![Before the exercise, the seeded refund agent exists but run.py stops at TODO 1. After two local edits, run.py invokes the managed agent and prints tool results, answer, and trace ID.](assets/run-py-before-after.png)
+
 ```bash {.terminal}
 uv run python modules/02-refund-agent/run.py
 ```
