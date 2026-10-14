@@ -17,17 +17,17 @@ Foundations covers the generic agent loop; [Use Case](https://orq-ai.github.io/k
 
 Your seat prefix from the email (`WS_PREFIX=ws07`) goes in front of every entity you create, keeping your agent and evaluation resources separate from other participants:
 
-```bash {.terminal}
-uv run python -m app.refund_agent.entities seed
-```
+The seed command creates the code tools and refund agent only when they do not already exist. `make seed-workspace` runs `uv run python -m app.refund_agent.entities seed`.
 
-This runs the `seed` command in `app/refund_agent/entities.py`. It creates the code tools and refund agent only when they do not already exist. `make seed-workspace` is the optional shortcut for the same command.
+Example session (your seat prefix and entity IDs will differ):
 
-```text
-── Seed · create this seat's agent ────────────────────
+<!-- termynal -->
+
+```console
+$ make seed-workspace
+── Seed · create this seat's agent ───────────────────
 seat     : ws07 → <your project>/workshop
-tools    : ws07-lookup_order, ws07-issue_refund,
-           ws07-get_policy (code tools, run by orq.ai)
+tools    : ws07-lookup_order, ws07-issue_refund, ws07-get_policy (code tools, run by orq)
 agent    : ws07-refund-agent v1.0.0
 ```
 
@@ -102,7 +102,7 @@ Afterward, the chat UI and scripts use the resource keys. They invoke the manage
 
 ### Step 2 · Read the resources in the Studio
 
-Open **Agents**, search for your `WS_PREFIX`, and open `-refund-agent`. Verify the agent key, model, and three attached tools. The screenshot is cropped to the configuration column; the full v1 instructions are left for the Improve and Evaluate module, after Agent Simulation.
+Open [**Agents** in the workshop workspace](https://my.orq.ai/kickstartai-workshop-2026/agents), search for your `WS_PREFIX`, and open `-refund-agent`. Verify the agent key, model, and three attached tools. The screenshot is cropped to the configuration column; the full v1 instructions are left for the Improve and Evaluate module, after Agent Simulation.
 
 ![The actual ws999-refund-agent configuration column in Studio shows its key, role, model, and three hosted tools without revealing the full instructions.](assets/agent-overview.png)
 
@@ -110,7 +110,7 @@ On **Versions**, confirm it starts at v1.0.0. You can inspect the limits there a
 
 **Code-tool view — read the executable policy.** Open `issue_refund` and look for its parameters first, then the ordered early returns, then the successful result. The schema is what the model may request; the Python is what orq.ai actually executes. The fixture is deliberately visible here so you can recognize the boundary between example data and enforcement logic.
 
-![The ws01-issue_refund code tool in the Studio: the generated header comment, the window and limit constants, and the start of the order fixture.](assets/tool-code.png)
+![The ws01-issue_refund code tool in the Studio: the generated header comment, the window and limit constants, and the start of the order fixture.](assets/tool-code.png){ .tool-code-crop }
 
 A model has no equivalent code editor: it is selected as a configuration value on the agent. The code you can inspect lives in the tool resource; the prompt you can inspect lives in the agent version; the request and result you can inspect live in the trace.
 
@@ -127,38 +127,32 @@ Do not change the inspection code or the message branch. The exercise is about s
 
 ![Before the exercise, the seeded refund agent exists but run.py stops at TODO 1. After two local edits, run.py invokes the managed agent and prints tool results, answer, and trace ID.](assets/run-py-before-after.png)
 
-```bash {.terminal}
+Run `make invoke-agent` (or `uv run python modules/02-refund-agent/run.py`). Expected session once the TODOs are done; your seat, model, answer and trace ID can differ:
+
+<!-- termynal -->
+
+```console
+$ make invoke-agent
 uv run python modules/02-refund-agent/run.py
-```
-
-`make invoke-agent` is the shortcut for this exact file.
-
-Expected output once the TODOs are done:
-
-```text
 ── Step 1 · Inspect the agent ─────────────────────────
 agent    : ws07-refund-agent v1.0.0
-model    : openai/gpt-6-luna
+model    : <configured model>
 tools    : ws07-lookup_order, ws07-issue_refund, ws07-get_policy
 limits   : max_iterations 8, max_execution_time 120s
 ── Step 2 · Call it and read the output items ─────────
 question : Please refund ord_a2, the dock does not fit my laptop.
 call     : ws07-lookup_order({"order_id":"ord_a2"})
-result   : ws07-lookup_order -> {"ok": true, "order": {
-             "amount": 89, "delivered_days_ago": 15, ...
-           }}
-call     : ws07-issue_refund(
-             {"order_id":"ord_a2", "post_window_exception":false,
-              "reason":"dock does not fit laptop"}
-           )
-result   : ws07-issue_refund -> {"amount_refunded": 89,
-             "currency": "EUR", "ok": true, "order_id": "ord_a2"}
-answer   : Your refund of €89 for order ord_a2 has been issued
-           to your original payment method.
-trace    : 879452279575c96235e1da68b34cd543
+result   : ws07-lookup_order -> {"ok": true, "order": {"id": "ord_a2", "amount": 89.0, "item": "Charging dock Duo", "delivered_days_
+call     : ws07-issue_refund({"order_id":"ord_a2","reason":"dock does not fit laptop","post_window_exception":false})
+result   : ws07-issue_refund -> {"ok": true, "order_id": "ord_a2", "amount_refunded": 89.0, "currency": "EUR"}
+answer   : Your refund of €89 for order ord_a2 has been issued to your original payment method.
+trace    : <your trace id>
+next     : open the trace in the Studio; the tool spans ran in orq, not on your laptop
 ```
 
-A tool call is a `function_call` output item; orq.ai runs it and adds an `orq:<tool key>` item with the same `call_id` and the `result`.
+A tool action has two records: the model proposes a call (`function_call`), then orq executes it and returns a result (`orq:<tool key>`). Their matching `call_id` connects the request to its result. The final answer is a `message` item. TODO 2 asks you to print those result records so you can see what the tools actually did, alongside what the agent said.
+
+A result such as `{"ok": false, "error": "outside_window"}` is a tool refusing an action under its business rules. It does not mean the tool crashed. Read the arguments and result together when you inspect a trace.
 
 **What to read in `run.py`.** The call itself is intentionally one line. The important learning is the response shape: application code should preserve the final answer, structured calls, structured results, and trace ID rather than flattening everything into text. That same structured record powers the chat UI, traces, simulations, and regression scorers later.
 
@@ -173,11 +167,11 @@ uv run python -m app.web
 # Then open http://127.0.0.1:8002
 ```
 
-This starts the local FastHTML chat application. `make agent-chat-ui` is its shortcut.
+This starts the local chat application. `make agent-chat-ui` is its shortcut.
 
-The left panel, **Backend (mock) · read-only**, shows the data the code tools were built from: **Orders** (what `lookup_order` and `issue_refund` see) and **Policies** (what `get_policy` returns). The right panel is the chat. Click a **Try these** prompt, or write your own. Each answer shows a chip per tool call (a red chip is a tool that returned an error) and a **trace** link.
+The **Workshop orders** panel shows the read-only data the code tools were built from: **Orders** (what `lookup_order` and `issue_refund` see) and **Policies** (what `get_policy` returns). On a small screen, open it with **Reference data**. In the chat, choose one of the welcome prompt cards or write your own. Each answer shows a chip per tool call and an **Open trace** link.
 
-![The chat UI: the mock backend on the left with the six orders of the logged-in customer, the chat on the right with an answer, its tool chips and the trace link.](assets/chat-ui.png)
+![The chat UI: Workshop orders on the left with six read-only order cards, and a v1.0.0 refund conversation on the right with tool chips and an Open trace link.](assets/chat-ui.png)
 
 The chat UI offers another way to open the same traces when you have more time.
 
@@ -213,7 +207,7 @@ The chat UI offers another way to open the same traces when you have more time.
         \"model\": \"agent/${WS_PREFIX}-refund-agent@1.0.0\",
         \"input\": \"Refund ord_a1, I changed my mind.\"
       }" \
-      | jq '.output[] | {type, name, arguments, result}'
+      | jq '.output[] | {type, name, call_id, arguments, result}'
     ```
 
 === "orq.ai CLI"
@@ -254,4 +248,27 @@ The Python SDK, raw HTTP call, and CLI all use the same Responses API contract. 
 
 ## Done when
 
-`uv run python modules/02-refund-agent/run.py` prints every tool call with its result, and you have inspected its trace in Studio. The chat UI and other API surfaces are optional.
+`make invoke-agent` prints every tool call with its result, and you have inspected its trace in Studio. The chat UI and other API surfaces are optional.
+
+The completed [solution script](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/solution/modules/02-refund-agent/run.py) produces a session shaped like this. Your seat, configured model, tool sequence, answer and trace ID can differ. Result lines are truncated to 100 characters by the script.
+
+<!-- termynal -->
+
+```console
+$ make invoke-agent
+uv run python modules/02-refund-agent/run.py
+── Step 1 · Inspect the agent ─────────────────────────
+agent    : ws07-refund-agent v1.0.0
+model    : <configured model>
+tools    : ws07-lookup_order, ws07-issue_refund, ws07-get_policy
+limits   : max_iterations 8, max_execution_time 120s
+── Step 2 · Call it and read the output items ─────────
+question : Please refund ord_a2, the dock does not fit my laptop.
+call     : ws07-lookup_order({"order_id":"ord_a2"})
+result   : ws07-lookup_order -> {"ok": true, "order": {"id": "ord_a2", "amount": 89.0, "item": "Charging dock Duo", "delivered_days_
+call     : ws07-issue_refund({"order_id":"ord_a2","reason":"dock does not fit laptop","post_window_exception":false})
+result   : ws07-issue_refund -> {"ok": true, "order_id": "ord_a2", "amount_refunded": 89.0, "currency": "EUR"}
+answer   : Your refund of €89 for order ord_a2 has been issued to your original payment method.
+trace    : <your trace id>
+next     : open the trace in the Studio; the tool spans ran in orq, not on your laptop
+```

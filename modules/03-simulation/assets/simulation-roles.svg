@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 1080" role="img" aria-labelledby="title desc">
+<title id="title">Run and judge each conversation turn</title>
+<desc id="desc">Evaluatorq combines a persona with a scenario. A user simulator exchanges messages with the managed Orq refund agent. Evaluatorq records each reply and returned tool evidence. A separate judge call audits the transcript so far against the goal and criteria and decides whether to continue.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#025558"/></marker></defs>
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#25232e}.title{font-size:30px;font-weight:700}.name{font-size:22px;font-weight:700}.body{font-size:18px;fill:#025558}.small{font-size:16px;fill:#025558}.tag{font:14px ui-monospace,monospace;fill:#b63f18;letter-spacing:1px}.zone{font:15px ui-monospace,monospace;fill:#025558;letter-spacing:1px}.edge{fill:none;stroke:#025558;stroke-width:2;marker-end:url(#arrow)}.record{stroke-dasharray:6 5}</style>
+<rect width="1100" height="1080" rx="14" fill="#f9f8f6"/>
+<text x="40" y="36" class="zone">EVALUATORQ · AGENT SIMULATION</text>
+<text x="40" y="79" class="title">Run and judge each conversation turn</text>
+<text x="40" y="110" class="body">One case becomes a conversation and two separate verdicts.</text>
+<circle cx="58" cy="150" r="18" fill="#025558"/>
+<text x="58" y="157" text-anchor="middle" style="fill:#fff;font-size:18px;font-weight:700">1</text>
+<text x="90" y="157" class="name">Define one case</text>
+<rect x="40" y="179" width="1020" height="114" rx="10" fill="#fff" stroke="#025558" stroke-width="1.5"/>
+<text x="65" y="209" class="tag">PERSONA</text>
+<text x="65" y="240" class="body">How the customer behaves</text>
+<text x="65" y="270" class="small">Tone, patience, assertiveness</text>
+<text x="395" y="209" class="tag">SCENARIO GOAL + CONTEXT</text>
+<text x="395" y="240" class="body">What the customer wants</text>
+<text x="395" y="270" class="small">Facts the customer knows</text>
+<text x="760" y="209" class="tag">SCENARIO CRITERIA</text>
+<text x="760" y="240" class="body">Required or prohibited behaviour</text>
+<text x="760" y="270" class="small">Audited by the judge each turn</text>
+<circle cx="58" cy="332" r="18" fill="#025558"/>
+<text x="58" y="339" text-anchor="middle" style="fill:#fff;font-size:18px;font-weight:700">2</text>
+<text x="90" y="339" class="name">Evaluatorq runs and records the conversation</text>
+<rect x="40" y="364" width="435" height="324" rx="14" fill="#e9f1ee" stroke="#cbd8d4" stroke-width="1.5"/>
+<text x="60" y="394" class="zone">ON YOUR LAPTOP</text>
+<rect x="60" y="420" width="395" height="104" rx="10" fill="#fff" stroke="#025558" stroke-width="1.5"/>
+<text x="257" y="458" class="name" text-anchor="middle">User simulator</text>
+<text x="257" y="487" class="body" text-anchor="middle">Uses the persona and scenario goal</text>
+<text x="257" y="511" class="small" text-anchor="middle">Produces the customer’s next message</text>
+<rect x="625" y="395" width="435" height="226" rx="14" fill="#f0f3f1" stroke="#cbd8d4" stroke-width="1.5"/>
+<text x="645" y="425" class="zone">IN ORQ.AI</text>
+<rect x="645" y="446" width="395" height="152" rx="10" fill="#fdf0e8" stroke="#df5325" stroke-width="1.5"/>
+<text x="842" y="481" class="name" text-anchor="middle">Managed refund agent @1.0.0</text>
+<text x="842" y="512" class="body" text-anchor="middle">Responds to the customer</text>
+<text x="842" y="544" class="small" text-anchor="middle">Orq runs its model loop and code tools</text>
+<text x="842" y="575" class="small" text-anchor="middle">Returns the reply + tool evidence</text>
+<path d="M455 454H645" class="edge"/>
+<text x="550" y="441" class="small" text-anchor="middle">Customer message</text>
+<path d="M645 499H455" class="edge"/>
+<text x="550" y="524" class="small" text-anchor="middle">Reply + tool evidence</text>
+<rect x="60" y="592" width="395" height="75" rx="10" fill="#fff" stroke="#025558" stroke-width="1.5"/>
+<text x="257" y="621" class="name" text-anchor="middle">Conversation record</text>
+<text x="257" y="649" class="small" text-anchor="middle">Messages + returned tool calls/results</text>
+<path d="M257 524V592" class="edge record"/>
+<text x="272" y="568" class="small">Evaluatorq records turns</text>
+<text x="645" y="660" class="body">The judge decides whether to continue.</text><text x="645" y="684" class="small">max_turns caps the remaining conversation.</text>
+<circle cx="58" cy="731" r="18" fill="#025558"/>
+<text x="58" y="738" text-anchor="middle" style="fill:#fff;font-size:18px;font-weight:700">3</text>
+<text x="90" y="738" class="name">Judge each turn, then continue or stop</text>
+<rect x="40" y="775" width="470" height="120" rx="10" fill="#fff" stroke="#025558" stroke-width="1.5"/>
+<text x="65" y="803" class="tag">FROM STEPS 1 AND 2</text>
+<text x="65" y="837" class="name">Transcript so far + the same case</text>
+<text x="65" y="869" class="small">Scenario goal and criteria accompany the record.</text>
+<path d="M60 630H25V835H40" class="edge record"/>
+<rect x="645" y="775" width="415" height="120" rx="10" fill="#e9f1ee" stroke="#025558" stroke-width="1.5"/>
+<text x="852" y="817" class="name" text-anchor="middle">Judge</text>
+<text x="852" y="848" class="body" text-anchor="middle">Reads the record and evaluates the case</text>
+<text x="852" y="878" class="small" text-anchor="middle">A separate model call after each agent reply</text>
+<path d="M510 834H645" class="edge"/>
+<text x="577" y="819" class="small" text-anchor="middle">Assess</text>
+<rect x="645" y="949" width="415" height="85" rx="10" fill="#025558" stroke="#025558" stroke-width="1.5"/>
+<text x="852" y="981" text-anchor="middle" style="fill:#fff;font-size:21px;font-weight:700">Goal achieved? · Criteria met?</text>
+<text x="852" y="1012" text-anchor="middle" style="fill:#fff;font-size:17px">Two separate results for each conversation</text>
+<path d="M852 895V949" class="edge"/><path d="M1060 834H1080V353H257V420" class="edge record"/>
+<text x="40" y="949" class="small">Each persona × each scenario = one conversation.</text>
+<text x="40" y="980" class="small">Per-turn audits do not intercept or undo tool actions.</text>
+<text x="40" y="1011" class="small">Simulator and judge use separate JUDGE_MODEL calls.</text>
+<text x="40" y="1051" class="small">All model calls use the Orq AI Gateway. Saved runs appear in eq dashboard and Studio Experiments.</text>
+</svg>

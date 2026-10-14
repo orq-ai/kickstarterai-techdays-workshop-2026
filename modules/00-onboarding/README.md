@@ -58,13 +58,14 @@ A saved `orq auth login` session can point to another workspace. For this exerci
 
 A model ID has the form `provider/model`. `app/gateway_check.py` uses `MODEL` from your `.env` to make one OpenAI-compatible Responses API call and print its trace ID.
 
-```bash {.terminal}
-uv run python -m app.gateway_check
-```
+`make gateway-check` is an optional shortcut. Look for `verdict : OK` and save the trace ID.
 
-`make gateway-check` is an optional shortcut for the same command. Look for `verdict : OK` and save the trace ID:
+Example session (your configured model, answer, tokens and trace ID can differ):
 
-```text
+<!-- termynal -->
+
+```console
+$ uv run python -m app.gateway_check
 ── Gateway check · one request through the gateway ───────
 endpoint : https://my.orq.ai/v3/router/responses
 model    : openai/gpt-6-luna
@@ -77,13 +78,13 @@ verdict  : OK, your key and the gateway work
 
 ### Step 4 · Find that trace
 
-Open [my.orq.ai](https://my.orq.ai), select the workshop workspace, then open **Observability** > **Traces** and find the ID from Step 3. Check the model, response, tokens, cost, and latency. That is the same evidence you will later use to inspect an agent turn.
+Open the [workshop workspace](https://my.orq.ai/kickstartai-workshop-2026), select the project named by `ORQ_PROJECT` in your email, then open [**Observability** > **Traces**](https://my.orq.ai/kickstartai-workshop-2026/traces) and find the ID from Step 3. Check the model, response, tokens, cost, and latency. That is the same evidence you will later use to inspect an agent turn.
 
 ![The Traces page with the gateway check selected: one responses.openai trace with a gpt-6-luna span, its model, input, output and reasoning tokens, and estimated cost.](assets/gateway-trace.png)
 
 ### Optional · Browse models and try other interfaces
 
-In **AI Gateway** > **Models**, the Model Garden lists the models available to this workspace. The model ID in `.env` is your starting point; the provider, capabilities, and price help you choose another. Comparing models is useful, but not required before creating the agent.
+In [**AI Gateway** > **Models**](https://my.orq.ai/kickstartai-workshop-2026/router/models), the Model Garden lists the models available to this workspace. The model ID in `.env` is your starting point; the provider, capabilities, and price help you choose another. Comparing models is useful, but not required before creating the agent.
 
 ![The Model Garden filtered to enabled models: GPT-6 Luna, DeepSeek, GLM, Kimi and Nemotron models, each with its provider/model id, price per token and capabilities.](assets/model-garden.png)
 

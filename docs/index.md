@@ -9,6 +9,15 @@ hide: [navigation]
 [Start with onboarding](modules/00.md){ .md-button .md-button--primary }
 [Cheat sheet](reference/cheat-sheet.md){ .md-button }
 
+## How the pieces fit
+
+Your chat UI and simulation run on your laptop and call the AI Gateway. Orq runs the [managed refund agent](https://my.orq.ai/kickstartai-workshop-2026/agents)'s model loop and its three [code tools](https://my.orq.ai/kickstartai-workshop-2026/tools), then returns the answer and tool results. Every call leaves a [trace in the Studio](https://my.orq.ai/kickstartai-workshop-2026/traces). Your coding agent can also use the Orq MCP server to work with your workspace.
+
+![Diagram: the chat and simulation call the Orq AI Gateway from your laptop. The managed refund agent and its code tools run in Orq, with traces in the Studio. Your coding agent connects to the gateway and the Orq MCP server.](assets/diagrams/workshop-map.svg)
+
+
+[Open full-size Workshop architecture diagram](assets/diagrams/workshop-map.svg)
+
 ## Requirements
 
 You need a laptop with Python 3.11–3.13, `git`, `make`, and [uv](https://docs.astral.sh/uv/). Install the [orq.ai CLI](https://docs.orq.ai/reference/cli) for inspection and quick API reproduction.

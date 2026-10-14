@@ -35,8 +35,8 @@ agent-chat-ui: ## Chat with your agent in the browser on http://127.0.0.1:8002 (
 	$(RUN) python -m app.web
 
 # ── Simulation ──
-simulate-agent: ## Simulated customers against your agent, VERSION=1.0.0 by default (modules/03-simulation/run.py)
-	$(RUN) python modules/03-simulation/run.py $(or $(VERSION),1.0.0)
+simulate-agent: ## Simulate VERSION=1.0.0, or replay saved cases with REPLAY=path/to/run.json
+	$(RUN) python modules/03-simulation/run.py $(or $(VERSION),1.0.0) $(if $(REPLAY),--replay "$(REPLAY)")
 
 evaluatorq-dashboard: ## Simulation and eval results in the browser (eq dashboard), with the key from .env
 	@set -a; source .env; set +a; $(RUN) eq dashboard

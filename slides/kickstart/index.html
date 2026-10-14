@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>KickstartAI · Testing agents with evals</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23141319'/%3E%3Ccircle cx='32' cy='32' r='15' fill='none' stroke='%23DF5325' stroke-width='9'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="assets/orq-favicon.svg">
 <link rel="stylesheet" href="assets/reveal/reveal.css">
 <link rel="stylesheet" href="deck.css">
 </head>
@@ -62,15 +62,15 @@
 <footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
-<section class="slide full">
+<section class="slide full access-slide">
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
 <h1>Get your key</h1>
-<p class="subtitle">Scan, enter your email and the login code, check your inbox.</p>
+<p class="subtitle">Scan, enter your email and password, then check your inbox.</p>
 <div class="access">
-  <div class="card"><span class="eyebrow">1 · REGISTER</span><img src="assets/qr-register.svg" alt="QR code for orq-kickstart.vercel.app"><a class="url" href="https://orq-kickstart.vercel.app">orq-kickstart.vercel.app</a></div>
-  <div class="card code"><span class="eyebrow">2 · LOGIN CODE</span><div class="code-body"><strong data-login-code>kickstartworkshop<wbr>2026</strong><p>Your <code>.env</code> block arrives by email.</p></div></div>
-  <div class="card"><span class="eyebrow">REPO · FOR LATER</span><img src="assets/qr-github.svg" alt="QR code for github.com/orq-ai/kickstarterai-techdays-workshop-2026"><a class="url" href="https://github.com/orq-ai/kickstarterai-techdays-workshop-2026">github.com/orq-ai/<wbr>kickstarterai-techdays-workshop-2026</a></div>
+  <div class="card qr-card"><span class="eyebrow">1 · REGISTER</span><img src="assets/qr-register.svg" alt="QR code for orq-kickstart.vercel.app"><a class="url" href="https://orq-kickstart.vercel.app">orq-kickstart.vercel.app</a></div>
+  <div class="card code"><span class="eyebrow">2 · PASSWORD (LOGIN CODE)</span><div class="code-body"><strong data-login-code>kickstartworkshop<wbr>2026</strong><p>Enter this password on the registration page. Your <code>.env</code> block arrives by email.</p></div></div>
+  <div class="card qr-card"><span class="eyebrow">3 · REPO</span><img src="assets/qr-github.svg" alt="QR code for github.com/orq-ai/kickstarterai-techdays-workshop-2026"><a class="url" href="https://github.com/orq-ai/kickstarterai-techdays-workshop-2026">github.com/orq-ai/<wbr>kickstarterai-techdays-workshop-2026</a></div>
 </div>
 </div>
 <footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
@@ -110,6 +110,9 @@
   <g fill="none" stroke="var(--orange)" stroke-width="3" marker-end="url(#a6)">
     <path d="M240 265H310"/><path d="M700 220L820 85"/><path d="M700 265H820"/><path d="M700 310L820 445"/>
   </g>
+  <g fill="var(--sand)" stroke="var(--orange)" stroke-width="2">
+    <rect x="845" y="72" width="270" height="54" rx="8"/><rect x="845" y="257" width="270" height="54" rx="8"/><rect x="845" y="442" width="270" height="54" rx="8"/>
+  </g>
   <g font-family="Kurrent Mono,monospace" font-size="20" letter-spacing="1" fill="var(--gray)">
     <text x="30" y="248">USER</text><text x="350" y="228" fill="var(--sand)">MANAGED IN ORQ</text>
     <text x="860" y="56">TOOL · YOUR CODE</text><text x="860" y="241">TOOL · YOUR CODE</text><text x="860" y="426" fill="var(--orange)">MOVES MONEY</text>
@@ -117,9 +120,9 @@
   </g>
   <g font-family="Kurrent,Arial,sans-serif" font-size="27" fill="var(--ink)">
     <text x="30" y="294">Customer</text><text x="350" y="274" font-size="31" fill="var(--sand)">ws07-refund-agent</text>
-    <text x="860" y="104" font-family="Kurrent Mono,monospace" font-size="26">lookup_order</text>
-    <text x="860" y="289" font-family="Kurrent Mono,monospace" font-size="26">get_policy</text>
-    <text x="860" y="474" font-family="Kurrent Mono,monospace" font-size="26" fill="var(--sand)">issue_refund</text>
+    <text x="860" y="108" font-family="Kurrent Mono,monospace" font-size="26">lookup_order</text>
+    <text x="860" y="293" font-family="Kurrent Mono,monospace" font-size="26">get_policy</text>
+    <text x="860" y="478" font-family="Kurrent Mono,monospace" font-size="26">issue_refund</text>
   </g>
 </svg>
 <p class="flow-caption">Every turn is a trace. Open your gateway trace and point at its tool calls.</p>

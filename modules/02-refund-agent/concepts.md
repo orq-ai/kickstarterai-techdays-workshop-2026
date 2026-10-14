@@ -30,8 +30,17 @@ The instructions tell the model what to do; the model supplies the language. The
 
 Run the minimal example:
 
-```bash {.terminal}
-uv run python modules/02-refund-agent/hello_agent.py
+Example session (the answer, configured model and trace ID will vary):
+
+<!-- termynal -->
+
+```console
+$ uv run python modules/02-refund-agent/hello_agent.py
+── Hello agent ─────────────────────────────────────
+agent    : ws07-hello-agent
+model    : <configured model>
+answer   : Hello! How can I help you today?
+trace    : <your trace id>
 ```
 
 The script creates `agent/<WS_PREFIX>-hello-agent` on first run, sends it `Hello`, and prints the answer and trace ID.
