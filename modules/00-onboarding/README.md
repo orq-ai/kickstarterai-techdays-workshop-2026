@@ -38,7 +38,14 @@ make orq-doctor                 # orq whoami + orq doctor with the key from .env
 
 ### Step 3 · The Model Garden
 
-Open [my.orq.ai](https://my.orq.ai), switch to the workshop workspace, and open **Model Garden**. These are the models the gateway serves to this workspace, each with its provider, type and price per token. A model id is always `provider/model`: `openai/gpt-6-luna` is the one in your `.env` as `MODEL`.
+Open [my.orq.ai](https://my.orq.ai) and switch to the workshop workspace.
+
+!!! tip "Which project?"
+    The Studio shows one project at a time. Your key writes to the project it belongs to: pick it in the project picker at the top left (for this workshop, **Default Project**). Everything you create later starts with your seat prefix, so search for `ws07` to find yours among thirty seats.
+
+Open **AI Gateway** > **Models**, the Model Garden. These are the models the gateway serves to this workspace, each with its provider, type and price per token. A model id is always `provider/model`: `openai/gpt-6-luna` is the one in your `.env` as `MODEL`.
+
+![The Model Garden filtered to enabled models: GPT-6 Luna, DeepSeek, GLM, Kimi and Nemotron models, each with its provider/model id, price per token and capabilities.](assets/model-garden.png)
 
 The same list from the terminal:
 
@@ -102,6 +109,8 @@ uv run python -m app.smoke deepseek/deepseek-flash
 ```
 
 Then open **Traces** in the Studio and search the two trace ids. Compare the model, tokens, cost and latency of the two calls.
+
+![The Traces page with the smoke test selected: one responses.openai trace with a gpt-6-luna span, its model, input, output and reasoning tokens, and estimated cost.](assets/gateway-trace.png)
 
 ## Gotchas
 

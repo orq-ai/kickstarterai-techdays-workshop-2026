@@ -29,6 +29,8 @@ file     : app/data/instructions.md
 version  : 2.0.0 (new)
 ```
 
+![The Versions tab of the agent: v2.0.0 latest, "instructions from instructions.md", above v1.0.0, "Initial version".](assets/agent-versions.png)
+
 Run it again without editing: `(unchanged: ...)`, no new version. Every later edit you publish becomes 3.0.0, 4.0.0, and so on; use that number wherever this page says 2.0.0.
 
 ??? tip "Stuck? The reference fix"
@@ -53,6 +55,8 @@ The same comparison from the terminal: put those opening messages in `PROMPTS` i
 ```bash
 make compare-versions VERSION=2.0.0
 ```
+
+![The same first message replayed in the chat UI on @1.0.0 (top) and @2.0.0 (bottom), each in a new conversation, with their tool chips and trace links.](assets/replay-v1-v2.png)
 
 ### Step 3 · Re-run the simulation on v2
 
@@ -92,9 +96,13 @@ verdict  : passed, every scorer at or above its threshold (exit 0)
 
 Every run is also an Experiment in the Studio, next to the previous ones.
 
+![The judge ws01-refund-policy-judge in the Studio: boolean output, gpt-6-luna, and the prompt with the policy summary and the input.user_query, output.response and input.expected_output variables.](assets/judge.png)
+
 ### Step 5 · The dataset in the Studio
 
-Open **Datasets** > `ws07-refund-eval`. These are the rows the eval just read. Add a row for a case your simulation found and the dataset does not cover yet; the next `make regression-eval` picks it up.
+Open **Datasets** > `ws07-refund-eval`. These are the rows the eval just read.
+
+![The dataset ws01-refund-eval in the Studio: 20 rows, each with its inputs (allowed_refunds, message, expected_decision) and expected output.](assets/dataset.png) Add a row for a case your simulation found and the dataset does not cover yet; the next `make regression-eval` picks it up.
 
 ## The same script as a GitHub check
 
