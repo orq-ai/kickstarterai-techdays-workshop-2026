@@ -47,7 +47,7 @@ The script creates `agent/<WS_PREFIX>-hello-agent` on first run, sends it `Hello
 
 ### One simple tool call
 
-Imagine attaching a hosted `get_weather(city)` tool. If a customer asks about the weather, the model can request it instead of guessing. This is a conceptual example: the runnable hello agent has no tools. orq.ai ships built-in server tools such as `current_date` and `google_search`; `get_weather` here stands for any custom tool you create — a code tool, an HTTP tool, or an MCP tool — like the refund agent's tools.
+Imagine attaching a hosted `get_weather(city)` tool. If a customer asks about the weather, the model can request it instead of guessing. This is a conceptual example: the runnable hello agent has no tools. orq.ai ships built-in server tools such as `current_date` and `google_search`; `get_weather` here stands for any custom tool you create (a code tool, an HTTP tool, or an MCP tool), like the refund agent's tools.
 
 ```python {.code-frame}
 # The model asks for structured work.
@@ -72,7 +72,7 @@ A tool schema is a contract with the model: its name, argument shape, and descri
 
 A hello turn is one `responses.create(model=f"agent/{HELLO_KEY}")` call: a `message` item plus a `telemetry.trace_id`. With tools, the same shape gains a `function_call` item and an `orq:<tool>` result item before the final message.
 
-The agent itself is a durable entity, not something your app rebuilds per request: `orq.agents.create()` configures it; `responses.create()` runs one turn. Pinning `agent/<key>@1.0.0` makes a call reproducible — the simulation module relies on it.
+The agent itself is a durable entity, not something your app rebuilds per request: `orq.agents.create()` configures it; `responses.create()` runs one turn. Pinning `agent/<key>@1.0.0` makes a call reproducible; the simulation module relies on it.
 
 ![Diagram: An application sends a message to a managed agent; the model requests a function call, orq.ai executes the code tool, returns an orq.ai tool-result item to the model, and returns a message with a trace ID.](assets/agent-turn-sequence.png)
 

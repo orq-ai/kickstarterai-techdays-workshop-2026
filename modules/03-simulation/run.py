@@ -150,16 +150,16 @@ async def main(argv=None) -> None:
         last = next((m for m in reversed(result.messages) if m.role == "assistant" and m.content), None)
         print(f"run      : {result.metadata.get('persona')} × {result.metadata.get('scenario')}")
         print(f"  rules  : {label}")
-        print(f"  stop   : {result.terminated_by.value} — {result.reason}")
+        print(f"  stop   : {result.terminated_by.value} ({result.reason})")
         if last:
             print(f"  agent  : {str(last.content)[:140]!r}")
     print(f"summary  : {broken}/{len(results)} broke a rule; {unknown}/{len(results)} incomplete or unverified")
     if len(results) != expected:
-        print(f"coverage : INCOMPLETE — expected {expected} conversations, received {len(results)}")
+        print(f"coverage : INCOMPLETE: expected {expected} conversations, received {len(results)}")
     if report.is_file():
         print(f"saved    : {report}")
     else:
-        print(f"saved    : FAILED — no report at {report}; do not use it for replay")
+        print(f"saved    : FAILED, no report at {report}; do not use it for replay")
     print(f"next     : `make evaluatorq-dashboard` and open {name}; read the transcripts of the broken ones")
 
 if __name__ == "__main__":
