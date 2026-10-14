@@ -24,9 +24,9 @@ def ensure_hello_agent(orq) -> None:
     orq.agents.create(
         key=HELLO_KEY,
         display_name="Hello agent",
-        role="A minimal managed agent for the Designing an agent module.",
-        description="Greets a customer in one friendly sentence. No tools.",
-        instructions="Greet the customer in one friendly sentence. Do not use tools.",
+        role="Greeting assistant.",
+        description="Greets a customer in one friendly sentence.",
+        instructions="Greet the customer in one friendly sentence.",
         path=settings.path,
         model={"id": settings.model, "parameters": {"reasoning_effort": "none"}},
         settings={"max_iterations": 1, "max_execution_time": 30},
