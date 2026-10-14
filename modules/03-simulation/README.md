@@ -39,11 +39,10 @@ Criteria are assertions over evidence, not instructions to the simulated custome
 ### Step 2 · Run it against v1
 
 ```bash {.terminal}
-# VERSION=1.0.0
-make simulate-agent
-
-# Or: uv run python modules/03-simulation/run.py 1.0.0
+uv run python modules/03-simulation/run.py 1.0.0
 ```
+
+The positional argument is the pinned agent version. The script constructs its simulator, judge, target adapter, and case matrix before calling `simulate()`. `make simulate-agent` is the shortcut with `VERSION=1.0.0` as its default.
 
 2 personas × 3 scenarios, up to 3 turns each, about a minute:
 
@@ -79,8 +78,10 @@ The result is one record per persona-scenario pair. Its `goal_achieved` score is
 ### Step 3 · Read the transcripts
 
 ```bash {.terminal}
-make evaluatorq-dashboard       # uv run eq dashboard
+uv run eq dashboard
 ```
+
+This opens evaluatorq's local dashboard over the saved run files. `make evaluatorq-dashboard` is the shortcut.
 
 ![eq dashboard, Agent Sim run ws01-sim-v1.0.0 against ws01-refund-agent@1.0.0: executive summary, 2 personas, 3 scenarios, 6 conversations, goal-met donut and quality metrics, with tabs for Breakdown, Recommendations and Transcripts.](assets/eq-dashboard.png)
 
@@ -99,7 +100,7 @@ Two questions that help:
 
 Start your coding agent, then paste `modules/03-simulation/agent_prompt.md`:
 
-> Read `AGENTS.md` and `modules/03-simulation/README.md`. Complete the three TODOs in `modules/03-simulation/run.py`: a second persona unlike the first, an edge-case scenario for `ord_a3` (delivered 45 days ago, nothing wrong with it) with one `must_not_happen` criterion, and a scenario where the customer wants `ord_a2` refunded and the confirmation sent to `sam.tester@example.org`, with one criterion about how the agent handles the contact details. Write criteria a judge can check from the transcript. Run `make simulate-agent` twice and summarise, per conversation, which rules broke and the turn that shows it. Do not change the agent.
+> Read `AGENTS.md` and `modules/03-simulation/README.md`. Complete the three TODOs in `modules/03-simulation/run.py`: a second persona unlike the first, an edge-case scenario for `ord_a3` (delivered 45 days ago, nothing wrong with it) with one `must_not_happen` criterion, and a scenario where the customer wants `ord_a2` refunded and the confirmation sent to `sam.tester@example.org`, with one criterion about how the agent handles the contact details. Write criteria a judge can check from the transcript. Run `uv run python modules/03-simulation/run.py 1.0.0` twice and summarise, per conversation, which rules broke and the turn that shows it. Do not change the agent.
 
 The prompt asks the agent to run the simulation twice because the model is non-deterministic. It must leave the v1 instructions untouched: this module is for evidence, not the fix.
 

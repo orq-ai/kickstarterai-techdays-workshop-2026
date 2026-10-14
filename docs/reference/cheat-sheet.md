@@ -4,7 +4,7 @@
 
 ```bash {.terminal}
 # Onboarding: key + gateway
-make setup orq-doctor smoke-test
+make setup orq-doctor gateway-check
 
 # Agent: create, inspect, and chat
 make seed-workspace

@@ -19,8 +19,10 @@ Read the [Refund agent concepts](https://orq-ai.github.io/kickstarterai-techdays
 Thirty people share this workspace. Your seat prefix from the email (`WS_PREFIX=ws07`) goes in front of every entity you create, so nobody overwrites anybody:
 
 ```bash {.terminal}
-make seed-workspace
+uv run python -m app.refund_agent.entities seed
 ```
+
+This runs the `seed` command in `app/refund_agent/entities.py`. It creates the code tools, agent, dataset, and judge only when they do not already exist. `make seed-workspace` is the optional shortcut for the same command.
 
 ```text
 ── Seed · create this seat's entities ─────────────────
@@ -32,7 +34,7 @@ dataset  : ws07-refund-eval (01M4…)
 judge    : ws07-refund-policy-judge (01M4…)
 ```
 
-The dataset and the judge are for the fix-and-eval module. `make seed-workspace` is safe to run again: it only creates what is missing and never changes an existing agent. It refuses to run with an empty or made-up `WS_PREFIX`. `make reset-workspace` deletes your seat's entities, and only those.
+The dataset and the judge are for the fix-and-eval module. The seed command is safe to run again: it only creates what is missing and never changes an existing agent. It refuses to run with an empty or made-up `WS_PREFIX`. `uv run python -m app.refund_agent.entities reset` deletes your seat's entities, and only those.
 
 **What the seeder teaches.** `app/refund_agent/entities.py` is deliberately an infrastructure boundary. It turns the local source files into durable orq.ai entities once: `tools.py` becomes code tools, `instructions.md` becomes the initial agent version, and `dataset.jsonl` becomes the evaluation dataset. The rest of the application uses their keys; it does not carry API payloads or tool implementations around.
 
@@ -53,8 +55,11 @@ That boundary is useful beyond this workshop: seed or provision entities in a co
 ### Step 2 · Talk to it
 
 ```bash {.terminal}
-make agent-chat-ui              # then open http://127.0.0.1:8002
+uv run python -m app.web
+# Then open http://127.0.0.1:8002
 ```
+
+This starts the local FastHTML chat application. `make agent-chat-ui` is its shortcut.
 
 The left panel, **Backend (mock) · read-only**, shows the data the code tools were built from: **Orders** (what `lookup_order` and `issue_refund` see) and **Policies** (what `get_policy` returns). The right panel is the chat. Click a **Try these** prompt, or write your own. Each answer shows a chip per tool call (a red chip is a tool that returned an error) and a **trace** link.
 
@@ -69,9 +74,10 @@ Open a trace link. The trace shows the model calls and one span per tool call, r
 Open `modules/02-refund-agent/run.py`. It has two TODOs: the call itself, and printing each tool result.
 
 ```bash {.terminal}
-# Or run: uv run python modules/02-refund-agent/run.py
-make invoke-agent
+uv run python modules/02-refund-agent/run.py
 ```
+
+`make invoke-agent` is the shortcut for this exact file.
 
 Expected output once the TODOs are done:
 
@@ -202,4 +208,4 @@ A model has no equivalent code editor: it is selected as a configuration value o
 
 ## Done when
 
-`make invoke-agent` prints every tool call with its result, and you have opened one trace in the Studio.
+`uv run python modules/02-refund-agent/run.py` prints every tool call with its result, and you have opened one trace in the Studio.
