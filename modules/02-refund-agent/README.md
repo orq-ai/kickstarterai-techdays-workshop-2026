@@ -94,7 +94,14 @@ This v1 agent does not configure fallback models, memory stores, knowledge bases
 
 ### Step 3 · Inspect and call it from Python
 
-Open `modules/02-refund-agent/run.py`. It has two TODOs: the call itself, and printing each tool result.
+Open `modules/02-refund-agent/run.py`. Complete these two TODOs before you run it:
+
+| TODO | Where | What to implement | Done when |
+|---|---|---|---|
+| 1 | `response = None` | Call `orq.responses.create()` with `model=f"agent/{settings.agent_key}"` and `input=QUESTION`. | The script reaches the output-item loop instead of stopping with `TODO 1`. |
+| 2 | The `for item in response...` loop | Add the branch for an item whose type starts with `orq:` and print its `name` and `result`. | Every `call` line in the output has a matching `result` line. |
+
+Do not change the inspection code or the message branch. The exercise is about seeing the raw Responses API output shape: request items, managed tool results, final message, and trace ID.
 
 ```bash {.terminal}
 uv run python modules/02-refund-agent/run.py
