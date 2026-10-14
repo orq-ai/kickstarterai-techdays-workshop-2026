@@ -45,7 +45,18 @@ judge    : ws07-refund-policy-judge (01M4…)
 
 The dataset and the judge are for the fix-and-eval module. The seed command is safe to run again: it only creates what is missing and never changes an existing agent. It refuses to run with an empty or made-up `WS_PREFIX`. `uv run python -m app.refund_agent.entities reset` deletes your seat's entities, and only those.
 
-**What the seeder teaches.** `app/refund_agent/entities.py` is deliberately an infrastructure boundary. It turns the local source files into durable orq.ai entities once: `tools.py` becomes code tools, `instructions.md` becomes the initial agent version, and `dataset.jsonl` becomes the evaluation dataset. The rest of the application uses their keys; it does not carry API payloads or tool implementations around.
+### What this command creates
+
+The seed script reads the local source files and creates the matching orq.ai resources:
+
+| Local source | Resource created in orq.ai |
+|---|---|
+| `app/refund_agent/tools.py` | Three hosted code tools |
+| `app/data/instructions.md` | The first refund-agent version |
+| `app/data/dataset.jsonl` | The regression-evaluation dataset |
+| `app/data/judge_prompt.md` | The policy evaluator |
+
+Afterward, the chat UI and scripts use the resource keys. They invoke the managed agent; they do not run the tool implementation on your laptop.
 
 ### What seed configures
 
