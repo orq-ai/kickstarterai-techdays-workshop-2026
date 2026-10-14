@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 610" width="1000" height="610" role="img">
+  <title>One turn on the wire</title>
+  <desc>The app sends one request; inside orq.ai the model requests a function call, the code tool returns an orq result item, and the agent returns a message with a trace ID.</desc>
+  <style>@import url("../../../scripts/diagram.css");</style>
+  <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
+  <rect width="1000" height="610" fill="#f9f8f6"/>
+
+  <rect x="250" y="186" width="726" height="236" rx="12" class="zone"/>
+
+  <path d="M124 90 V580 M374 90 V580 M624 90 V580 M874 90 V580" class="life"/>
+  <text x="272" y="216" class="zone-title">LOOP · WHILE THE MODEL REQUESTS A TOOL</text>
+  <rect x="24" y="24" width="200" height="64" rx="10" class="node"/><text x="124" y="64" text-anchor="middle" class="q">Your app</text>
+  <rect x="274" y="24" width="200" height="64" rx="10" class="focal"/><text x="374" y="64" text-anchor="middle" class="q">orq.ai agent</text>
+  <rect x="524" y="24" width="200" height="64" rx="10" class="node"/><text x="624" y="64" text-anchor="middle" class="q">Model</text>
+  <rect x="774" y="24" width="200" height="64" rx="10" class="node"/><text x="874" y="64" text-anchor="middle" class="q">Code tool</text>
+
+  <path d="M124 150 H374" class="arrow"/><text x="249" y="136" text-anchor="middle" class="code">responses.create</text>
+  <path d="M374 280 H624" class="arrow"/><text x="499" y="266" text-anchor="middle" class="lbl">model call</text>
+  <path d="M624 340 H874" class="accent"/><text x="749" y="326" text-anchor="middle" class="code">function_call</text>
+  <path d="M874 400 H624" class="accent dash"/><text x="749" y="386" text-anchor="middle" class="code">orq:&lt;tool&gt;</text>
+  <path d="M624 470 H374" class="arrow dash"/><text x="499" y="456" text-anchor="middle" class="lbl">answer</text>
+  <path d="M374 530 H124" class="arrow dash"/><text x="249" y="516" text-anchor="middle" class="code">message + trace_id</text>
+
+  <text x="500" y="598" text-anchor="middle" class="note">function_call and orq:&lt;tool&gt; share a call_id.</text>
+</svg>

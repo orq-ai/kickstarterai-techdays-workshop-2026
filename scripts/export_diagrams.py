@@ -1,4 +1,4 @@
-"""Export inline-SVG diagram sources to committed 2x PNGs.
+"""Export SVG diagram sources (modules/*/assets/*.svg, styled by scripts/diagram.css) to committed 2x PNGs.
 
 Run `make diagrams`. Install Chromium once when prompted:
 `uv run --with playwright playwright install chromium`.
@@ -10,7 +10,9 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-files = [Path(arg) for arg in sys.argv[1:]] or sorted(ROOT.glob("modules/*/assets/*.html"))
+files = [Path(arg).resolve() for arg in sys.argv[1:]] or sorted(
+    [*ROOT.glob("modules/*/assets/*.svg"), *ROOT.glob("docs/assets/diagrams/*.svg")]
+)
 
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch()

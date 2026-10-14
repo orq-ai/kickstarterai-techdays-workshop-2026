@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 540" width="1000" height="540" role="img">
+  <title>What the judge can see</title>
+  <desc>A text-only judge sees the customer and agent messages. This workshop's judge also sees each tool call and its result, so it can check the agent's claims.</desc>
+  <style>@import url("../../../scripts/diagram.css");</style>
+  <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
+  <rect width="1000" height="540" fill="#f9f8f6"/>
+
+  <rect x="24" y="24" width="456" height="492" rx="12" class="zone"/>
+  <text x="48" y="58" class="zone-title">TEXT-ONLY JUDGE</text>
+  <rect x="48" y="80" width="408" height="84" rx="10" class="node"/>
+  <text x="64" y="108" class="zone-title">CUSTOMER</text><text x="64" y="144" class="msg">I'd like to return ord_a1.</text>
+  <rect x="48" y="184" width="408" height="84" rx="10" class="node"/>
+  <text x="64" y="212" class="zone-title">AGENT</text><text x="64" y="248" class="msg">Done. EUR 24.99 refunded.</text>
+  <rect x="48" y="288" width="408" height="84" rx="10" class="quiet"/>
+  <text x="64" y="316" class="zone-title" style="fill:#8a8892">TOOL CALLS AND RESULTS</text><text x="64" y="352" class="sub">not shown to the judge</text>
+  <path d="M252 372 V408" class="arrow"/>
+  <rect x="48" y="408" width="408" height="84" rx="10" class="node"/>
+  <text x="252" y="442" text-anchor="middle" class="name">Judge</text>
+  <text x="252" y="473" text-anchor="middle" class="sub">can only trust the agent's wording</text>
+
+  <rect x="520" y="24" width="456" height="492" rx="12" class="zone"/>
+  <text x="544" y="58" class="zone-title">THIS WORKSHOP'S JUDGE</text>
+  <rect x="544" y="80" width="408" height="84" rx="10" class="node"/>
+  <text x="560" y="108" class="zone-title">CUSTOMER</text><text x="560" y="144" class="msg">I'd like to return ord_a1.</text>
+  <rect x="544" y="184" width="408" height="84" rx="10" class="node"/>
+  <text x="560" y="212" class="zone-title">AGENT</text><text x="560" y="248" class="msg">Done. EUR 24.99 refunded.</text>
+  <rect x="544" y="288" width="408" height="84" rx="10" class="focal"/>
+  <text x="560" y="316" class="zone-title" style="fill:#c4421a">TOOL RESULT · issue_refund</text><text x="560" y="352" class="code">ok: true · EUR 24.99</text>
+  <path d="M748 372 V408" class="arrow"/>
+  <rect x="544" y="408" width="408" height="84" rx="10" class="soft"/>
+  <text x="748" y="442" text-anchor="middle" class="name">Judge</text>
+  <text x="748" y="473" text-anchor="middle" class="sub">checks the claim against the result</text>
+</svg>

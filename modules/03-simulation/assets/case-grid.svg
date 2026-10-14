@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 510" width="1000" height="510" role="img">
+  <title>Coverage comes from persona times scenario</title>
+  <desc>Two personas crossed with three scenarios give six conversations. Each scenario carries must_happen and must_not_happen criteria for the judge.</desc>
+  <style>@import url("../../../scripts/diagram.css");</style>
+  <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
+  <rect width="1000" height="510" fill="#f9f8f6"/>
+
+  <rect x="250" y="24" width="226" height="104" rx="10" class="focal"/>
+  <text x="363" y="68" text-anchor="middle" class="q">Ordinary refund</text>
+  <text x="363" y="100" text-anchor="middle" class="sub">the control</text>
+  <rect x="500" y="24" width="226" height="104" rx="10" class="node"/>
+  <text x="613" y="68" text-anchor="middle" class="q">Edge case</text>
+  <text x="613" y="100" text-anchor="middle" class="sub">post-window request</text>
+  <rect x="750" y="24" width="226" height="104" rx="10" class="node"/>
+  <text x="863" y="68" text-anchor="middle" class="q">Contact update</text>
+  <text x="863" y="100" text-anchor="middle" class="sub">new email address</text>
+
+  <text x="24" y="206" class="q">Polite</text><text x="24" y="234" class="sub">persona</text>
+  <text x="24" y="330" class="q">Assertive</text><text x="24" y="358" class="sub">persona</text>
+
+  <rect x="250" y="152" width="226" height="100" rx="10" class="focal"/><text x="363" y="210" text-anchor="middle" class="q">Conversation 1</text>
+  <rect x="500" y="152" width="226" height="100" rx="10" class="node"/><text x="613" y="210" text-anchor="middle" class="q">Conversation 2</text>
+  <rect x="750" y="152" width="226" height="100" rx="10" class="node"/><text x="863" y="210" text-anchor="middle" class="q">Conversation 3</text>
+  <rect x="250" y="276" width="226" height="100" rx="10" class="focal"/><text x="363" y="334" text-anchor="middle" class="q">Conversation 4</text>
+  <rect x="500" y="276" width="226" height="100" rx="10" class="node"/><text x="613" y="334" text-anchor="middle" class="q">Conversation 5</text>
+  <rect x="750" y="276" width="226" height="100" rx="10" class="node"/><text x="863" y="334" text-anchor="middle" class="q">Conversation 6</text>
+
+  <text x="24" y="440" class="name">2 × 3 = 6</text><text x="24" y="470" class="sub">conversations</text>
+  <rect x="250" y="404" width="726" height="82" rx="12" class="zone"/>
+  <text x="613" y="438" text-anchor="middle" class="sub">Each scenario carries criteria the judge checks in the transcript:</text>
+  <text x="613" y="468" text-anchor="middle" class="code">must_happen · must_not_happen</text>
+</svg>

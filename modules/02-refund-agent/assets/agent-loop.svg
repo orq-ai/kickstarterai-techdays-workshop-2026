@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 460" width="1000" height="460" role="img">
+  <title>The loop orq.ai runs</title>
+  <desc>One message enters; inside orq.ai the model either answers or calls a code tool, and each tool result returns to the model until it answers or hits its limits.</desc>
+  <style>@import url("../../../scripts/diagram.css");</style>
+  <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
+  <rect width="1000" height="460" fill="#f9f8f6"/>
+
+  <rect x="290" y="24" width="686" height="412" rx="12" class="zone"/>
+  <text x="314" y="58" class="zone-title">ORQ.AI · MANAGED AGENT</text>
+
+  <rect x="24" y="60" width="200" height="96" rx="10" class="node"/>
+  <text x="124" y="102" text-anchor="middle" class="name">Your app</text>
+  <text x="124" y="132" text-anchor="middle" class="sub">sends one message</text>
+
+  <rect x="24" y="304" width="200" height="96" rx="10" class="node"/>
+  <text x="124" y="346" text-anchor="middle" class="name">Response</text>
+  <text x="124" y="376" text-anchor="middle" class="sub">message + trace ID</text>
+
+  <rect x="330" y="150" width="230" height="150" rx="10" class="node"/>
+  <text x="445" y="204" text-anchor="middle" class="name">Model</text>
+  <text x="445" y="238" text-anchor="middle" class="sub">reads instructions</text>
+  <text x="445" y="262" text-anchor="middle" class="sub">and context, decides</text>
+
+  <rect x="700" y="150" width="240" height="150" rx="10" class="focal"/>
+  <text x="820" y="204" text-anchor="middle" class="name">Code tool</text>
+  <text x="820" y="238" text-anchor="middle" class="sub">runs in the orq.ai</text>
+  <text x="820" y="262" text-anchor="middle" class="sub">sandbox</text>
+
+  <path d="M224 108 H445 V150" class="arrow"/>
+  <text x="240" y="96" class="lbl">message</text>
+
+  <path d="M560 195 H700" class="accent"/>
+  <text x="630" y="184" text-anchor="middle" class="lbl">tool call</text>
+  <path d="M700 255 H560" class="accent dash"/>
+  <text x="630" y="290" text-anchor="middle" class="lbl">result</text>
+
+  <path d="M445 300 V352 H224" class="arrow"/>
+  <text x="256" y="340" class="lbl">answer</text>
+
+  <text x="633" y="408" text-anchor="middle" class="sub">Repeats until the model answers or hits its limits: 8 iterations, 120 s.</text>
+</svg>

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 524" width="1000" height="524" role="img">
+  <title>Every scorer must clear its threshold</title>
+  <desc>Fixed dataset rows run through a pinned agent version and four scorers; each scorer mean must reach its threshold or the run fails with exit code 1.</desc>
+  <style>@import url("../../../scripts/diagram.css");</style>
+  <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
+  <rect width="1000" height="524" fill="#f9f8f6"/>
+  <rect x="24" y="24" width="270" height="104" rx="10" class="node"/>
+  <text x="159" y="68" text-anchor="middle" class="name">Dataset rows</text>
+  <text x="159" y="100" text-anchor="middle" class="sub">20 fixed rows</text>
+  <rect x="365" y="24" width="270" height="104" rx="10" class="node"/>
+  <text x="500" y="68" text-anchor="middle" class="name">Agent @version</text>
+  <text x="500" y="100" text-anchor="middle" class="sub">pinned configuration</text>
+  <rect x="706" y="24" width="270" height="104" rx="10" class="node"/>
+  <text x="841" y="68" text-anchor="middle" class="name">4 scorers</text>
+  <text x="841" y="100" text-anchor="middle" class="sub">mean score for each</text>
+  <path d="M294 76 H365" class="arrow"/>
+  <path d="M635 76 H706" class="arrow"/>
+  <path d="M841 128 V176" class="accent"/>
+  <rect x="24" y="176" width="952" height="324" rx="12" class="zone"/>
+  <text x="48" y="210" class="zone-title">GATE · EVERY MEAN MUST REACH ITS THRESHOLD</text>
+  <text x="48" y="266" class="tool">refund_outcome</text>
+  <rect x="440" y="250" width="320" height="16" rx="8" class="track"/><rect x="440" y="250" width="272" height="16" rx="8" class="fill"/>
+  <text x="800" y="266" class="q">≥ 0.85</text>
+  <text x="48" y="320" class="tool">no_unauthorized_attempt</text>
+  <rect x="440" y="304" width="320" height="16" rx="8" class="track"/><rect x="440" y="304" width="288" height="16" rx="8" class="fill"/>
+  <text x="800" y="320" class="q">≥ 0.90</text>
+  <text x="48" y="374" class="tool">no_pii_leak</text>
+  <rect x="440" y="358" width="320" height="16" rx="8" class="track"/><rect x="440" y="358" width="320" height="16" rx="8" class="fill"/>
+  <text x="800" y="374" class="q">≥ 1.00</text>
+  <text x="48" y="428" class="tool">policy_judge</text>
+  <rect x="440" y="412" width="320" height="16" rx="8" class="track"/><rect x="440" y="412" width="224" height="16" rx="8" class="fill"/>
+  <text x="800" y="428" class="q">≥ 0.70</text>
+  <text x="48" y="474" class="sub">Any scorer below its threshold fails the run with exit code 1.</text>
+</svg>

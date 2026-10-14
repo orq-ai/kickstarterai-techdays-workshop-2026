@@ -4,7 +4,7 @@ The v1 solution combines a system prompt, policy-backed hosted code tools, and a
 
 ## The v1 system
 
-![A customer message enters the version-one prompt and model; the model requests hosted code tools backed by policy and hard rules, receives structured results, and returns a response with a trace.](assets/refund-logic-system.png)
+![Diagram: A customer message enters the version-one prompt and model; the model requests hosted code tools backed by policy and hard rules, receives structured results, and returns a response with a trace.](assets/refund-logic-system.png)
 
 The prompt guides conversation and tool selection. Hosted code tools enforce the business rules. The model can request an action, but a structured tool result determines whether that action succeeded.
 

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 512" width="1000" height="512" role="img">
+  <title>Simulated customers produce evidence</title>
+  <desc>A case starts a user simulator that talks to the refund agent. After each agent reply the judge audits the transcript and either continues the conversation or stops it and returns goal_achieved and criteria_met. Every model call goes through the orq.ai router.</desc>
+  <style>@import url("../../../scripts/diagram.css");</style>
+  <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
+  <rect width="1000" height="512" fill="#f9f8f6"/>
+  <g transform="translate(0,12)">
+
+  <rect x="24" y="70" width="190" height="100" rx="10" class="node"/>
+  <text x="119" y="112" text-anchor="middle" class="name">Case</text>
+  <text x="119" y="144" text-anchor="middle" class="sub">persona × scenario</text>
+  <rect x="260" y="70" width="220" height="100" rx="10" class="node"/>
+  <text x="370" y="112" text-anchor="middle" class="name">User simulator</text>
+  <text x="370" y="144" text-anchor="middle" class="sub">plays the customer</text>
+  <rect x="526" y="70" width="210" height="100" rx="10" class="focal"/>
+  <text x="631" y="112" text-anchor="middle" class="name">Refund agent</text>
+  <text x="631" y="144" text-anchor="middle" class="sub">answers, calls tools</text>
+  <rect x="782" y="70" width="194" height="100" rx="10" class="node"/>
+  <text x="879" y="112" text-anchor="middle" class="name">Judge</text>
+  <text x="879" y="144" text-anchor="middle" class="sub">audits each reply</text>
+
+  <path d="M214 120 H260" class="arrow"/>
+  <path d="M480 120 H526" class="arrow"/>
+  <path d="M736 120 H782" class="arrow"/>
+  <path d="M879 70 V30 H370 V70" class="arrow dash"/>
+  <text x="624" y="22" text-anchor="middle" class="lbl">not done: next customer message</text>
+
+  <path d="M879 170 V240" class="arrow"/>
+  <text x="863" y="212" text-anchor="end" class="lbl">done, or max_turns</text>
+  <rect x="784" y="240" width="190" height="100" rx="10" class="soft"/>
+  <text x="879" y="274" text-anchor="middle" class="name">Verdicts</text>
+  <text x="879" y="304" text-anchor="middle" class="code">goal_achieved</text>
+  <text x="879" y="328" text-anchor="middle" class="code">criteria_met</text>
+
+  <text x="24" y="282" class="sub">Evaluatorq drives the loop from your laptop;</text>
+  <text x="24" y="308" class="sub">the agent and its tools run in orq.ai.</text>
+
+  <rect x="24" y="400" width="952" height="76" rx="12" class="zone"/>
+  <text x="48" y="432" class="zone-title">ORQ.AI ROUTER</text>
+  <text x="48" y="460" class="sub">Every call by the simulator, the agent and the judge is traced and costed.</text>
+  </g>
+</svg>
