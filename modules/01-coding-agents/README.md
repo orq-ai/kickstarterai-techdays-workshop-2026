@@ -99,7 +99,7 @@ The skills are workflows written for an agent (simulate an agent, build an evalu
 
 Ask your agent:
 
-<blockquote class="claude-code-frame">
+<blockquote class="agent-prompt-frame">
   <p>List the chat models available to me through the connected orq.ai MCP server. Return their provider/model IDs.</p>
 </blockquote>
 
@@ -108,7 +108,7 @@ The agent can answer this with its model-list tool. Its answer reflects the mode
 !!! warning "orqi answers 401 Token verification failed"
     You used orqi before with another account, and it reuses that stored login for model calls even with `ORQ_API_KEY` exported. Move it aside and retry: `mv ~/.orqi/agent/auth.json ~/.orqi/agent/auth.json.bak`.
 
-The simulation and fix-and-eval modules each include a Claude Code frame you can hand to the same agent once you have results.
+The simulation and fix-and-eval modules each include a prompt, in the same frame, that you can hand to the same agent once you have results.
 
 ## Official docs
 
