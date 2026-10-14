@@ -240,6 +240,32 @@ html { font-size: 100%; }
 [data-md-color-scheme="slate"] .md-typeset .code-frame.highlight::after {
   color: #a8a39d;
 }
+/* Material's default code foreground is too muted on this custom slate panel. */
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight code,
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight code span {
+  color: #e6e2dc !important;
+}
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight code .c,
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight code .c1 {
+  color: #a8a39d !important;
+}
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight code .s,
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight code .s1,
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight code .s2 {
+  color: #f0c9a8 !important;
+}
+/* Inline identifiers often carry table values and prose labels. Keep them
+   distinct from body copy instead of inheriting Material's low-contrast grey. */
+[data-md-color-scheme="slate"] .md-typeset :not(pre) > code {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #f0c9a8 !important;
+}
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th {
+  color: #f9f8f6;
+}
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) td {
+  color: rgba(249, 248, 246, 0.9);
+}
 
 /* --- Static shell snippets: terminal frame in both color schemes ------- */
 /* Shell fences opt into this with `{.terminal}`. Keep Python and other
