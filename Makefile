@@ -61,10 +61,16 @@ docs-serve: ## Live docs at http://127.0.0.1:8000
 docs-build: ## Strict docs build (fails on broken links)
 	$(RUN) mkdocs build --strict
 
+diagrams: ## Export architecture diagram HTML sources to committed PNGs
+	$(UV) run --with playwright python scripts/export_diagrams.py
+
+og-image: ## Render the README and Open Graph splash image
+	$(UV) run --with playwright python scripts/gen_og_card.py
+
 slides: ## Render slides/workshop.md to HTML with Marp
 	$(MARP) slides/workshop.md --theme slides/orq-theme.css -o slides/workshop.html
 
 deck: ## Serve the reveal.js deck in slides/kickstart on :8000 (add ?code=XXXX to show the login code)
 	python3 -m http.server 8000 -d slides/kickstart
 
-.PHONY: help setup orq-doctor seed-workspace smoke-test invoke-agent agent-chat-ui simulate-agent evaluatorq-dashboard publish-agent-version compare-versions regression-eval reset-workspace test docs-serve docs-build slides deck
+.PHONY: help setup orq-doctor seed-workspace smoke-test invoke-agent agent-chat-ui simulate-agent evaluatorq-dashboard publish-agent-version compare-versions regression-eval reset-workspace test docs-serve docs-build diagrams og-image slides deck

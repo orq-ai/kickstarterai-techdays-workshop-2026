@@ -1,0 +1,1 @@
+--8<-- "modules/03-simulation/concepts.md"
