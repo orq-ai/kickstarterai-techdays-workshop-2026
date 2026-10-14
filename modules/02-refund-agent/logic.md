@@ -48,4 +48,4 @@ A solution for this business case must demonstrate the following outcomes:
 | Post-window request without sufficient evidence | The request is not automatically refunded. |
 | Request outside refund scope | The customer is directed to the appropriate human-support path. |
 
-The next page shows the v1 solution design that turns these requirements into a managed agent.
+The [Solution design](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-solution-design/) page shows the v1 approach that turns these requirements into a managed agent.

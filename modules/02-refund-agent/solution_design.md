@@ -138,6 +138,10 @@ orq.agents.create(
 
 This v1 agent does not configure fallback models, memory stores, knowledge bases, cost caps, or interactive tool gates.
 
+## Next
+
+The [Tutorial](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02/) creates and invokes this managed agent, then lets you inspect its tool calls and traces.
+
 ## Official docs
 
 - [Create Tools](https://docs.orq.ai/ai-studio/ai-engineering/create-tools): code-tool contracts and hosted execution

@@ -2,13 +2,53 @@
 
 A managed agent combines a model's judgment with tools that enforce the business rules.
 
-Read the [Business case](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-logic/) for the policy requirements, then [Solution design](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-solution-design/) for the v1 prompt and tool contracts.
+Start with this minimal illustration. It is not a second workshop entity to create; it gives the managed-agent loop a small, familiar shape before the refund case adds business requirements.
 
 ## What an agent is
 
-An agent is a model, instructions, and tools running in a loop until it can answer. The model decides whether it has enough information, needs a tool, or should respond to the customer.
+An agent is a model, instructions, and optional tools running in a loop until it can answer. The model decides whether it has enough information, needs a tool, or should respond to the customer.
+
+### A hello agent
+
+```python {.code-frame}
+# Illustrative configuration: no tools, one clear instruction.
+hello_agent = {
+    "instructions": "Greet the customer in one sentence.",
+    "model": "provider/model",
+    "tools": [],
+}
+
+# One managed-agent turn.
+response = orq.responses.create(
+    model="agent/hello-agent",
+    input="Hello",
+)
+```
+
+The instructions tell the model what to do; the model supplies the language. The application sends one input and receives one response. That is already a managed agent, even without tools.
 
 ![Inside orq.ai, the model either returns an answer or calls a code tool; the tool result returns to the model, and the loop ends on an answer or its configured limits.](assets/agent-loop.png)
+
+### One simple tool call
+
+Now give the model one illustrative `get_weather(city)` tool. If the customer asks about weather, the model can request the tool instead of guessing.
+
+```python {.code-frame}
+# The model asks for structured work.
+{
+    "type": "function_call",
+    "name": "get_weather",
+    "arguments": '{"city":"Paris"}',
+}
+
+# orq.ai executes the hosted tool and returns structured evidence.
+{
+    "type": "orq:get_weather",
+    "result": {"temperature_c": 18, "condition": "clear"},
+}
+```
+
+The important pattern is not weather. It is the loop: **model decision → tool result → model decision → answer**. The refund agent uses the same loop with business-specific tools.
 
 ## The loop orq.ai runs
 
@@ -81,6 +121,10 @@ if order is None:
 if order["amount"] > REFUND_LIMIT_EUR:
     return {"ok": False, "error": "above_limit_needs_human_review"}
 ```
+
+## Next
+
+Now apply this generic loop to the [Business case](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-logic/). It defines the refund requirements that the v1 [Solution design](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-solution-design/) must meet.
 
 ## Official docs
 
