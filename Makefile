@@ -22,8 +22,11 @@ gateway-check: ## One model request through the orq.ai AI Gateway: answer, token
 	$(RUN) python -m app.gateway_check
 
 # ── Refund agent ──
-seed-workspace: ## Create your agent v1.0.0, its code tools, the eval dataset and the judge (idempotent)
+seed-workspace: ## Create your agent v1.0.0 and its code tools (idempotent)
 	$(RUN) python -m app.refund_agent.entities seed
+
+seed-eval: ## Create the regression dataset and policy judge (idempotent)
+	$(RUN) python -m app.refund_agent.entities seed-eval
 
 invoke-agent: ## Inspect your agent and call it from Python (modules/02-refund-agent/run.py)
 	$(RUN) python modules/02-refund-agent/run.py
@@ -70,4 +73,4 @@ slides: ## Render slides/workshop.md to HTML with Marp
 deck: ## Serve the reveal.js deck in slides/kickstart on :8000 (add ?code=XXXX to show the login code)
 	python3 -m http.server 8000 -d slides/kickstart
 
-.PHONY: help setup orq-doctor seed-workspace gateway-check invoke-agent agent-chat-ui simulate-agent evaluatorq-dashboard publish-agent-version compare-versions regression-eval reset-workspace test docs-serve docs-build diagrams slides deck
+.PHONY: help setup orq-doctor seed-workspace seed-eval gateway-check invoke-agent agent-chat-ui simulate-agent evaluatorq-dashboard publish-agent-version compare-versions regression-eval reset-workspace test docs-serve docs-build diagrams slides deck

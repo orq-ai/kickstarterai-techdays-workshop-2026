@@ -1,15 +1,18 @@
 """Create, version and delete the orq entities this workshop uses, all under your seat prefix.
 
 What `make seed-workspace` creates (idempotent: each `ensure_*` looks for its key first):
-    <seat>-lookup_order, <seat>-issue_refund, <seat>-get_policy   code tools, run by orq
+    <seat>-lookup_order, <seat>-issue_refund, <seat>-get_policy   code tools, run by orq.ai
     <seat>-refund-agent                                           the agent, v1.0.0 from app/data/instructions.md
-    <seat>-refund-eval                                            the regression dataset (module 04)
-    <seat>-refund-policy-judge                                    the LLM judge (module 04)
+
+What `make seed-eval` creates (module 04):
+    <seat>-refund-eval                                            the regression dataset
+    <seat>-refund-policy-judge                                    the LLM judge
 
 `make publish-agent-version` sends your edited instructions as the next major version.
 `make reset-workspace` deletes exactly those kinds, and only keys that start with `<seat>-`.
 
     uv run python -m app.refund_agent.entities seed
+    uv run python -m app.refund_agent.entities seed-eval
     uv run python -m app.refund_agent.entities publish [--file path/to/instructions.md]
     uv run python -m app.refund_agent.entities reset
 """
@@ -386,32 +389,51 @@ def reset(orq=None) -> int:
 
 
 def seed(orq=None) -> None:
-    """Create everything the modules expect, for this seat. Safe to rerun."""
+    """Create the code tools and refund agent for this seat. Safe to rerun."""
     settings.require_seat()
     orq = orq or make_orq()
     started = time.time()
-    print("── Seed · create this seat's entities ─────────────────")
+    print("── Seed · create this seat's agent ───────────────────")
     print(f"seat     : {settings.prefix} → {settings.path}")
     try:
-        print(f"tools    : {', '.join(ensure_tools(orq))} (code tools, run by orq)")
+        print(f"tools    : {', '.join(ensure_tools(orq))} (code tools, run by orq.ai)")
         print(f"agent    : {ensure_agent(orq)} v{current_agent(orq)['version']}")
-        print(f"dataset  : {K('refund-eval')} ({ensure_dataset(orq)})")
-        print(f"judge    : {K('refund-policy-judge')} ({ensure_llm_judge(orq)})")
     except Exception as exc:
         raise SystemExit(
             f"seed failed: {str(exc)[:300]}\nfix: check that ORQ_API_KEY, ORQ_PROJECT and WS_PREFIX are the ones from your email"
         ) from exc
     print(f"elapsed  : {time.time() - started:.0f}s")
-    print(f"next     : `make agent-chat-ui`; in the Studio, search {settings.prefix} in your key's project")
+    print(f"next     : `uv run python modules/02-refund-agent/hello_agent.py` or `uv run python -m app.web`")
+
+
+def seed_eval(orq=None) -> None:
+    """Create the dataset and policy judge used only by Fix and eval. Safe to rerun."""
+    settings.require_seat()
+    orq = orq or make_orq()
+    started = time.time()
+    print("── Seed · create this seat's evaluation resources ────")
+    print(f"seat     : {settings.prefix} → {settings.path}")
+    try:
+        print(f"dataset  : {K('refund-eval')} ({ensure_dataset(orq)})")
+        print(f"judge    : {K('refund-policy-judge')} ({ensure_llm_judge(orq)})")
+    except Exception as exc:
+        raise SystemExit(
+            f"seed-eval failed: {str(exc)[:300]}\nfix: check that ORQ_API_KEY, ORQ_PROJECT and WS_PREFIX are the ones from your email"
+        ) from exc
+    print(f"elapsed  : {time.time() - started:.0f}s")
+    print("next     : continue with the regression-evaluation steps")
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("command", choices=["seed", "publish", "reset"])
+    parser.add_argument("command", choices=["seed", "seed-eval", "publish", "reset"])
     parser.add_argument("--file", default=str(INSTRUCTIONS), help="instructions to publish (publish only)")
     args = parser.parse_args(argv)
     if args.command == "seed":
         seed()
+        return 0
+    if args.command == "seed-eval":
+        seed_eval()
         return 0
     if args.command == "reset":
         return 1 if reset() else 0

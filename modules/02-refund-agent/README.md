@@ -31,32 +31,28 @@ Your seat prefix from the email (`WS_PREFIX=ws07`) goes in front of every entity
 uv run python -m app.refund_agent.entities seed
 ```
 
-This runs the `seed` command in `app/refund_agent/entities.py`. It creates the code tools, agent, dataset, and judge only when they do not already exist. `make seed-workspace` is the optional shortcut for the same command.
+This runs the `seed` command in `app/refund_agent/entities.py`. It creates the code tools and refund agent only when they do not already exist. `make seed-workspace` is the optional shortcut for the same command.
 
 ```text
-── Seed · create this seat's entities ─────────────────
+── Seed · create this seat's agent ────────────────────
 seat     : ws07 → <your project>/workshop
 tools    : ws07-lookup_order, ws07-issue_refund,
            ws07-get_policy (code tools, run by orq.ai)
 agent    : ws07-refund-agent v1.0.0
-dataset  : ws07-refund-eval (01M4…)
-judge    : ws07-refund-policy-judge (01M4…)
 ```
 
-The dataset and the judge are for the fix-and-eval module. The seed command is safe to run again: it only creates what is missing and never changes an existing agent. It refuses to run with an empty or made-up `WS_PREFIX`. `uv run python -m app.refund_agent.entities reset` deletes your seat's entities, and only those.
+The dataset and policy judge are introduced in Fix and eval. The seed command is safe to run again: it only creates what is missing and never changes an existing agent. It refuses to run with an empty or made-up `WS_PREFIX`. `uv run python -m app.refund_agent.entities reset` deletes your seat's entities, and only those.
 
 ### What this command creates
 
-The seed script reads the local source files and creates the matching orq.ai resources:
+The seed script reads the local agent sources and creates the matching orq.ai resources:
 
 | Local source | Resource created in orq.ai |
 |---|---|
 | `app/refund_agent/tools.py` | Three hosted code tools |
 | `app/data/instructions.md` | The first refund-agent version |
-| `app/data/dataset.jsonl` | The regression-evaluation dataset |
-| `app/data/judge_prompt.md` | The policy evaluator |
 
-Afterward, the chat UI and scripts use the resource keys. They invoke the managed agent; they do not run the tool implementation on your laptop.
+Afterward, the chat UI and scripts use the resource keys. They invoke the managed agent; they do not run the tool implementation on your laptop. Fix and eval creates its dataset and policy judge when that module needs them.
 
 ### What seed configures
 
