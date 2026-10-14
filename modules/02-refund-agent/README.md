@@ -92,7 +92,7 @@ This v1 agent does not configure fallback models, memory stores, knowledge bases
 
 Open **Agents** and search for your `WS_PREFIX` to find your refund-agent card.
 
-![The Studio Agents overview: each managed agent appears as a resource card with its key, description, version, and recent update; search for your seat prefix to find your agent.](assets/agent-overview.png)
+![The actual ws999-refund-agent detail page in Studio: its version, refund-assistant role, instructions, gpt-6-luna model, configuration, and attached ws999 hosted code tools.](assets/agent-overview.png)
 
 Open your `-refund-agent` > **Versions**. There is one version today. On the agent version, inspect these fields in order: the **model** answers the question “which model is called?”, **instructions** answers “what is it told to do?”, **tools** answers “what actions can it request?”, and **limits** answers “when does the loop stop?”. Then open one tool under **Tools**: the Python that orq.ai runs, generated from `tools.py`.
 
