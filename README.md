@@ -2,7 +2,7 @@
   <img src="docs/assets/og-image.png" alt="orq.ai workshop" width="820">
 </p>
 
-# Is your agent behaving like you expect?
+# KickstartAI TechDays
 
 The hands-on part of the KickstartAI TechDays session on 15 October 2026: two hours with a refund agent hosted in [orq.ai](https://orq.ai). You simulate customers against version 1, find what it gets wrong, fix the prompt, publish version 2, and prove the fix with a regression eval on an orq.ai dataset.
 
