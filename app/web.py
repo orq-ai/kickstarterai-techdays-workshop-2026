@@ -71,7 +71,12 @@ def index(request: Request) -> FileResponse:
 
 
 async def get_agent(request: Request) -> JSONResponse:
-    agent = await run_in_threadpool(lambda: current_agent(make_orq()))
+    if not settings.api_key:
+        return _error(503, "ORQ_API_KEY is empty. Add the block from your kickstart email to .env, then restart the chat.")
+    try:
+        agent = await run_in_threadpool(lambda: current_agent(make_orq()))
+    except Exception:  # noqa: BLE001  the UI exposes setup guidance, not provider diagnostics
+        return _error(502, "Could not reach orq to load agent setup. Check ORQ_API_KEY and your connection, then try again.")
     if agent is None:
         return _error(404, f"{settings.agent_key} does not exist yet: run `make seed-workspace`")
     return JSONResponse({"key": settings.agent_key, "versions": ["latest", *versions(agent)]})
@@ -121,7 +126,11 @@ async def post_chat(request: Request) -> JSONResponse:
         {
             "answer": turn.answer,
             "tool_calls": [
-                {"name": c.name, "ok": isinstance(c.result, dict) and bool(c.result.get("ok"))}
+                {
+                    "name": c.name,
+                    "ok": isinstance(c.result, dict) and bool(c.result.get("ok")),
+                    "error": c.result.get("error") if isinstance(c.result, dict) else None,
+                }
                 for c in turn.tool_calls
             ],
             "trace_id": turn.trace_id,
@@ -135,6 +144,10 @@ async def post_chat(request: Request) -> JSONResponse:
 
 app = Starlette(
     routes=[
+        Route("/fonts/kurrent.woff2", lambda request: FileResponse(ROOT / "slides/kickstart/assets/ESKlarheitKurrent-Rg.woff2")),
+        Route("/fonts/kurrent-medium.woff2", lambda request: FileResponse(ROOT / "slides/kickstart/assets/ESKlarheitKurrent-Md.woff2")),
+        Route("/fonts/kurrent-semibold.woff2", lambda request: FileResponse(ROOT / "slides/kickstart/assets/ESKlarheitKurrent-Smbd.woff2")),
+        Route("/fonts/kurrent-mono.ttf", lambda request: FileResponse(ROOT / "slides/kickstart/assets/ESKlarheitKurrentMono-Md.ttf")),
         Route("/", index),
         Route("/api/agent", get_agent),
         Route("/api/backend", get_backend),

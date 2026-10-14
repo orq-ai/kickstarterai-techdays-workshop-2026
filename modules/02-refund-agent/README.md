@@ -45,7 +45,7 @@ The dataset and the judge are for the fix-and-eval module. `make seed-workspace`
 make agent-chat-ui              # then open http://127.0.0.1:8002
 ```
 
-The left panel, **Backend (mock) · read-only**, shows the data the code tools were built from: **Orders** (what `lookup_order` and `issue_refund` see) and **Policies** (what `get_policy` returns). The right panel is the chat. Click a **Try these** prompt, or write your own. Each answer shows a chip per tool call (a red chip is a tool that returned an error) and a **trace** link.
+The **Workshop orders** panel shows the read-only data the code tools were built from: **Orders** (what `lookup_order` and `issue_refund` see) and **Policies** (what `get_policy` returns). On a small screen, open it with **Reference data**. In the chat, choose one of the welcome prompt cards or write your own. Each answer shows a chip per tool call and an **Open trace** link.
 
 ![The chat UI: the mock backend on the left with the six orders of the logged-in customer, the chat on the right with an answer, its tool chips and the trace link.](assets/chat-ui.png)
 

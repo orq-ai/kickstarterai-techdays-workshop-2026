@@ -3,145 +3,206 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Refund agent chat · Lumen Goods support</title>
+<title>Refund agent · KickstartAI workshop</title>
 <link rel="icon" href="data:,">
 <style>
-  /* Colours from docs/stylesheets/extra.css */
-  :root {
-    --teal: #025558; --teal-light: #299d8f; --orange-deep: #df5325; --orange-text: #c4421a;
-    --ink: #25232e; --muted: #6b6875; --sand: #f9f8f6; --line: #dcd9d3;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: var(--ink); background: var(--sand);
+  @font-face { font-family: Kurrent; src: url("/fonts/kurrent.woff2") format("woff2"); font-weight: 400; font-display:swap; }
+  @font-face { font-family: Kurrent; src: url("/fonts/kurrent-medium.woff2") format("woff2"); font-weight: 500; font-display:swap; }
+  @font-face { font-family: Kurrent; src: url("/fonts/kurrent-semibold.woff2") format("woff2"); font-weight: 600 700; font-display:swap; }
+  @font-face { font-family: Kurrent Mono; src: url("/fonts/kurrent-mono.ttf") format("truetype"); font-weight: 500; font-display:swap; }
+  :root { --sand:#ebe6e0; --paper:#f7f3ef; --white:#fffdfa; --ink:#141319; --gray:#666167;
+    --rule:#cbc4bd; --orange:#df5325; --orange-dark:#a93616;
+    color:var(--ink); background:var(--sand); font-family:Kurrent,"Avenir Next",sans-serif; font-synthesis:none; }
+  * { box-sizing:border-box; }
+  body { margin:0; height:100vh; height:100dvh; min-width:320px; display:grid; grid-template-columns:360px minmax(0,1fr); }
+  :focus-visible { outline:2px solid var(--orange); outline-offset:3px; }
+  button,select,textarea { font:inherit; color:inherit; }
+  button { cursor:pointer; }
+  button:disabled,select:disabled,textarea:disabled { opacity:.55; cursor:progress; }
+  .eyebrow,.mono,code,.meta { font-family:"Kurrent Mono",ui-monospace,monospace; }
+  aside { display:flex; flex-direction:column; min-height:0; overflow:hidden; background:var(--paper); border-right:1px solid var(--rule); }
+  .rail-brand { display:flex; align-items:center; gap:.7rem; padding:1.05rem 1.25rem; border-bottom:1px solid var(--rule); }
+  .brand-name { font:500 .92rem "Kurrent Mono",monospace; letter-spacing:.06em; }
+  .brand-name small { display:block; margin-top:.18rem; color:var(--gray); font-size:.68rem; letter-spacing:.12em; }
+  .rail-heading { display:flex; justify-content:space-between; align-items:center; gap:.5rem; padding:1.05rem 1.25rem .85rem; }
+  .eyebrow { color:#a93616; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; }
+  aside h2 { margin:0; font-size:1.2rem; line-height:1.1; font-weight:500; text-transform:none; letter-spacing:0; padding:0; color:var(--ink); }
+  .readonly { white-space:nowrap; padding:.3rem .45rem; border:1px solid var(--rule); border-radius:3px; color:var(--gray); font:500 .68rem "Kurrent Mono",monospace; letter-spacing:.04em; }
+  #drawer-close { display:none; min-height:38px; padding:.35rem .6rem; border:1px solid var(--rule); border-radius:4px; background:transparent; font-size:.8rem; }
+  [role=tablist] { display:flex; gap:.25rem; padding:0 1.25rem; border-bottom:1px solid var(--rule); }
+  [role=tab] { min-height:44px; padding:.55rem .7rem; border:0; border-bottom:2px solid transparent; background:transparent; color:var(--gray); }
+  [role=tab][aria-selected=true] { border-bottom-color:var(--orange); color:var(--ink); }
+  [role=tabpanel] { flex:1; overflow-y:auto; padding:.85rem 1.25rem 1.25rem; min-height:0; }
+  .caption { margin:0 0 .75rem; color:var(--gray); font-size:.82rem; line-height:1.4; }
+  .orders { display:grid; gap:.5rem; }
+  .order-card { padding:.65rem .7rem; border:1px solid var(--rule); border-radius:5px; background:var(--white); }
+  .order-main { display:flex; justify-content:space-between; gap:.6rem; align-items:baseline; }
+  .order-main h3 { margin:0; font:500 .83rem "Kurrent Mono",monospace; white-space:nowrap; }
+  .order-main span { min-width:0; overflow-wrap:anywhere; text-align:right; color:var(--gray); font-size:.82rem; }
+  .order-facts { display:flex; flex-wrap:wrap; gap:.25rem .7rem; margin:.45rem 0 0; color:var(--gray); font-size:.78rem; }
+  .order-facts div { display:flex; gap:.22rem; }
+  .order-facts dd { margin:0; color:var(--ink); font-variant-numeric:tabular-nums; }
+  .policy { margin:.35rem 0 .7rem; padding:.6rem .7rem; border:1px solid var(--rule); border-radius:5px; background:var(--white); }
+  .policy summary { font-weight:500; font-size:.88rem; }
+  .policy pre { margin:.5rem 0 0; white-space:pre-wrap; font:.76rem/1.45 Kurrent,sans-serif; }
+  .chat { min-width:0; min-height:0; display:grid; grid-template-rows:auto minmax(0,1fr) auto; background:var(--sand); }
+  .chat-topbar { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.85rem 1.5rem; border-bottom:1px solid var(--rule); background:var(--paper); color:var(--ink); }
+  .chat-topbar :focus-visible { outline-color:var(--orange); }
+  .chat-topbar #reset,.chat-topbar #drawer-toggle { background:transparent; color:var(--ink); border-color:var(--rule); }
+  .title-wrap { min-width:0; }
+  .title-mark { display:block; width:2.6rem; height:3px; margin:0 0 .48rem; background:var(--orange); }
+  .title-copy h1 { margin:0; font-size:1.3rem; line-height:1.1; font-weight:500; font-family:Kurrent,sans-serif; }
+  .title-copy p { margin:.3rem 0 0; color:var(--gray); font:.75rem "Kurrent Mono",monospace; overflow-wrap:anywhere; }
+  .controls { display:flex; align-items:center; justify-content:flex-end; gap:.6rem; flex-wrap:wrap; }
+  .controls label { display:block; margin:0 0 .15rem .05rem; color:var(--gray); font:.7rem "Kurrent Mono",monospace; text-transform:uppercase; letter-spacing:.08em; }
+  select { min-height:40px; max-width:10rem; padding:.45rem 2rem .45rem .65rem; border:1px solid var(--rule); border-radius:4px; background:var(--white); }
+  .control-button { min-height:40px; padding:.48rem .8rem; border:1px solid var(--rule); border-radius:4px; background:transparent; color:var(--ink); font-size:.86rem; font-weight:500; }
+  .control-button:hover { border-color:var(--ink); }
+  #drawer-toggle { display:none; }
+  main { min-height:0; overflow:auto; padding:2rem 1.5rem; }
+  .conversation { width:min(100%,52rem); min-height:100%; display:flex; flex-direction:column; justify-content:flex-end; gap:1.1rem; margin:0 auto; }
+  .welcome { align-self:center; width:min(100%,40rem); margin:auto 0; padding:clamp(1.25rem,4vw,2.6rem) 0; }
+  .welcome h2 { max-width:12ch; margin:.75rem 0 .5rem; font-size:clamp(2.2rem,5vw,4.1rem); line-height:.98; letter-spacing:-.045em; font-weight:400; }
+  .welcome>p { max-width:38rem; margin:0; color:var(--gray); font-size:1.02rem; line-height:1.5; }
+  .prompts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.55rem; margin-top:1.35rem; }
+  .prompts button { min-height:50px; padding:.65rem .8rem; border:1px solid var(--rule); border-radius:4px; background:var(--paper); color:var(--ink); text-align:left; font-size:.86rem; transition:border-color .15s,transform .15s; }
+  .prompts button:hover { border-color:var(--orange); transform:translateY(-1px); }
+  .prompts button:last-child { grid-column:1 / -1; }
+  .welcome-note { display:flex; align-items:center; gap:.5rem; margin-top:1.1rem; color:var(--gray); font:.68rem "Kurrent Mono",monospace; }
+  .status-dot { width:.48rem; height:.48rem; border-radius:50%; background:var(--gray); box-shadow:0 0 0 3px rgba(102,97,103,.12); }
+  #log { width:100%; max-width:none; list-style:none; display:flex; flex-direction:column; gap:.8rem; margin:0; padding:0; }
+  #log:has(.warning) { min-height:auto; justify-content:flex-end; }
+  .msg { width:fit-content; max-width:min(88%,44rem); padding:.85rem 1rem; border-radius:5px; line-height:1.5; white-space:pre-wrap; overflow-wrap:anywhere; animation:arrive .18s ease-out both; }
+  .msg::before { display:block; margin:0 0 .3rem; font:500 .62rem "Kurrent Mono",monospace; letter-spacing:.1em; }
+  .user { align-self:flex-end; background:var(--ink); color:var(--paper); }
+  .user::before { content:"YOU"; color:#ef9b7d; }
+  .agent { align-self:flex-start; border:1px solid var(--rule); border-left:3px solid var(--orange); background:var(--white); }
+  .agent::before { content:"REFUND AGENT"; color:#a93616; }
+  .note { align-self:center; max-width:100%; color:var(--gray); font:.68rem "Kurrent Mono",monospace; text-align:center; }
+  .error { border-color:var(--orange); color:#a93616; }
+  .warning { align-self:center; width:min(100%,38rem); padding:1.4rem; display:grid; gap:.65rem; background:#fff8ed; border:1px solid var(--orange); color:#8c3217; }
+  .warning h2 { margin:0; color:#8c3217; font-size:1.15rem; line-height:1.25; font-weight:500; }
+  .warning p { margin:0; line-height:1.5; overflow-wrap:anywhere; }
+  .warning code { display:inline-block; padding:.45rem .6rem; border:1px solid #e4c7b8; border-radius:4px; background:#fffdfa; color:var(--ink); font-size:.9rem; }
+  .warning-actions { display:flex; justify-content:flex-end; margin-top:.2rem; }
+  .meta { display:flex; align-items:center; flex-wrap:wrap; gap:.4rem; margin-top:.75rem; color:var(--gray); font-size:.78rem; white-space:normal; }
+  .chip { padding:.25rem .5rem; border:1px solid var(--rule); border-radius:3px; background:var(--paper); color:var(--ink); }
+  .chip.failed { border-color:var(--orange); color:#a93616; }
+  .used { padding-left:.2rem; }
+  .meta a { min-height:40px; display:inline-flex; align-items:center; margin-left:auto; padding:.35rem .4rem; color:#a93616; text-decoration-thickness:1px; text-underline-offset:3px; }
+  form { padding:1rem 1.5rem calc(1rem + env(safe-area-inset-bottom)); border-top:1px solid var(--rule); background:var(--paper); }
+  .composer { width:min(100%,52rem); margin:0 auto; }
+  .composer-label { display:block; margin:0 0 .35rem .1rem; color:var(--gray); font:.72rem "Kurrent Mono",monospace; letter-spacing:.06em; text-transform:uppercase; }
+  .row { display:flex; align-items:flex-end; gap:.55rem; max-width:none; margin:0; }
+  .grow { min-width:0; flex:1; }
+  textarea { display:block; width:100%; min-height:48px; max-height:9rem; resize:vertical; padding:.75rem .85rem; border:1px solid #aaa39c; border-radius:4px; background:var(--white); line-height:1.45; }
+  textarea::placeholder { color:#77716e; }
+  #send { min-height:48px; padding:.7rem 1.15rem; border:0; border-radius:4px; background:var(--orange); color:var(--ink); font-weight:600; }
+  #send:hover:not(:disabled) { background:#f0915f; }
+  .composer-hint { margin:.4rem .1rem 0; color:var(--gray); font-size:.76rem; }
+  @keyframes arrive { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:none; } }
+  @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; scroll-behavior:auto!important; } }
+  @media (max-width:900px) and (min-width:761px) { body { grid-template-columns:310px minmax(0,1fr); } .chat-topbar { padding-inline:1rem; } main,form { padding-inline:1rem; } }
+  @media (max-width:760px) {
+    body { grid-template-columns:minmax(0,1fr); grid-template-rows:auto minmax(0,1fr); }
+    aside { grid-row:1; max-height:42dvh; border-right:0; border-bottom:1px solid var(--rule); }
+    .rail-brand { display:none; }
+    .rail-heading { position:sticky; top:0; z-index:1; padding:.5rem .8rem; background:var(--paper); }
+    .rail-heading .eyebrow,.readonly { display:none; }
+    #drawer-close { display:inline-block; }
+    [role=tablist] { padding-inline:.8rem; }
+    [role=tabpanel] { padding:.5rem .8rem .75rem; }
+    aside[hidden] { display:none; }
+    .chat { grid-row:2; }
+    .chat-topbar { align-items:flex-start; padding:.7rem .8rem; }
+    .title-copy h1 { font-size:1.1rem; }
+    .controls { gap:.35rem; }
+    .control-button { min-height:42px; padding:.45rem .6rem; font-size:.78rem; }
+    #drawer-toggle { display:inline-block; }
+    select { max-width:7rem; min-height:42px; font-size:.8rem; }
+    main { padding:1.25rem .85rem; }
+    .conversation { gap:.8rem; }
+    .welcome { padding:1.1rem 0; }
+    .welcome h2 { font-size:clamp(2.2rem,10vw,3.4rem); }
+    .prompts { grid-template-columns:repeat(2,minmax(0,1fr)); gap:.4rem; margin-top:1rem; }
+    .prompts button { min-height:44px; }
+    .prompts button:last-child { grid-column:1 / -1; }
+    form { padding:.7rem .8rem calc(.7rem + env(safe-area-inset-bottom)); }
+    .composer-hint { font-size:.68rem; }
   }
-  * { box-sizing: border-box; }
-  body { margin: 0; height: 100vh; display: grid; grid-template-columns: 300px 1fr; }
-  :focus-visible { outline: 3px solid var(--orange-deep); outline-offset: 2px; }
-
-  /* ── Backend (mock) · read-only ── */
-  aside { border-right: 1px solid var(--line); background: #fff; display: flex; flex-direction: column; min-height: 0; }
-  aside > h2 { font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase; margin: 0;
-               padding: 0.9rem 1rem 0.5rem; color: var(--muted); }
-  [role=tablist] { display: flex; gap: 0.25rem; padding: 0 1rem; border-bottom: 1px solid var(--line); }
-  [role=tab] { font: inherit; font-size: 0.9rem; background: none; border: 0; padding: 0.5rem 0.6rem;
-               border-bottom: 3px solid transparent; cursor: pointer; color: var(--muted); }
-  [role=tab][aria-selected=true] { color: var(--teal); border-bottom-color: var(--teal); font-weight: 600; }
-  [role=tabpanel] { overflow-y: auto; padding: 0.75rem 1rem 1rem; flex: 1; }
-  .caption { font-size: 0.8rem; color: var(--muted); margin: 0 0 0.6rem; }
-  .caption code { font-size: 0.78rem; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-  th { text-align: left; font-weight: 600; color: var(--muted); font-size: 0.75rem; padding: 0.3rem 0.2rem; }
-  td { padding: 0.4rem 0.2rem; border-top: 1px solid var(--line); vertical-align: top; }
-  td.num { text-align: right; font-variant-numeric: tabular-nums; }
-  .policy { margin-bottom: 0.6rem; }
-  .policy summary { cursor: pointer; font-weight: 600; font-size: 0.85rem; }
-  .policy pre { white-space: pre-wrap; font-size: 0.78rem; line-height: 1.4; margin: 0.4rem 0 0; }
-
-  /* ── Agent chat ── */
-  .chat { display: flex; flex-direction: column; min-height: 0; }
-  header { background: var(--teal); color: #fff; padding: 0.75rem 1.25rem;
-           display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-  header h1 { font-size: 1rem; margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-  header p { margin: 0; font-size: 0.8rem; opacity: 0.85; }
-  header :focus-visible { outline-color: #fff; }
-  .controls { display: flex; align-items: flex-end; gap: 0.75rem; }
-  .controls label { display: block; font-size: 0.75rem; opacity: 0.85; margin-bottom: 0.2rem; }
-  select { font: inherit; padding: 0.4rem 0.5rem; border-radius: 8px; border: 1px solid var(--line); background: #fff; color: var(--ink); }
-  button { font: inherit; font-weight: 600; padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid transparent; cursor: pointer; }
-  #reset { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.6); }
-  #drawer-toggle { display: none; background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.6); }
-  main { flex: 1; overflow-y: auto; padding: 1rem; }
-  #log { list-style: none; margin: 0 auto; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; max-width: 46rem; }
-  .msg { padding: 0.75rem 1rem; border-radius: 10px; line-height: 1.45; white-space: pre-wrap; max-width: 85%; }
-  .user { align-self: flex-end; background: var(--teal); color: #fff; }
-  .agent { align-self: flex-start; background: #fff; border: 1px solid var(--line); }
-  .note { align-self: center; font-size: 0.8rem; color: var(--muted); }
-  .error { align-self: flex-start; background: #fff; border: 1px solid var(--orange-deep); color: var(--orange-text); }
-  .meta { margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; white-space: normal; font-size: 0.8rem; }
-  .chip { background: var(--sand); border: 1px solid var(--line); border-radius: 999px; padding: 0.1rem 0.55rem;
-          font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-  .chip.failed { border-color: var(--orange-deep); color: var(--orange-text); }
-  .used { color: var(--muted); }
-  .meta a { color: var(--teal); font-weight: 600; margin-left: auto; }
-  form { border-top: 1px solid var(--line); padding: 0.75rem 1rem; background: var(--sand); }
-  .row { max-width: 46rem; margin: 0 auto; display: flex; gap: 0.5rem; align-items: flex-end; }
-  .grow { flex: 1; }
-  form label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; }
-  input { width: 100%; font: inherit; padding: 0.6rem 0.75rem; border: 1px solid #8a8792; border-radius: 8px; background: #fff; color: var(--ink); }
-  #send { background: var(--orange-deep); color: #fff; }
-  #send:disabled { opacity: 0.6; cursor: progress; }
-  details.examples { max-width: 46rem; margin: 0 auto 0.6rem; }
-  details.examples summary { cursor: pointer; font-weight: 600; font-size: 0.9rem; }
-  .prompts { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
-  .prompts button { font-weight: 400; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 999px;
-                    background: #fff; border-color: var(--line); color: var(--teal); }
-  .prompts button:hover { border-color: var(--teal); }
-  .prompts button:disabled { opacity: 0.6; cursor: progress; }
-
-  /* Narrow screens: one column, the backend becomes a drawer above the chat. */
-  @media (max-width: 760px) {
-    body { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
-    aside { border-right: 0; border-bottom: 1px solid var(--line); max-height: 50vh; }
-    aside[hidden] { display: none; }
-    #drawer-toggle { display: inline-block; }
+  @media (max-width:430px) {
+    .chat-topbar { display:grid; grid-template-columns:minmax(0,1fr); gap:.55rem; }
+    .controls { justify-content:flex-start; }
+    .title-mark { width:2rem; }
+    .msg { max-width:96%; }
   }
 </style>
 </head>
 <body>
 <aside id="backend" aria-labelledby="backend-title">
-  <h2 id="backend-title">Backend (mock) · read-only</h2>
+  <div class="rail-brand"><div class="brand-name">orq.ai<small>KICKSTARTAI · 2026</small></div></div>
+  <div class="rail-heading"><div><span class="eyebrow">REFERENCE DATA</span><h2 id="backend-title">Workshop orders</h2></div><span class="readonly">MOCK · READ ONLY</span><button id="drawer-close" type="button">Close</button></div>
   <div role="tablist" aria-label="Backend data">
     <button role="tab" id="tab-orders" aria-controls="panel-orders" aria-selected="true">Orders</button>
     <button role="tab" id="tab-policies" aria-controls="panel-policies" aria-selected="false" tabindex="-1">Policies</button>
   </div>
   <div role="tabpanel" id="panel-orders" aria-labelledby="tab-orders" tabindex="0">
-    <p class="caption">Data used by <code>lookup_order</code> / <code>issue_refund</code>. You are logged in as this customer. A refund in the chat does not change this table: every tool call starts from these orders.</p>
-    <table>
-      <thead><tr><th scope="col">Order</th><th scope="col">Item</th><th scope="col" class="num">EUR</th><th scope="col" class="num">Days</th><th scope="col">Refunded</th></tr></thead>
-      <tbody id="orders"></tbody>
-    </table>
+    <p class="caption">Orders available to the agent. These fixtures reset for each tool call; a refund does not change this list.</p>
+  <div id="orders" class="orders" role="list" aria-label="Customer orders"></div>
   </div>
   <div role="tabpanel" id="panel-policies" aria-labelledby="tab-policies" tabindex="0" hidden>
-    <p class="caption">Policy documents returned by <code>get_policy(topic)</code>.</p>
+    <p class="caption">Policy documents the <code>get_policy</code> tool can return.</p>
     <div id="policies"></div>
   </div>
 </aside>
 
 <section class="chat" aria-label="Agent chat">
-  <header>
-    <div>
-      <h1 id="agent">agent/…</h1>
-      <p>Your managed agent in orq. Each answer links to its trace.</p>
+  <header class="chat-topbar">
+    <div class="title-wrap"><span class="title-mark" aria-hidden="true"></span><div class="title-copy">
+      <h1>Refund agent</h1>
+      <p id="agent">agent/… · hosted in orq</p>
+    </div>
     </div>
     <div class="controls">
-      <button id="drawer-toggle" type="button" aria-controls="backend" aria-expanded="false">Backend (mock)</button>
+      <button class="control-button" id="drawer-toggle" type="button" aria-controls="backend" aria-expanded="false">Reference data</button>
       <div>
         <label for="version">Version</label>
         <select id="version"><option value="latest">@latest</option></select>
       </div>
-      <button id="reset" type="button">New conversation</button>
+      <button class="control-button" id="reset" type="button">New chat</button>
     </div>
   </header>
   <main>
-    <ol id="log" aria-live="polite" aria-label="Conversation"></ol>
+    <div class="conversation">
+      <section class="welcome" id="welcome" aria-labelledby="welcome-title">
+        <span class="eyebrow">YOUR WORKSHOP AGENT</span>
+        <h2 id="welcome-title">Ask about an order.</h2>
+        <p>Try a message below. Watch the agent use its tools, then open the trace to see what happened.</p>
+        <div class="prompts" id="prompts" aria-label="Example messages"></div>
+        <div class="welcome-note"><span class="status-dot" aria-hidden="true"></span> TEST CUSTOMER · MOCK ORDERS</div>
+      </section>
+      <ol id="log" role="log" aria-live="polite" aria-label="Conversation"></ol>
+    </div>
   </main>
   <form id="form">
-    <details class="examples" id="examples" open>
-      <summary>Try these</summary>
-      <div class="prompts" id="prompts"></div>
-    </details>
-    <div class="row">
+    <div class="composer">
+      <label class="composer-label" for="message">Your message</label>
+      <div class="row">
       <div class="grow">
-        <label for="message">Message</label>
-        <input id="message" name="message" autocomplete="off" required
-               placeholder="Hi, I want a refund for order ord_a1, I changed my mind.">
+        <textarea id="message" name="message" rows="1" autocomplete="off" required
+               aria-describedby="message-hint" placeholder="Ask about order ord_a1…"></textarea>
       </div>
       <button id="send" type="submit">Send</button>
+      </div>
+      <p class="composer-hint" id="message-hint">Press Enter to send · Shift + Enter for a new line</p>
     </div>
   </form>
 </section>
 <script>
   const $ = (id) => document.getElementById(id);
   const log = $("log"), form = $("form"), input = $("message"), send = $("send"), versionSelect = $("version");
+  const mainPane = document.querySelector("main");
+  let agentReady = false;
   let history = [];
 
   // Ordinary requests: one refund that succeeds, a few the policy refuses.
@@ -157,21 +218,43 @@
     button.type = "button";
     button.textContent = label;
     button.title = text;
+    button.disabled = true;
     button.addEventListener("click", () => { input.value = text; form.requestSubmit(); });
     $("prompts").appendChild(button);
   }
 
   // ── Backend (mock): static, read-only ──
-  fetch("/api/backend").then((r) => r.json()).then((data) => {
+  async function loadBackend() {
+    const orders = $("orders"), policies = $("policies");
+    orders.replaceChildren();
+    policies.replaceChildren();
+    const response = await fetch("/api/backend");
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const data = await response.json();
     for (const o of data.orders) {
-      const tr = document.createElement("tr");
-      for (const [value, cls] of [[o.id], [o.item], [o.amount.toFixed(2), "num"], [o.delivered_days_ago, "num"], [o.refunded ? "yes" : "no"]]) {
-        const td = document.createElement("td");
-        td.textContent = value;
-        if (cls) td.className = cls;
-        tr.appendChild(td);
+      const card = document.createElement("article");
+      card.className = "order-card";
+      card.setAttribute("role", "listitem");
+      const main = document.createElement("div");
+      main.className = "order-main";
+      const id = document.createElement("h3");
+      id.textContent = o.id;
+      const item = document.createElement("span");
+      item.textContent = o.item;
+      main.append(id, item);
+      const facts = document.createElement("dl");
+      facts.className = "order-facts";
+      for (const [label, value] of [["EUR", o.amount.toFixed(2)], ["Delivered", `${o.delivered_days_ago}d ago`], ["Refunded", o.refunded ? "yes" : "no"]]) {
+        const pair = document.createElement("div");
+        const dt = document.createElement("dt");
+        const dd = document.createElement("dd");
+        dt.textContent = label;
+        dd.textContent = value;
+        pair.append(dt, dd);
+        facts.append(pair);
       }
-      $("orders").appendChild(tr);
+      card.append(main, facts);
+      orders.appendChild(card);
     }
     for (const p of data.policies) {
       const d = document.createElement("details");
@@ -181,9 +264,34 @@
       const pre = document.createElement("pre");
       pre.textContent = p.text;
       d.append(s, pre);
-      $("policies").appendChild(d);
+      policies.appendChild(d);
     }
-  });
+  }
+  async function refreshBackend() {
+    const host = $("orders");
+    host.textContent = "Loading reference orders…";
+    try { await loadBackend(); }
+    catch {
+      host.replaceChildren();
+      const message = document.createElement("p");
+      message.className = "caption";
+      message.textContent = "Reference orders could not be loaded.";
+      const retry = document.createElement("button");
+      retry.className = "control-button";
+      retry.type = "button";
+      retry.textContent = "Try again";
+      retry.addEventListener("click", refreshBackend);
+      host.append(message, retry);
+      const policyRetry = document.createElement("button");
+      policyRetry.className = "control-button";
+      policyRetry.type = "button";
+      policyRetry.textContent = "Try again";
+      policyRetry.addEventListener("click", refreshBackend);
+      const policyMessage = message.cloneNode(true);
+      $("policies").replaceChildren(policyMessage, policyRetry);
+    }
+  }
+  refreshBackend();
 
   // Tabs: arrow keys move between them (WAI-ARIA tabs pattern).
   const tabs = [$("tab-orders"), $("tab-policies")];
@@ -204,30 +312,84 @@
   });
 
   // Drawer on narrow screens: closed by default, the chat works without it.
-  const drawer = $("backend"), toggle = $("drawer-toggle");
+  const drawer = $("backend"), toggle = $("drawer-toggle"), drawerClose = $("drawer-close");
   const narrow = window.matchMedia("(max-width: 760px)");
-  function syncDrawer() { drawer.hidden = narrow.matches && toggle.getAttribute("aria-expanded") !== "true"; }
+  function syncDrawer() {
+    const open = toggle.getAttribute("aria-expanded") === "true";
+    drawer.hidden = narrow.matches && !open;
+    toggle.textContent = open ? "Close reference data" : "Reference data";
+  }
   toggle.addEventListener("click", () => {
-    toggle.setAttribute("aria-expanded", toggle.getAttribute("aria-expanded") !== "true");
+    const opening = toggle.getAttribute("aria-expanded") !== "true";
+    toggle.setAttribute("aria-expanded", opening);
     syncDrawer();
+    if (opening && narrow.matches) tabs.find((tab) => tab.getAttribute("aria-selected") === "true").focus();
+  });
+  function closeDrawer() {
+    toggle.setAttribute("aria-expanded", "false");
+    syncDrawer();
+    toggle.focus();
+  }
+  drawerClose.addEventListener("click", closeDrawer);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && narrow.matches && toggle.getAttribute("aria-expanded") === "true") closeDrawer();
   });
   narrow.addEventListener("change", syncDrawer);
   syncDrawer();
 
   // ── Agent and versions ──
-  fetch("/api/agent").then(async (r) => {
-    const data = await r.json();
+  async function loadAgent() {
+    const r = await fetch("/api/agent");
+    const data = await r.json().catch(() => ({ detail: "Could not read the setup response. Check the local server and try again." }));
     if (!r.ok) throw new Error(data.detail);
-    $("agent").textContent = "agent/" + data.key;
+    $("agent").textContent = "agent/" + data.key + " · hosted in orq";
     versionSelect.replaceChildren(...data.versions.map((v) => new Option("@" + v, v)));
-  }).catch((err) => add("error", "Error: " + err.message));
+    agentReady = true;
+    setBusy(false);
+  }
+  loadAgent().catch((err) => {
+    setBusy(false);
+    const warning = add("warning", "");
+    const retry = document.createElement("button");
+    retry.type = "button";
+    retry.className = "control-button";
+    retry.textContent = "Check again";
+    retry.addEventListener("click", async () => {
+      retry.disabled = true;
+      retry.textContent = "Checking…";
+      try { await loadAgent(); warning.remove(); if (!log.children.length) $("welcome").hidden = false; }
+      catch (error) { renderSetupWarning(warning, error.message, retry); retry.disabled = false; }
+    });
+    renderSetupWarning(warning, err.message, retry);
+  });
+
+  function renderSetupWarning(warning, detail, retry) {
+    warning.replaceChildren();
+    const title = document.createElement("h2");
+    title.textContent = "Chat setup needs attention";
+    const message = document.createElement("p");
+    const seedCommand = detail.match(/^(.*?): run `([^`]+)`$/);
+    if (seedCommand) {
+      message.textContent = seedCommand[1] + ". Run this in the workshop repo:";
+      const command = document.createElement("code");
+      command.textContent = seedCommand[2];
+      warning.append(title, message, command);
+    } else {
+      message.textContent = detail;
+      warning.append(title, message);
+    }
+    const actions = document.createElement("div");
+    actions.className = "warning-actions";
+    actions.append(retry);
+    warning.append(actions);
+  }
 
   function add(kind, text) {  // textContent only: model output is never parsed as HTML
     const li = document.createElement("li");
     li.className = "msg " + kind;
     li.textContent = text;
     log.appendChild(li);
-    li.scrollIntoView({ block: "end" });
+    $("welcome").hidden = true;
     return li;
   }
 
@@ -237,8 +399,9 @@
     for (const call of data.tool_calls) {
       const chip = document.createElement("span");
       chip.className = "chip" + (call.ok ? "" : " failed");
-      chip.textContent = call.name + (call.ok ? "" : " ✗");
-      chip.title = call.ok ? "tool returned ok" : "tool returned an error";
+      const outcome = call.ok ? "" : ["not_found", "unknown_topic"].includes(call.error) ? " · NOT FOUND" : " · DECLINED";
+      chip.textContent = call.name + outcome;
+      chip.title = call.ok ? "tool completed" : "tool result: " + (call.error || "declined");
       meta.appendChild(chip);
     }
     const used = document.createElement("span");
@@ -250,7 +413,7 @@
       link.href = data.trace_url;
       link.target = "_blank";
       link.rel = "noopener";
-      link.textContent = "trace";
+      link.textContent = "Open trace ↗";
       link.title = "Open trace " + data.trace_id + " in orq.ai";
       meta.appendChild(link);
     }
@@ -258,52 +421,74 @@
   }
 
   function setBusy(busy) {
-    send.disabled = busy;
-    versionSelect.disabled = busy;
-    for (const b of document.querySelectorAll(".prompts button")) b.disabled = busy;
+    send.disabled = busy || !agentReady;
+    versionSelect.disabled = busy || !agentReady;
+    $("reset").disabled = busy || !agentReady;
+    input.disabled = busy || !agentReady;
+    for (const b of document.querySelectorAll(".prompts button")) b.disabled = busy || !agentReady;
   }
 
   function newConversation(note) {
     history = [];
     log.replaceChildren();
     if (note) add("note", note);
-    $("examples").open = true;
-    input.focus();
+    $("welcome").hidden = Boolean(note);
+    input.value = "";
+    input.style.height = "";
+    if (agentReady) input.focus();
   }
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const message = input.value.trim();
-    if (!message || send.disabled) return;
+    if (!message || send.disabled || !agentReady) return;
+    const wasNearBottom = mainPane.scrollHeight - mainPane.scrollTop - mainPane.clientHeight < 96;
     add("user", message);
     input.value = "";
-    $("examples").open = false;
+    input.style.height = "";
     setBusy(true);
     const pending = add("agent", "Thinking…");
+    if (wasNearBottom) pending.scrollIntoView({ block: "end" });
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message, history, version: versionSelect.value }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.detail ?? res.statusText);
+      const followReply = mainPane.scrollHeight - mainPane.scrollTop - mainPane.clientHeight < 96;
       history = data.history;
       pending.textContent = data.answer || "(no answer)";
       addMeta(pending, data);
+      if (followReply) pending.scrollIntoView({ block: "end" });
     } catch (err) {
       pending.className = "msg error";
-      pending.textContent = "Error: " + err.message;
+      pending.textContent = "This turn did not complete. Your message is back in the composer so you can try again.\n\n" + err.message;
+      input.value = message;
+      input.dispatchEvent(new Event("input"));
+      if (mainPane.scrollHeight - mainPane.scrollTop - mainPane.clientHeight < 96) pending.scrollIntoView({ block: "end" });
     } finally {
       setBusy(false);
-      input.focus();
+      if (!narrow.matches) input.focus();
     }
   });
 
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+      event.preventDefault();
+      form.requestSubmit();
+    }
+  });
+  input.addEventListener("input", () => {
+    input.style.height = "auto";
+    input.style.height = Math.min(input.scrollHeight, 144) + "px";
+  });
+  versionSelect.addEventListener("change", () => newConversation());
+
   // A version is a different agent: never continue one version's conversation on another.
-  versionSelect.addEventListener("change", () => newConversation("New conversation for @" + versionSelect.value));
   $("reset").addEventListener("click", () => newConversation());
-  input.focus();
+  setBusy(false);
 </script>
 </body>
 </html>
