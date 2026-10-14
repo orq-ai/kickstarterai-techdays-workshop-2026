@@ -11,7 +11,6 @@ from app.refund_agent.client import make_orq, parse_turn
 from app.refund_agent.config import settings
 
 HELLO_KEY = settings.key("hello-agent")
-HELLO_INSTRUCTIONS = "Greet the customer in one friendly sentence. Do not use tools."
 
 
 def ensure_hello_agent(orq) -> None:
@@ -27,7 +26,7 @@ def ensure_hello_agent(orq) -> None:
         display_name="Hello agent",
         role="A minimal managed agent for the Designing an agent module.",
         description="Greets a customer in one friendly sentence. No tools.",
-        instructions=HELLO_INSTRUCTIONS,
+        instructions="Greet the customer in one friendly sentence. Do not use tools.",
         path=settings.path,
         model={"id": settings.model, "parameters": {"reasoning_effort": "none"}},
         settings={"max_iterations": 1, "max_execution_time": 30},
