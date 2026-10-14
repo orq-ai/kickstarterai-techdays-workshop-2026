@@ -58,53 +58,52 @@ The refund agent stops when it answers, after `max_iterations: 8`, or after `max
 
 ## One turn on the wire
 
-A turn is one `responses.create(model="agent/<key>@1.0.0")` call. Its output items show the work: a `function_call` with a name and arguments, an `orq:<tool>` item with the result and the same `call_id`, then a `message` and `telemetry.trace_id`.
-
-`client.parse_turn` pairs those items; the chat UI renders the paired calls as tool chips. For example, a refund request can lead to `lookup_order`, `get_policy`, and `issue_refund` before the final message.
+A hello turn is one `responses.create(model="agent/hello-agent")` call. Its response contains a `message` item and `telemetry.trace_id`.
 
 ```python {.code-frame}
-# app/refund_agent/client.py
-from app.refund_agent.client import make_orq
-from app.refund_agent.config import settings
+import os
 
-orq = make_orq()
+from orq_ai_sdk import Orq
+
+orq = Orq(api_key=os.environ["ORQ_API_KEY"])
 response = orq.responses.create(
-    model=f"agent/{settings.agent_key}@1.0.0",
-    input="Please refund ord_a2.",
+    model="agent/hello-agent",
+    input="Hello",
 )
 
-# A function_call requests work; orq:<tool> supplies its result.
-if kind == "function_call":
-    calls[call_id] = ToolCall(name=name, arguments=arguments)
-elif kind.startswith("orq:"):
-    calls[call_id].result = result
+message = next(item for item in response.output if item.type == "message")
+print(message.content)
+print(response.telemetry.trace_id)
 ```
+
+When an agent has tools, the same response shape gains a `function_call` item with a name and arguments. orq.ai executes the hosted tool and adds an `orq:<tool>` item with the matching `call_id` and result before the final message. The refund solution uses that extended shape later.
 
 ![An application sends a message to a managed agent; the model requests a function call, orq.ai executes the code tool, returns an orq.ai tool-result item to the model, and returns a message with a trace ID.](assets/agent-turn-sequence.png)
 
 ## An entity with versions
 
-The refund agent is an orq.ai entity containing instructions, a model, tool schemas, generated code tools, limits, and versions. Pinning `@1.0.0` makes a call reproducible. Publishing changed instructions creates a new major version; there is no separate deployment to manage.
+A managed agent is an orq.ai entity containing instructions, a model, optional tools, limits, and versions. Pinning `@1.0.0` makes a call reproducible. Publishing a change creates a new version; there is no separate deployment to manage.
 
 The important SDK distinction is **configuration versus invocation**. `orq.agents.create()` configures a durable entity. `orq.responses.create()` runs one turn against it. A workshop application should not rebuild an agent on every request.
 
 ```python {.code-frame}
-from app.refund_agent.client import make_orq
-from app.refund_agent.config import settings
+# Configure once: an agent with no tools is still a managed agent.
+orq.agents.create(
+    key="hello-agent",
+    description="Greets a customer in one sentence.",
+    instructions="Greet the customer in one sentence.",
+    path="Example/Agents",
+    model="provider/model",
+)
 
-orq = make_orq()
-
-# Configure once: app/refund_agent/entities.py
-orq.agents.create(key=settings.agent_key, instructions=instructions, ...)
-
-# Invoke many times: app/refund_agent/client.py
-turn = orq.responses.create(
-    model=f"agent/{settings.agent_key}@1.0.0",
-    input=customer_message,
+# Invoke many times, optionally pinning one version.
+response = orq.responses.create(
+    model="agent/hello-agent@1.0.0",
+    input="Hello",
 )
 ```
 
-![The managed refund-agent entity in orq.ai contains its instructions, model, tool schemas, code tools, limits, and version history; the application only starts a conversation and receives its result.](assets/managed-agent-loop.png)
+![A managed agent entity in orq.ai contains its instructions, model, optional tools, limits, and version history; an application starts a conversation and receives its result.](assets/managed-agent-loop.png)
 
 ## Where the rules live
 
