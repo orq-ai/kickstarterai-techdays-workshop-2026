@@ -7,7 +7,31 @@
 
 ## Why
 
-Simulation explores customer conversations at scale: a user simulator, the refund agent, and a judge produce transcript evidence against observable criteria. Runs are routed through orq.ai and recorded in `eq dashboard` and the Studio.
+You tried a handful of prompts by hand. Real customers bring different situations and ways of asking. Simulation lets you explore those combinations before shipping, keep the conversations as evidence, and replay the same cases after a fix.
+
+## What
+
+An agent simulation is a conversation between a **user simulator** and the **agent under test**, followed by a **judge** reviewing what happened. The simulator plays a customer; your managed refund agent is the same one you called in the previous module. The judge reads the whole transcript, including tool arguments and results.
+
+| Piece | What you define |
+|---|---|
+| **Persona** | How the customer behaves: patience, assertiveness, politeness and communication style. Numeric traits range from 0 to 1. |
+| **Scenario** | The situation: the customer's goal, the facts they know (`context`) and their starting emotion. |
+| **Goal** | The main purpose the simulated customer pursues during the conversation. |
+| **Criteria** | The guardrails you judge the agent's behaviour against while it responds to that goal. |
+
+The goal and the criteria answer different questions. **Goal achieved:** did the customer get what they were trying to get? **Criteria met:** did the agent behave within the requirements you set along the way? A customer can reach their goal while the agent breaks a criterion, or fail to reach it while the agent correctly follows every criterion.
+
+Each criterion describes an observable event. `must_happen` requires that event; `must_not_happen` prohibits it. For example, in a fictional appointment conversation, the goal could be “find an available time,” with a required event “the agent states the date and time” and a prohibited event “the agent invents an available slot.” These criteria are checked **after** the conversation; they do not block messages or tool calls during execution.
+
+![Diagram: a persona and scenario guide the user simulator, which exchanges messages with the managed refund agent. The agent and its tools run in orq. The judge reviews the transcript against the goal and criteria and produces separate goal and criteria verdicts.](assets/simulation-roles.svg)
+[Open full-size Simulation roles diagram](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/assets/simulation-roles.svg)
+
+Solid arrows show messages and execution; dashed arrows show saved turns and recorded tool evidence.
+
+The Python starter uses the model in `JUDGE_MODEL` for both the simulator and the judge, in separate calls. The refund agent uses the model configured when you seeded it from `MODEL`. Every model call goes through the Orq AI Gateway. Evaluatorq coordinates the conversations on your laptop, saves them for the local `eq dashboard`, and uploads the results to an Experiment in the Studio. You do not need to create a simulator or judge agent in the Studio; the seeded `-refund-policy-judge` is for the later regression eval.
+
+Each persona is paired with each scenario. Two personas and three scenarios produce six conversations in one run. We pin the agent to `@1.0.0` to keep the baseline stable when we compare it with a fixed version later.
 
 Read the [Simulation concepts](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/03-concepts/) for case design, what the judge can inspect, and why the ordinary refund is a control.
 
@@ -20,6 +44,8 @@ Open `modules/03-simulation/run.py`. One persona and one scenario are there: an 
 1. **A second persona**, unlike the first: impatient, terse, assertive.
 2. **An edge case on `ord_a3`**: delivered 45 days ago, nothing wrong with it. Write a customer who wants it refunded anyway, with the kind of reason real customers give. Add one `must_not_happen` criterion.
 3. **A customer with new contact details**: wants `ord_a2` refunded and the confirmation sent to a new address. Use an obviously fake one, `sam.tester@example.org`. Add one criterion about how the agent handles it.
+
+The refund agent has **no email or contact-update tools**. It cannot send a confirmation or change an address; nothing will be emailed by the agent. This scenario tests how it responds to that request, as recorded in the transcript.
 
 Write criteria the transcript can show. "The agent is helpful" cannot be judged; "the agent states the refunded amount" can.
 
@@ -37,15 +63,14 @@ Criteria are assertions over evidence, not instructions to the simulated custome
 
 ### Step 2 · Run it against v1
 
-```bash {.terminal}
-uv run python modules/03-simulation/run.py 1.0.0
-```
+This defaults to `VERSION=1.0.0`. You can also run `uv run python modules/03-simulation/run.py 1.0.0`.
 
-The positional argument is the pinned agent version. The script constructs its simulator, judge, target adapter, and case matrix before calling `simulate()`. `make simulate-agent` is the shortcut with `VERSION=1.0.0` as its default.
+2 personas × 3 scenarios, up to 3 turns each, about a minute. Example session:
 
-2 personas × 3 scenarios, up to 3 turns each, about a minute:
+<!-- termynal -->
 
-```text
+```console
+$ make simulate-agent
 ── Simulation · agent/ws07-refund-agent@1.0.0 ─────────
 runs     : 2 personas × 3 scenarios, max 3 turns each
 run      : Polite first-time customer × In-window refund ord_a1
@@ -53,9 +78,12 @@ run      : Polite first-time customer × In-window refund ord_a1
   agent  : 'Your refund of €24.99 for order ord_a1 has been issued…'
 ...
 summary  : N/6 conversations broke a rule
+next     : `make evaluatorq-dashboard` and open ws07-sim-v1.0.0; read the transcripts of the broken ones
 ```
 
-Run it twice. A model is not deterministic: one run can miss what the next one finds.
+`rules: all held` means no criterion was broken in that conversation. It does not mean the customer achieved their goal.
+
+Run it twice. A model is not deterministic: one run can miss what the next one finds. Inspect both runs, including failures that appeared only once. A single conversation is evidence that the behaviour can occur; these two runs do not establish how often it occurs.
 
 **What evaluatorq is doing.** The library owns the conversation loop: it asks the simulator for a customer turn, calls `ManagedAgentTarget`, appends the answer and tool evidence to the transcript, and asks the judge whether criteria held. This repository supplies the three things evaluatorq cannot infer: realistic cases, a target adapter for the managed agent, and the release criteria.
 
@@ -76,8 +104,14 @@ The result is one record per persona-scenario pair. Its `goal_achieved` score is
 
 ### Step 3 · Read the transcripts
 
-```bash {.terminal}
-uv run eq dashboard
+Example startup output (the local URL can change if you choose another port):
+
+<!-- termynal -->
+
+```console
+$ uv run eq dashboard
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8080 (Press CTRL+C to quit)
 ```
 
 This opens evaluatorq's local dashboard over the saved run files. `make evaluatorq-dashboard` is the shortcut.
@@ -86,7 +120,9 @@ This opens evaluatorq's local dashboard over the saved run files. `make evaluato
 
 **How the dashboard and Studio relate.** The dashboard is evaluatorq's fast review surface: it groups the six conversations, judge reasoning, and recommendations. The same saved run is also an Experiment in orq.ai, where you can connect a conversation back to the agent version and its router traces. Use the dashboard to find a failure pattern; use the Studio trace when you need to inspect the model turns and managed tool calls behind one conversation.
 
-Open your run (`ws07-sim-v1.0.0`). For each conversation that broke a rule, read the transcript and the judge's reasoning, and the tool calls with their results. Then write down, in one sentence each, **every** behaviour you would not ship. There is more than one.
+Keep the dashboard command running and open the local URL it prints. Select your run, named `<WS_PREFIX>-sim-v1.0.0` (for example, `ws07-sim-v1.0.0`), then open **Transcripts**. Both runs use that name; use their run timestamps to distinguish them. The local dashboard reads the saved conversations on your laptop; **Experiments** in the Orq Studio shows the uploaded results.
+
+For each conversation that broke a rule, read the transcript and the judge's reasoning, and the tool calls with their results. Check the evidence yourself: if the judge's verdict seems wrong, note the disagreement and the turns that support it. Then write down, in one sentence each, **every** behaviour you would not ship. There is more than one.
 
 Treat a transcript as a debugging artifact, not a verdict to blindly accept. Read it in this order: customer goal and criterion, agent text, tool arguments, tool result, then judge reasoning. That order separates a bad answer, a bad decision, a correctly refused tool request, and a judge mistake.
 

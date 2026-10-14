@@ -42,11 +42,9 @@ ORDER_FIELDS = ("id", "item", "amount", "delivered_days_ago", "refunded")  # nev
 
 
 def trace_url(trace_id: str | None) -> str | None:
-    """Studio deep link to one trace; the Traces page when ORQ_WORKSPACE is not set."""
+    """Open the response's trace in its Studio workspace."""
     if not trace_id:
         return None
-    if not settings.workspace:
-        return f"{settings.base_url}/traces"
     return f"{settings.base_url}/{quote(settings.workspace, safe='')}/traces/(trace:{quote(trace_id, safe='')})"
 
 
@@ -134,6 +132,7 @@ async def post_chat(request: Request) -> JSONResponse:
                 for c in turn.tool_calls
             ],
             "trace_id": turn.trace_id,
+            "span_id": turn.span_id,
             "trace_url": trace_url(turn.trace_id),
             "history": [*conversation, {"role": "assistant", "content": turn.answer}],
             "version": version,
@@ -144,6 +143,7 @@ async def post_chat(request: Request) -> JSONResponse:
 
 app = Starlette(
     routes=[
+        Route("/favicon.svg", lambda request: FileResponse(ROOT / "docs/assets/orq-favicon.svg")),
         Route("/fonts/kurrent.woff2", lambda request: FileResponse(ROOT / "slides/kickstart/assets/ESKlarheitKurrent-Rg.woff2")),
         Route("/fonts/kurrent-medium.woff2", lambda request: FileResponse(ROOT / "slides/kickstart/assets/ESKlarheitKurrent-Md.woff2")),
         Route("/fonts/kurrent-semibold.woff2", lambda request: FileResponse(ROOT / "slides/kickstart/assets/ESKlarheitKurrent-Smbd.woff2")),

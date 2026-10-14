@@ -56,6 +56,7 @@ plugins:
       skip_classes:
         - md-logo
   - termynal:
+      buttons: macos
       prompt_literal_start:
         - "$"
         - ">>>"
@@ -70,6 +71,7 @@ markdown_extensions:
   - pymdownx.details
   - pymdownx.highlight:
       anchor_linenums: true
+      pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.keys
   - pymdownx.snippets:

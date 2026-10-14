@@ -98,7 +98,9 @@ uv run python modules/04-fix-and-eval/run.py 2.0.0
 
 The positional argument is the candidate version to compare with `@1.0.0`. `make compare-versions VERSION=2.0.0` is the shortcut.
 
-![The same first message replayed in the chat UI on @1.0.0 (top) and @2.0.0 (bottom), each in a new conversation, with their tool chips and trace links.](assets/replay-v1-v2.png)
+![Illustrative replay in the current chat UI: the same first message on @1.0.0 (top) and @2.0.0 (bottom), each in a new conversation, with tool chips and Open trace links.](assets/replay-v1-v2.png)
+
+The comparison reuses the example replies from the earlier screenshot, rendered in the current UI; it is not a new live comparison run.
 
 ### Step 3 · Re-run the simulation on v2
 

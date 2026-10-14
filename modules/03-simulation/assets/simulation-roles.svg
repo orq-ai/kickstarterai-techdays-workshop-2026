@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 820" role="img" aria-labelledby="sim-title sim-desc">
+  <title id="sim-title">Agent simulation: three roles, one conversation</title>
+  <desc id="sim-desc">A persona and scenario guide the user simulator. It exchanges messages with the managed refund agent, which runs its code tools in Orq. The judge then reviews the transcript, tool results, goal and criteria, producing separate goal-achieved and criteria-met verdicts. Evaluatorq coordinates and saves the run.</desc>
+  <defs>
+    <marker id="sim-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#025558"/></marker>
+    <style>
+      text{font-family:Arial,Helvetica,sans-serif;fill:#25232e}
+      .heading{font-size:28px;font-weight:700;letter-spacing:-.5px}
+      .eyebrow{font:15px ui-monospace,monospace;letter-spacing:1.6px;fill:#025558}
+      .node{fill:#fff;stroke:#025558;stroke-width:1.5}
+      .model{fill:#e9f1ee;stroke:#025558;stroke-width:1.5}
+      .hosted{fill:#fdf0e8;stroke:#df5325;stroke-width:2}
+      .name{font-size:21px;font-weight:700}
+      .detail{font-size:16px;fill:#025558}
+      .tag{font:15px ui-monospace,monospace;letter-spacing:.7px;fill:#b63f18}
+      .edge{fill:none;stroke:#025558;stroke-width:1.8;marker-end:url(#sim-arrow)}
+      .label{font:15px ui-monospace,monospace;fill:#025558}
+    </style>
+  </defs>
+  <rect width="1100" height="820" rx="14" fill="#f9f8f6"/>
+  <text x="40" y="36" class="eyebrow">EVALUATORQ · AGENT SIMULATION</text>
+  <text x="40" y="75" class="heading">Three roles, one conversation</text>
+  <text x="40" y="106" class="detail">Your laptop coordinates the run. Every model call goes through the Orq AI Gateway.</text>
+
+  <rect x="716" y="136" width="348" height="352" rx="12" fill="#25232e" fill-opacity=".025" stroke="#25232e" stroke-opacity=".14"/>
+  <text x="740" y="160" class="eyebrow">HOSTED IN ORQ</text>
+
+  <path d="M270 227H340" class="edge"/>
+  <path d="M600 213H740" class="edge"/>
+  <text x="670" y="198" text-anchor="middle" class="label">CUSTOMER MSG</text>
+  <path d="M740 262H600" class="edge"/>
+  <text x="670" y="283" text-anchor="middle" class="label">AGENT REPLY</text>
+  <path d="M890 300V350" class="edge" marker-start="url(#sim-arrow)"/>
+  <text x="906" y="332" class="label">CALL + RESULT</text>
+  <path d="M470 300V526" class="edge" style="stroke-dasharray:5 4"/>
+  <text x="486" y="410" class="label">SAVE TURNS</text>
+  <path d="M740 410H680V500H470V526" class="edge" style="stroke-dasharray:5 4"/>
+  <text x="580" y="478" text-anchor="middle" class="label" style="font-size:13px">TOOL ARGUMENTS</text>
+  <text x="580" y="494" text-anchor="middle" class="label" style="font-size:13px">+ RESULTS</text>
+  <path d="M600 576H740" class="edge"/>
+  <text x="670" y="560" text-anchor="middle" class="label">READ TRANSCRIPT</text>
+  <path d="M270 594H298V672H714V599H740" class="edge"/>
+  <text x="454" y="661" text-anchor="middle" class="label">ASSESS THE GOAL AND EACH CRITERION</text>
+  <path d="M890 626V710" class="edge"/>
+
+  <rect x="40" y="170" width="230" height="172" rx="9" class="node"/>
+  <text x="58" y="197" class="tag">YOU DEFINE</text>
+  <text x="58" y="230" class="name">Persona + scenario</text>
+  <text x="58" y="258" class="detail">Persona: how to behave</text>
+  <text x="58" y="284" class="detail">Goal: what to achieve</text>
+  <text x="58" y="310" class="detail">Context: known facts</text>
+
+  <rect x="340" y="180" width="260" height="120" rx="9" class="model"/>
+  <text x="358" y="207" class="tag">MODEL ROLE 1</text>
+  <text x="470" y="241" text-anchor="middle" class="name">User simulator</text>
+  <text x="470" y="266" text-anchor="middle" class="detail">Plays the customer</text>
+  <text x="470" y="288" text-anchor="middle" class="label">JUDGE_MODEL</text>
+
+  <rect x="740" y="180" width="300" height="120" rx="9" class="hosted"/>
+  <text x="758" y="207" class="tag">ROLE 2 · MANAGED AGENT</text>
+  <text x="890" y="241" text-anchor="middle" class="name">Managed refund agent</text>
+  <text x="890" y="266" text-anchor="middle" class="detail">Pinned to @1.0.0 for the baseline</text>
+  <text x="890" y="288" text-anchor="middle" class="label">Agent's configured MODEL</text>
+
+  <rect x="740" y="350" width="300" height="110" rx="9" class="hosted"/>
+  <text x="758" y="377" class="tag">EXECUTED IN ORQ</text>
+  <text x="890" y="409" text-anchor="middle" class="name">Three code tools</text>
+  <text x="890" y="435" text-anchor="middle" class="detail">Orders · policy · refunds</text>
+
+  <rect x="40" y="526" width="230" height="112" rx="9" class="node"/>
+  <text x="58" y="553" class="tag">YOU DEFINE</text>
+  <text x="52" y="582" class="name" style="font-size:17px">Scenario goal + criteria</text>
+  <text x="58" y="607" class="detail">Goal: customer purpose</text>
+
+  <rect x="340" y="526" width="260" height="100" rx="9" class="node"/>
+  <text x="470" y="564" text-anchor="middle" class="name">Conversation transcript</text>
+  <text x="470" y="591" text-anchor="middle" class="detail">Customer and agent messages</text>
+  <text x="470" y="614" text-anchor="middle" class="detail">Tool calls and their results</text>
+
+  <rect x="740" y="526" width="300" height="100" rx="9" class="model"/>
+  <text x="758" y="553" class="tag">MODEL ROLE 3 · JUDGE</text>
+  <text x="890" y="584" text-anchor="middle" class="name">Judge</text>
+  <text x="890" y="609" text-anchor="middle" class="label">JUDGE_MODEL · separate call</text>
+
+  <rect x="740" y="710" width="300" height="72" rx="9" fill="#025558"/>
+  <text x="890" y="737" text-anchor="middle" style="font-size:18px;font-weight:700;fill:#fff">Two separate verdicts</text>
+  <text x="890" y="763" text-anchor="middle" style="font:15px ui-monospace,monospace;fill:#fff">goal_achieved · criteria_met</text>
+  <text x="40" y="739" class="detail">Each persona × each scenario = one conversation.</text>
+  <text x="40" y="767" class="detail">Criteria are checked after; they do not block actions.</text>
+  <text x="40" y="797" class="label">Saved locally for eq dashboard · Experiment uploaded to Studio</text>
+</svg>

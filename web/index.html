@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Refund agent · KickstartAI workshop</title>
-<link rel="icon" href="data:,">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <style>
   @font-face { font-family: Kurrent; src: url("/fonts/kurrent.woff2") format("woff2"); font-weight: 400; font-display:swap; }
   @font-face { font-family: Kurrent; src: url("/fonts/kurrent-medium.woff2") format("woff2"); font-weight: 500; font-display:swap; }
@@ -55,7 +55,9 @@
   .title-copy p { margin:.3rem 0 0; color:var(--gray); font:.75rem "Kurrent Mono",monospace; overflow-wrap:anywhere; }
   .controls { display:flex; align-items:center; justify-content:flex-end; gap:.6rem; flex-wrap:wrap; }
   .controls label { display:block; margin:0 0 .15rem .05rem; color:var(--gray); font:.7rem "Kurrent Mono",monospace; text-transform:uppercase; letter-spacing:.08em; }
-  select { min-height:40px; max-width:10rem; padding:.45rem 2rem .45rem .65rem; border:1px solid var(--rule); border-radius:4px; background:var(--white); }
+  select { min-height:40px; max-width:10rem; padding:.45rem 2.4rem .45rem .65rem; border:1px solid var(--rule); border-radius:4px; appearance:none;
+    background:var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m3 6 5 5 5-5' stroke='%23141319' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right .85rem center / .8rem .8rem; }
+  @media (forced-colors:active) { select { appearance:auto; background-image:none; } }
   .control-button { min-height:40px; padding:.48rem .8rem; border:1px solid var(--rule); border-radius:4px; background:transparent; color:var(--ink); font-size:.86rem; font-weight:500; }
   .control-button:hover { border-color:var(--ink); }
   #drawer-toggle { display:none; }
@@ -424,7 +426,7 @@
     send.disabled = busy || !agentReady;
     versionSelect.disabled = busy || !agentReady;
     $("reset").disabled = busy || !agentReady;
-    input.disabled = busy || !agentReady;
+    input.disabled = !agentReady;
     for (const b of document.querySelectorAll(".prompts button")) b.disabled = busy || !agentReady;
   }
 
@@ -447,6 +449,7 @@
     input.value = "";
     input.style.height = "";
     setBusy(true);
+    input.focus();
     const pending = add("agent", "Thinking…");
     if (wasNearBottom) pending.scrollIntoView({ block: "end" });
     try {
@@ -464,13 +467,17 @@
       if (followReply) pending.scrollIntoView({ block: "end" });
     } catch (err) {
       pending.className = "msg error";
-      pending.textContent = "This turn did not complete. Your message is back in the composer so you can try again.\n\n" + err.message;
-      input.value = message;
-      input.dispatchEvent(new Event("input"));
+      const hasDraft = input.value.length > 0;
+      pending.textContent = "This turn did not complete. " + (hasDraft
+        ? "Your next message has been kept in the composer."
+        : "Your message is back in the composer so you can try again.") + "\n\n" + err.message;
+      if (!hasDraft) {
+        input.value = message;
+        input.dispatchEvent(new Event("input"));
+      }
       if (mainPane.scrollHeight - mainPane.scrollTop - mainPane.clientHeight < 96) pending.scrollIntoView({ block: "end" });
     } finally {
       setBusy(false);
-      if (!narrow.matches) input.focus();
     }
   });
 

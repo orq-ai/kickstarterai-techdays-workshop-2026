@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="map-title map-desc">
+  <title id="map-title">How the pieces fit</title>
+  <desc id="map-desc">The local chat and simulation call the Orq AI Gateway. The managed refund agent and all three code tools execute inside Orq. Answers and tool results return to the laptop, traces go to the Studio, and a coding agent can use the gateway and MCP server.</desc>
+  <defs>
+    <marker id="map-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#025558"/></marker>
+    <marker id="map-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#df5325"/></marker>
+    <style>
+      text{font-family:Arial,Helvetica,sans-serif;fill:#25232e}
+      .heading{font-size:28px;font-weight:700;letter-spacing:-.5px}
+      .zone{fill:#25232e;fill-opacity:.025;stroke:#25232e;stroke-opacity:.14}
+      .zone-label{font:15px ui-monospace,monospace;letter-spacing:1.8px;fill:#025558}
+      .node{fill:#fff;stroke:#025558;stroke-width:1.5}
+      .hosted{fill:#fdf0e8;stroke:#df5325;stroke-width:2}
+      .name{font-size:20px;font-weight:700}
+      .detail{font-size:15px;fill:#025558}
+      .tag{font:14px ui-monospace,monospace;letter-spacing:1.1px;fill:#b63f18}
+      .edge{fill:none;stroke:#025558;stroke-width:1.8;marker-end:url(#map-arrow)}
+      .return{stroke-dasharray:5 4}
+      .label{font:15px ui-monospace,monospace;fill:#025558}
+    </style>
+  </defs>
+  <rect width="1200" height="700" rx="14" fill="#f9f8f6"/>
+  <text x="32" y="35" class="zone-label">ARCHITECTURE · WORKSHOP MAP</text>
+  <text x="32" y="72" class="heading">How the pieces fit</text>
+
+  <rect x="24" y="102" width="232" height="480" rx="12" class="zone"/>
+  <rect x="280" y="102" width="628" height="480" rx="12" class="zone"/>
+  <rect x="932" y="102" width="244" height="164" rx="12" class="zone"/>
+  <text x="44" y="129" class="zone-label">YOUR LAPTOP</text>
+  <text x="300" y="129" class="zone-label">ORQ.AI</text>
+  <text x="952" y="129" class="zone-label">MODEL PROVIDERS</text>
+
+  <!-- Requests, internal execution, and the response returning to the laptop. -->
+  <path d="M236 204H316" class="edge"/>
+  <text x="268" y="190" text-anchor="middle" class="label">REQUEST</text>
+  <path d="M560 204H956" class="edge"/>
+  <text x="744" y="190" text-anchor="middle" class="label">BASE-MODEL CALLS</text>
+  <path d="M438 260V322" class="edge"/>
+  <text x="452" y="310" class="label">AGENT REQUEST</text>
+  <path d="M560 362H632" class="edge" style="stroke:#df5325;marker-end:url(#map-orange)"/>
+  <path d="M632 401H560" class="edge"/>
+  <text x="596" y="350" text-anchor="middle" class="label">CALL</text>
+  <text x="596" y="423" text-anchor="middle" class="label">RESULT</text>
+  <path d="M316 364H290V282H140V260" class="edge return"/>
+  <text x="160" y="312" text-anchor="middle" class="label" style="font-size:13px">ANSWER + TOOL DATA</text>
+  <path d="M548 260V288H894V520H872" class="edge return"/>
+  <text x="820" y="283" class="label">TRACES</text>
+  <path d="M236 488H268V232H316" class="edge"/>
+  <path d="M236 534H316" class="edge"/>
+  <text x="276" y="522" text-anchor="middle" class="label">MCP</text>
+
+  <rect x="44" y="148" width="192" height="112" rx="9" class="node"/>
+  <text x="60" y="171" class="tag">LOCAL CLIENTS</text>
+  <text x="140" y="202" text-anchor="middle" class="name">Chat + simulation</text>
+  <text x="140" y="225" text-anchor="middle" class="detail">app/web.py · evaluatorq</text>
+  <text x="140" y="246" text-anchor="middle" class="detail">Send requests, read results</text>
+
+  <rect x="316" y="148" width="244" height="112" rx="9" fill="#fdf0e8" stroke="#df5325" stroke-width="1.5"/>
+  <text x="332" y="171" class="tag">EVERY MODEL CALL</text>
+  <text x="438" y="202" text-anchor="middle" class="name">AI Gateway</text>
+  <text x="438" y="225" text-anchor="middle" class="detail">/v3/router · /v3/anthropic</text>
+  <text x="438" y="246" text-anchor="middle" class="detail">Routing · traces · budgets</text>
+
+  <rect x="956" y="158" width="196" height="90" rx="9" class="node"/>
+  <text x="1054" y="196" text-anchor="middle" class="name">Model providers</text>
+  <text x="1054" y="222" text-anchor="middle" class="detail">OpenAI · Anthropic · …</text>
+
+  <rect x="316" y="322" width="244" height="112" rx="9" class="hosted"/>
+  <text x="332" y="345" class="tag">HOSTED IN ORQ</text>
+  <text x="438" y="376" text-anchor="middle" class="name">Managed refund agent</text>
+  <text x="438" y="399" text-anchor="middle" class="detail">Instructions · model · loop</text>
+  <text x="438" y="421" text-anchor="middle" class="detail">agent/&lt;seat&gt;-refund-agent</text>
+
+  <rect x="632" y="322" width="240" height="112" rx="9" class="hosted"/>
+  <text x="648" y="345" class="tag">EXECUTED IN ORQ</text>
+  <text x="752" y="370" text-anchor="middle" class="name">Three code tools</text>
+  <text x="752" y="395" text-anchor="middle" class="detail">lookup_order · get_policy</text>
+  <text x="752" y="417" text-anchor="middle" class="detail">issue_refund</text>
+
+  <rect x="44" y="460" width="192" height="96" rx="9" fill="#e9f1ee" stroke="#025558" stroke-width="1.5"/>
+  <text x="60" y="483" class="tag">OPTIONAL</text>
+  <text x="140" y="513" text-anchor="middle" class="name">Coding agent</text>
+  <text x="140" y="539" text-anchor="middle" class="detail">orqi / your coding agent</text>
+
+  <rect x="316" y="460" width="244" height="96" rx="9" class="node"/>
+  <text x="438" y="500" text-anchor="middle" class="name">Orq MCP server</text>
+  <text x="438" y="526" text-anchor="middle" class="detail">/v2/mcp · workspace tools</text>
+  <text x="438" y="548" text-anchor="middle" class="detail">Your assistant's Orq connection</text>
+
+  <rect x="632" y="480" width="240" height="76" rx="9" class="node"/>
+  <text x="752" y="511" text-anchor="middle" class="name">Studio</text>
+  <text x="752" y="538" text-anchor="middle" class="detail">Traces · experiments</text>
+
+  <rect x="280" y="610" width="628" height="48" rx="24" fill="#fdf0e8" stroke="#df5325"/>
+  <text x="594" y="640" text-anchor="middle" style="font-size:17px;font-weight:700;fill:#b63f18">The managed agent AND its tools run in Orq.</text>
+  <text x="32" y="682" class="label" style="font-size:14px">Solid: requests + execution · Dashed: answer + recorded traces</text>
+</svg>

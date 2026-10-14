@@ -119,14 +119,13 @@ html { font-size: 100%; }
    ponytail: CSS over rewriting 19 files; drop this if the metadata block becomes a list. */
 .md-typeset table:not([class]) thead:not(:has(th:not(:empty))) { display: none; }
 
-/* Lesson tables: a teal heading, orange edge and a gentle rhythm between rows. */
+/* Lesson tables: a teal heading and a gentle rhythm between rows. */
 .md-typeset table:not([class]):has(thead th:not(:empty)) {
   --table-key-color: var(--orq-teal);
   --table-stripe: color-mix(in srgb, var(--orq-teal) 4%, var(--md-default-bg-color));
   --table-hover: color-mix(in srgb, var(--orq-teal) 8%, var(--md-default-bg-color));
   width: 100%;
   border: 1px solid var(--md-default-fg-color--lightest);
-  border-top: 3px solid var(--orq-orange-deep);
   border-radius: 0.4rem;
   border-spacing: 0;
   overflow: hidden;
@@ -158,12 +157,96 @@ html { font-size: 100%; }
   --table-stripe: color-mix(in srgb, var(--orq-teal-light) 8%, var(--md-default-bg-color));
   --table-hover: color-mix(in srgb, var(--orq-teal-light) 14%, var(--md-default-bg-color));
 }
+[data-md-color-scheme="slate"] .md-typeset table:not([class]):has(thead th:not(:empty)) tbody td:first-child {
+  color: var(--table-key-color) !important;
+}
 
 /* A diff of two prompt files is a diff of prose: the lines run to ~200 characters, and a
    horizontal scrollbar hides exactly the half of the sentence that changed. Wrap them.
    Matched by content (Pygments .gd/.gi) because Material emits no language class here, so
    ordinary code blocks, where column alignment carries meaning, keep scrolling. */
 .md-typeset .highlight:has(.gd, .gi) code { white-space: pre-wrap; }
+
+/* Fenced code has its own frame; commands stand apart from sample output.
+   Language classes come from pymdownx.highlight.pygments_lang_class. */
+.md-typeset .highlight {
+  --md-code-bg-color: #202b2d;
+  --md-code-fg-color: #f1f5f4;
+  --md-code-hl-color: #344648;
+  --md-code-hl-number-color: #f4b183;
+  --md-code-hl-special-color: #ffb89a;
+  --md-code-hl-function-color: #8fdbcc;
+  --md-code-hl-constant-color: #c4b8ed;
+  --md-code-hl-keyword-color: #9ddbd5;
+  --md-code-hl-string-color: #c5e5ac;
+  --md-code-hl-name-color: #f1f5f4;
+  --md-code-hl-operator-color: #d5e1df;
+  --md-code-hl-punctuation-color: #d5e1df;
+  --md-code-hl-comment-color: #afc0bd;
+  --md-code-hl-generic-color: #afc0bd;
+  --md-code-hl-variable-color: #f1f5f4;
+  background: var(--md-code-bg-color);
+  border: 1px solid #3b4c4e;
+  border-radius: 0.4rem;
+  overflow: hidden;
+  margin: 1.1em 0;
+}
+.md-typeset .highlight::before {
+  content: "Code";
+}
+.md-typeset .highlight.language-bash::before,
+.md-typeset .highlight.language-sh::before {
+  display: none;
+}
+.md-typeset .highlight.language-python::before { content: "Python"; }
+.md-typeset .highlight.language-text::before { content: "Text"; }
+.md-typeset .highlight::before,
+.md-typeset .highlight > .filename {
+  display: block;
+  padding: 0.55rem 1rem;
+  margin: 0;
+  background: transparent;
+  border-bottom: 1px solid #3b4c4e;
+  color: #afc0bd;
+  font-family: var(--md-text-font-family);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.md-typeset .highlight:has(> .filename)::before { display: none; }
+.md-typeset .highlight pre { margin: 0; }
+.md-typeset .highlight pre > code { padding: 1rem 3rem 1rem 1rem; }
+.md-typeset .highlight .md-code__nav { background: transparent; }
+.md-typeset .highlight .md-code__button {
+  background: transparent;
+  color: #afc0bd;
+}
+.md-typeset .highlight .md-code__button:hover,
+.md-typeset .highlight .md-code__button:focus-visible { color: #ffffff; }
+
+/* Text fences include transcripts, prompts, and configuration examples. */
+.md-typeset .highlight.language-text {
+  --md-code-bg-color: #f3f5f4;
+  --md-code-fg-color: #283d3f;
+  border-color: #cbd5d2;
+}
+.md-typeset .highlight.language-text::before,
+.md-typeset .highlight.language-text > .filename {
+  color: #526865;
+  border-color: #cbd5d2;
+}
+.md-typeset .highlight.language-text .md-code__button { color: #526865; }
+.md-typeset .highlight.language-text .md-code__button:hover,
+.md-typeset .highlight.language-text .md-code__button:focus-visible { color: #025558; }
+[data-md-color-scheme="slate"] .md-typeset .highlight.language-text {
+  --md-code-bg-color: #2d393b;
+  --md-code-fg-color: #e0e9e7;
+  border-color: #526865;
+}
+[data-md-color-scheme="slate"] .md-typeset .highlight.language-text::before,
+[data-md-color-scheme="slate"] .md-typeset .highlight.language-text > .filename,
+[data-md-color-scheme="slate"] .md-typeset .highlight.language-text .md-code__button {
+  color: #bbcfc9;
+}
 
 /* Sidebar nav + TOC: ~content size, a touch bigger so the menu reads as chrome. */
 .md-nav { font-size: 1rem; }
@@ -240,6 +323,19 @@ html { font-size: 100%; }
 /* Python fences opt into this with `{.code-frame}`. This is intentionally
    lighter than a terminal: it shows source code, not a shell session. */
 .md-typeset .code-frame.highlight {
+  --md-code-fg-color: #283d3f;
+  --md-code-hl-name-color: #283d3f;
+  --md-code-hl-keyword-color: #025558;
+  --md-code-hl-function-color: #684b87;
+  --md-code-hl-constant-color: #684b87;
+  --md-code-hl-string-color: #226946;
+  --md-code-hl-number-color: #a44822;
+  --md-code-hl-special-color: #a44822;
+  --md-code-hl-variable-color: #283d3f;
+  --md-code-hl-operator-color: #526865;
+  --md-code-hl-punctuation-color: #526865;
+  --md-code-hl-comment-color: #526865;
+  --md-code-hl-generic-color: #526865;
   position: relative;
   margin: 1em 0;
   padding: 2.5rem 1.1rem 1.1rem;
@@ -250,6 +346,8 @@ html { font-size: 100%; }
 }
 .md-typeset .code-frame.highlight::before {
   content: "</>";
+  padding: 0;
+  border: 0;
   position: absolute;
   top: 0.68rem;
   left: 1rem;
@@ -273,6 +371,10 @@ html { font-size: 100%; }
 .md-typeset .code-frame.highlight code {
   background: transparent;
 }
+.md-typeset .code-frame.highlight .md-code__button { color: #526865; }
+.md-typeset .code-frame.highlight .md-code__button:hover,
+.md-typeset .code-frame.highlight .md-code__button:focus-visible { color: #025558; }
+[data-md-color-scheme="slate"] .md-typeset .code-frame.highlight .md-code__button { color: #afc0bd; }
 [data-md-color-scheme="slate"] .md-typeset .code-frame.highlight {
   background: #2f2d3a;
   border-color: rgba(255, 255, 255, 0.14);
@@ -335,6 +437,9 @@ html { font-size: 100%; }
 }
 .md-typeset .terminal.highlight::before {
   content: "";
+  display: block;
+  padding: 0;
+  border: 0;
   position: absolute;
   top: 0.85rem;
   left: 1rem;
@@ -345,15 +450,7 @@ html { font-size: 100%; }
   box-shadow: 1.15rem 0 #d7ae57, 2.3rem 0 #78a76e;
 }
 .md-typeset .terminal.highlight::after {
-  content: "terminal";
-  position: absolute;
-  top: 0.68rem;
-  left: 0;
-  width: 100%;
-  color: #a8a39d;
-  font-family: var(--md-code-font-family);
-  font-size: 0.72rem;
-  text-align: center;
+  display: none;
 }
 .md-typeset .terminal.highlight pre,
 .md-typeset .terminal.highlight code {
@@ -391,6 +488,62 @@ html { font-size: 100%; }
 [data-termynal] {
   min-height: 0 !important;
   padding: 2.4rem 1.1rem 1.1rem !important;
+  --color-bg: #202b2d;
+  --color-text: #f1f5f4;
+  --color-text-subtle: #afc0bd;
+  border: 1px solid #3b4c4e;
+  border-radius: 0.4rem;
+  font-family: var(--md-code-font-family);
+  font-size: 0.85em;
+}
+[data-termynal] [data-terminal-control] { color: var(--orq-teal-light); }
+.terminal-session { position: relative; margin: 1.1em 0; }
+.terminal-session [data-ty] {
+  line-height: 1.35;
+}
+.terminal-session .terminal-copy {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.65rem;
+  z-index: 1;
+  background: transparent;
+  color: #afc0bd;
+}
+.terminal-session .terminal-copy:hover,
+.terminal-session .terminal-copy:focus-visible { color: #fff; }
+.terminal-session .terminal-copy::after {
+  -webkit-mask-image: var(--md-code-copy-icon);
+  mask-image: var(--md-code-copy-icon);
+}
+.terminal-copy-status {
+  position: absolute;
+  right: 2.5rem;
+  top: 0.65rem;
+  z-index: 1;
+  color: #f1f5f4;
+  font-size: 0.75rem;
+}
+
+/* Give lesson screenshots and diagrams space and a gentle lift from the page. */
+.md-typeset img.tool-code-crop {
+  width: 100%;
+  aspect-ratio: 1100 / 577;
+  object-fit: cover;
+  object-position: left top;
+}
+.md-typeset p:has(> img:only-child),
+.md-typeset p:has(> a.glightbox:only-child > img) {
+  margin: 1.7rem 0 2rem;
+}
+.md-typeset p > img:only-child,
+.md-typeset p > a.glightbox:only-child > img {
+  display: block;
+  border-radius: 0.4rem;
+  box-shadow: 0 3px 8px rgb(1 58 60 / 8%), 0 12px 28px rgb(1 58 60 / 12%);
+}
+[data-md-color-scheme="slate"] .md-typeset p > img:only-child,
+[data-md-color-scheme="slate"] .md-typeset p > a.glightbox:only-child > img {
+  box-shadow: 0 3px 8px rgb(0 0 0 / 20%), 0 12px 28px rgb(0 0 0 / 28%);
 }
 /* Dark mode: give the terminal an edge so it doesn't merge into the page. */
 [data-md-color-scheme="slate"] [data-termynal] {
