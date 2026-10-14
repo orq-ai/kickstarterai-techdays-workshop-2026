@@ -37,19 +37,39 @@ The dataset and the judge are for the fix-and-eval module. The seed command is s
 
 **What the seeder teaches.** `app/refund_agent/entities.py` is deliberately an infrastructure boundary. It turns the local source files into durable orq.ai entities once: `tools.py` becomes code tools, `instructions.md` becomes the initial agent version, and `dataset.jsonl` becomes the evaluation dataset. The rest of the application uses their keys; it does not carry API payloads or tool implementations around.
 
-```python {.code-frame}
-from app.refund_agent.entities import ensure_tools
+### What seed configures
 
-# The agent configuration stores references to hosted code tools.
-tool_keys = ensure_tools(orq)
-settings={"},{
-    "max_iterations": 8,
-    "max_execution_time": 120,
-    "tools": [{"type": "code", "key": tool_key} for tool_key in tool_keys],
-}
+| Setting | v1 value | Why it matters |
+|---|---|---|
+| Model | `settings.model` from `MODEL` in `.env` | The workshop can choose a model without editing module code. |
+| Reasoning effort | `none` | Required by the selected model when it uses hosted code tools. |
+| Maximum iterations | `8` | Caps model/tool-loop turns. |
+| Maximum execution time | `120` seconds | Caps the entire managed-agent run. |
+| Tools | three hosted `code` tools | orq.ai executes the order, policy, and refund code. |
+| Versioning | major increments on publish | Pins a complete agent configuration for comparison. |
+
+```python {.code-frame}
+# app/refund_agent/entities.py
+orq.agents.create(
+    key=settings.agent_key,
+    instructions=agent_instructions(),
+    path=settings.path,
+    model={
+        "id": settings.model,
+        "parameters": {"reasoning_effort": "none"},
+    },
+    settings={
+        "max_iterations": 8,
+        "max_execution_time": 120,
+        "tools": [
+            {"type": "code", "key": tool_key}
+            for tool_key in tool_keys
+        ],
+    },
+)
 ```
 
-That boundary is useful beyond this workshop: seed or provision entities in a controlled path, then make product code invoke stable keys.
+This v1 agent does not configure fallback models, memory stores, knowledge bases, cost caps, or interactive tool gates. That boundary is useful beyond this workshop: seed or provision entities in a controlled path, then make product code invoke stable keys.
 
 ### Step 2 · Talk to it
 
