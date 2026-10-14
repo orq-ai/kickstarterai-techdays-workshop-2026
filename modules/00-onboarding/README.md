@@ -2,7 +2,6 @@
 
 | | |
 |---|---|
-| **Time** | 15 min |
 | **Prerequisites** | a laptop with [uv](https://docs.astral.sh/uv/), `git`, `make`, and the [orq.ai CLI](https://docs.orq.ai/reference/cli) |
 | **You will have** | your own key and seat in the workshop workspace, the models it offers, and one model request sent through the orq.ai AI Gateway from curl, the CLI and Python, with its trace |
 

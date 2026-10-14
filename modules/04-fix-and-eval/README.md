@@ -2,7 +2,6 @@
 
 | | |
 |---|---|
-| **Time** | 35 min |
 | **Prerequisites** | simulation module done, with your list of behaviours to fix |
 | **You will have** | v2.0.0 of your agent, the same simulation re-run on it, and a regression eval on an orq.ai dataset that passes v2 and fails v1 |
 

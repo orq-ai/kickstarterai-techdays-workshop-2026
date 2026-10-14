@@ -2,7 +2,6 @@
 
 | | |
 |---|---|
-| **Time** | 10 min |
 | **Prerequisites** | onboarding done; one coding agent of your choice, or none (orqi below needs nothing else) |
 | **You will have** | a coding agent that answers questions about your orq.ai workspace |
 

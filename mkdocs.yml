@@ -1,5 +1,5 @@
 site_name: KickstartAI TechDays · orq.ai
-site_description: Two hours with a managed orq.ai agent. Simulate customers, fix the prompt, prove it with a regression eval.
+site_description: Build, simulate, improve, and evaluate a managed orq.ai refund agent.
 site_url: https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/
 repo_url: https://github.com/orq-ai/kickstarterai-techdays-workshop-2026
 repo_name: orq-ai/kickstarterai-techdays-workshop-2026

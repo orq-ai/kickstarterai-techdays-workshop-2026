@@ -2,7 +2,6 @@
 
 | | |
 |---|---|
-| **Time** | 20 min |
 | **Prerequisites** | onboarding done |
 | **You will have** | your own refund agent at v1.0.0 with three code tools, talked to it in a browser, called it from Python, curl and the CLI, and read one trace |
 

@@ -1,6 +1,6 @@
 # Working in this repo with a coding agent
 
-A two-hour orq.ai workshop. Participants run it by hand or with a coding agent (orqi, or any agent with the orq skills and the orq MCP server).
+An orq.ai workshop repository. Participants run it by hand or with a coding agent (orqi, or any agent with the orq skills and the orq MCP server).
 
 ## Layout
 

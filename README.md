@@ -4,7 +4,7 @@
 
 # KickstartAI TechDays
 
-The hands-on part of the KickstartAI TechDays session on 15 October 2026: two hours with a refund agent hosted in [orq.ai](https://orq.ai). You simulate customers against version 1, find what it gets wrong, fix the prompt, publish version 2, and prove the fix with a regression eval on an orq.ai dataset.
+Hands-on KickstartAI TechDays material for a refund agent hosted in [orq.ai](https://orq.ai). You simulate customers against version 1, find what it gets wrong, fix the prompt, publish version 2, and prove the fix with a regression eval on an orq.ai dataset.
 
 Docs site: **https://orq-ai.github.io/kickstarterai-techdays-workshop-2026**
 
@@ -36,7 +36,7 @@ Then follow the docs site, or `make help` for every target in order.
 
 ## Go further
 
-This is a two-hour cut of the full [orq.ai workshop](https://github.com/orq-ai/orq-workshop): the AI Gateway, guardrails, tracing, knowledge bases, MCP, trace insights and red teaming, on the same refund agent.
+For broader platform topics—AI Gateway, guardrails, tracing, knowledge bases, MCP, trace insights, and red teaming—see the full [orq.ai workshop](https://github.com/orq-ai/orq-workshop).
 
 ## License
 
