@@ -90,11 +90,11 @@ This v1 agent does not configure fallback models, memory stores, knowledge bases
 
 ### Step 3 · Read the resources in the Studio
 
-Open **Agents** > your `-refund-agent` > **Versions**. There is one version today. Then open one tool under **Tools**: the Python that orq.ai runs, generated from `tools.py`.
+Open **Agents** and search for your `WS_PREFIX` to find your refund-agent card.
 
-**Agent view — read configuration, not source code.** On the agent version, inspect these fields in order: the **model** answers the question “which model is called?”, **instructions** answers “what is it told to do?”, **tools** answers “what actions can it request?”, and **limits** answers “when does the loop stop?”. An agent is a composed resource, so this is the best screen for understanding a version as a whole.
+![The Studio Agents overview: each managed agent appears as a resource card with its key, description, version, and recent update; search for your seat prefix to find your agent.](assets/agent-overview.png)
 
-![The agent's settings in the Studio: role, description, model gpt-6-luna and the three code tools ws01-lookup_order, ws01-issue_refund, ws01-get_policy.](assets/agent-tools.png)
+Open your `-refund-agent` > **Versions**. There is one version today. On the agent version, inspect these fields in order: the **model** answers the question “which model is called?”, **instructions** answers “what is it told to do?”, **tools** answers “what actions can it request?”, and **limits** answers “when does the loop stop?”. Then open one tool under **Tools**: the Python that orq.ai runs, generated from `tools.py`.
 
 **Code-tool view — read the executable policy.** Open `issue_refund` and look for its parameters first, then the ordered early returns, then the successful result. The schema is what the model may request; the Python is what orq.ai actually executes. The fixture is deliberately visible here so you can recognize the boundary between example data and enforcement logic.
 
