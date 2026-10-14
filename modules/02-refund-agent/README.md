@@ -191,11 +191,6 @@ Open **Agents** > your `-refund-agent` > **Versions**. There is one version toda
 
 A model has no equivalent code editor: it is selected as a configuration value on the agent. The code you can inspect lives in the tool resource; the prompt you can inspect lives in the agent version; the request and result you can inspect live in the trace.
 
-## Hint
-
-??? tip "TODO 1 and 2"
-    The call is `orq.responses.create(model=f"agent/{settings.agent_key}", input=QUESTION)`. For TODO 2, `item["result"]` is a dict; `json.dumps` it. The complete file is on the public `solution` branch: `git show origin/solution:modules/02-refund-agent/run.py`.
-
 ## Official docs
 
 - [Build Agents](https://docs.orq.ai/ai-studio/ai-engineering/build-agents): instructions, model, tools, versions
