@@ -1,4 +1,4 @@
-# Fix and eval concepts
+# Concepts
 
 A prompt change is a hypothesis; repeatable evaluation is the evidence that it helped.
 

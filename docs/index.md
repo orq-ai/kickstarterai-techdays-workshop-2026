@@ -52,13 +52,13 @@ You do **not** need to install these packages individually with `pip`; `uv` uses
 
 | Module | Focus | What you do | Page |
 |---|---|---|---|
-| Onboarding | Gateway access and traces | Verify a model request from curl, CLI, and Python | [Onboarding](modules/00.md) |
-| Coding agents | Optional coding-agent setup | Connect orqi, Claude Code, or another MCP client | [Coding agents](modules/01.md) |
-| Designing an agent | Managed agent fundamentals | Seed, invoke, inspect, and trace the agent | [Designing an agent](modules/02.md) |
+| Onboarding | Gateway access and traces | Make one model request and inspect its trace | [Onboarding](modules/00.md) |
+| Designing an agent | Managed agent fundamentals | Run hello, seed the refund agent, finish the Python call, inspect its trace | [Designing an agent](modules/02.md) |
+| Coding agents (optional) | Assistant setup | Connect orqi, Claude Code, or another MCP client when you need one | [Coding agents](modules/01.md) |
 | Simulation | Conversation evidence | Define cases and inspect judged transcripts | [Simulation](modules/03.md) |
-| Fix and eval | Versioned improvement | Publish, replay, simulate, and gate a new version | [Fix and eval](modules/04.md) |
+| Improve and Evaluate | Versioned improvement | Publish, replay, simulate, and gate a new version | [Improve and Evaluate](modules/04.md) |
 
-Each module introduces one idea, then gives you the code and evidence to apply it.
+**First-hour checkpoint:** one gateway request with a trace, a working hello agent, and a refund agent whose Python client prints tool results and a trace ID. You do not need the coding-agent installation, a second model, the chat UI, or all three API interfaces to reach that checkpoint. Install dependencies and prepare your key before the session if possible.
 
 ## Go further
 

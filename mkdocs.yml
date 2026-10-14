@@ -94,20 +94,20 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Workshop:
-      - Onboarding: modules/00.md
-      - Coding agents: modules/01.md
-      - Designing an agent:
-          - Concepts: modules/02-concepts.md
-          - Business case: modules/02-logic.md
-          - Solution design: modules/02-solution-design.md
-          - Tutorial: modules/02.md
-      - Simulation:
-          - Concepts: modules/03-concepts.md
-          - Tutorial: modules/03.md
-      - Fix and eval:
-          - Concepts: modules/04-concepts.md
-          - Tutorial: modules/04.md
+  - Onboarding:
+      - Workspace Setup: modules/00.md
+      - Coding Agent Setup (optional): modules/01.md
+  - Build a Managed Agent:
+      - Foundations: modules/02-concepts.md
+      - Use Case: modules/02-logic.md
+      - Agent Design: modules/02-solution-design.md
+      - Build the Agent: modules/02.md
+  - Agent Simulation:
+      - Concepts: modules/03-concepts.md
+      - Tutorial: modules/03.md
+  - Improve and Evaluate:
+      - Concepts: modules/04-concepts.md
+      - Tutorial: modules/04.md
   - Reference:
       - Cheat sheet: reference/cheat-sheet.md
       - Troubleshooting: reference/troubleshooting.md

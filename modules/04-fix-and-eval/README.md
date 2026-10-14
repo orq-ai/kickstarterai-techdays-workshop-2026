@@ -1,4 +1,4 @@
-# Fix and eval
+# Improve and Evaluate
 
 | | |
 |---|---|
@@ -9,13 +9,60 @@
 
 A fix is not done when it only passes the conversation that found it. This tutorial turns failure evidence into a new agent version, then checks simulations and a 20-row regression eval with four scorer thresholds.
 
-Read the [Fix and eval concepts](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/04-concepts/) for error analysis, scorer design, and the evaluation gate.
+Read the [Concepts](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/04-concepts/) page for error analysis, scorer design, and the evaluation gate.
 
 ![Diagram: the prompt-improvement loop. Simulation failures inform edits to the instructions; publishing creates a new agent version; replay, simulation and the regression eval produce evidence before a failure becomes a new test case.](assets/improvement-loop.png)
 
 ## Steps
 
-### Step 1 · Change the instructions
+### Step 1 · Create evaluation resources
+
+Create the resources this module uses to measure the agent:
+
+This creates the dataset from `app/data/dataset.jsonl` and the boolean policy judge from `app/data/judge_prompt.md`. Existing resources are left unchanged. `make seed-eval` is the optional shortcut. Example session (your seat and entity IDs will differ):
+
+<!-- termynal -->
+
+```console
+$ uv run python -m app.refund_agent.entities seed-eval
+── Seed · create this seat's evaluation resources ────
+seat     : ws07 → <your project>/workshop
+dataset  : ws07-refund-eval (01M4…)
+judge    : ws07-refund-policy-judge (01M4…)
+```
+
+### The SDK calls behind seed-eval
+
+The dataset is created once, then populated from the local JSONL rows. The judge is a separate boolean evaluator resource that stores its prompt and model configuration in orq.ai.
+
+```python {.code-frame}
+# app/refund_agent/entities.py
+created = orq.datasets.create(
+    request={
+        "display_name": settings.key("refund-eval"),
+        "path": settings.path,
+    },
+)
+orq.datasets.create_datapoint(
+    dataset_id=created.id,
+    request_body=points,  # rows from app/data/dataset.jsonl
+)
+```
+
+```python {.code-frame}
+orq.evals.create(
+    request={
+        "type": "llm_eval",
+        "key": settings.key("refund-policy-judge"),
+        "path": settings.path,
+        "prompt": judge_prompt,
+        "model": settings.judge_model,
+        "output_type": "boolean",
+    },
+)
+```
+
+### Step 2 · Change the instructions
 
 Edit `app/data/instructions.md` to fix each behaviour on your list. By hand, or ask your coding agent (paste your list and the file). Keep the ordinary refund working.
 
@@ -67,7 +114,7 @@ A version is therefore an experimentable artifact: replaying `@1.0.0` and `@2.0.
     make publish-agent-version
     ```
 
-### Step 2 · Replay the problem conversations
+### Step 3 · Replay the problem conversations
 
 ```bash {.terminal}
 uv run python -m app.web
@@ -100,7 +147,7 @@ The positional argument is the candidate version to compare with `@1.0.0`. `make
 
 The comparison reuses the example replies from the earlier screenshot, rendered in the current UI; it is not a new live comparison run.
 
-### Step 3 · Replay the saved simulation on v2
+### Step 4 · Replay the saved simulation on v2
 
 Find your v1 baseline's **`saved:`** path from the previous module, or run `uv run eq sim runs`. By default, reports live in **`.evaluatorq/sim-runs/`** in the repo root. Pick a specific v1 report; do not select a newer candidate run by mistake.
 
@@ -123,7 +170,7 @@ You can also replay that baseline against v1 by changing `VERSION=1.0.0`. Runnin
 
 Run the v2 replay twice using the **same baseline path**. Done when all expected cases return, no results are UNKNOWN, and none of the rules break, **including the control**: the ordinary refund must still be issued. Inspect the termination reason if a conversation reaches `max_turns` without finishing. This is diagnostic evidence; the regression eval in the next step supplies the release gate.
 
-### Step 4 · The regression eval
+### Step 5 · The regression eval
 
 Run the candidate version first: every scorer should meet its threshold (exit 0). Then run the first version: known failures should keep it below a threshold (exit 1).
 
@@ -183,7 +230,7 @@ This separation is the takeaway: datasets define examples, jobs define the syste
 
 **Evaluator view — read the contract before trusting a score.** Open [**Evaluators**](https://my.orq.ai/kickstartai-workshop-2026/resources/evaluators) and find your `<WS_PREFIX>-refund-policy-judge`. In the judge resource, inspect the output type (boolean), the model, and the prompt variables. Here `input.user_query` is the customer message, `output.response` is the agent answer, and `input.expected_output` is the row's reference. The judge has no magic policy knowledge beyond the prompt and those inputs. Its result is one signal in the gate, alongside deterministic code scorers.
 
-### Step 5 · The dataset in the Studio
+### Step 6 · The dataset in the Studio
 
 Open [**Datasets**](https://my.orq.ai/kickstartai-workshop-2026/datasets) > your `<WS_PREFIX>-refund-eval` (for example, `ws07-refund-eval`). These are the rows the eval just read.
 
