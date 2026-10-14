@@ -22,6 +22,8 @@ The standard path is deliberately simple:
 
 The listed post-window exceptions are damaged in transit, never received, and defective on arrival. Each needs evidence appropriate to the claim. If a request is outside the refund agent's scope, or cannot be established from the available evidence, it goes to human support rather than becoming a new automatic rule.
 
+![A refund request is checked for ownership, prior refund state, amount, and delivery window; it is automatically refunded when eligible, refused for failed order checks, or routed to human review when evidence or limit rules require it.](assets/refund-policy-flow.png)
+
 ## One refund decision
 
 This is the intended v1 decision shape. It is pseudocode, not a second implementation: the real checks remain in the code tools.
