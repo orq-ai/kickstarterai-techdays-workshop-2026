@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Refund policy flow</title>
+  <style>
+    body { margin: 0; background: #f9f8f6; }
+    .diagram-container { width: 100%; max-width: 100%; min-width: 0; overflow-x: auto; }
+    svg { display: block; width: 100%; min-width: 1280px; background: #f9f8f6; }
+    .title { font: 600 44px Avio, system-ui, sans-serif; fill: #25232e; }
+    .eyebrow { font: 500 11px Mono, monospace; letter-spacing: 1.3px; fill: #025558; }
+    .name { font: 600 20px Avio, system-ui, sans-serif; fill: #25232e; }
+    .sub { font: 14px Mono, monospace; fill: #6b6975; }
+    .tag { font: 500 11px Mono, monospace; letter-spacing: .6px; fill: #6b6975; }
+    .legend { font: 500 11px Mono, monospace; letter-spacing: .8px; fill: #6b6975; }
+    .callout { font: italic 20px Avio, system-ui, sans-serif; fill: #25232e; }
+    .node { fill: #f9f8f6; stroke: #25232e; stroke-width: 1.2; }
+    .focal { fill: rgba(223,83,37,.08); stroke: #df5325; stroke-width: 1.4; }
+    .review { fill: rgba(2,85,88,.06); stroke: #025558; stroke-width: 1.2; }
+    .arrow { fill: none; stroke: #025558; stroke-width: 1.4; marker-end: url(#arrow); }
+    .accent-arrow { fill: none; stroke: #df5325; stroke-width: 1.6; marker-end: url(#arrow-accent); }
+    .return { fill: none; stroke: #6b6975; stroke-width: 1.1; stroke-dasharray: 5,4; marker-end: url(#arrow); }
+    @media print { .diagram-container { overflow-x: visible; } svg { min-width: 0; } }
+  </style>
+</head>
+<body>
+  <div class="diagram-container">
+    <svg viewBox="0 0 1280 720" role="img" aria-labelledby="refund-policy-flow-title refund-policy-flow-desc">
+      <title id="refund-policy-flow-title">Refund policy decision flow</title>
+      <desc id="refund-policy-flow-desc">A refund request is checked against order ownership, refund state, amount, delivery window, and post-window evidence before it is automatically refunded, refused, or routed to human review.</desc>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#025558"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#df5325"/></marker>
+      </defs>
+      <rect width="1280" height="720" fill="#f9f8f6"/>
+      <text x="64" y="60" class="eyebrow">POLICY · REFUND LOGIC</text>
+      <text x="64" y="112" class="title">How an automatic refund is decided.</text>
+
+      <!-- connectors are drawn before nodes -->
+      <path d="M252 310 H324" class="arrow"/>
+      <path d="M556 310 H628" class="arrow"/>
+      <path d="M860 310 H932" class="accent-arrow"/>
+      <!-- Outside the window: test the exception path. -->
+      <path d="M744 358 V414 H1000 V462" class="arrow"/>
+      <!-- Valid exception returns upward into the refund action. -->
+      <path d="M1000 462 V414 H1044 V358" class="accent-arrow"/>
+      <!-- Missing evidence enters human review through its top edge. -->
+      <path d="M1000 558 V570 H196 V582" class="return"/>
+      <!-- Failed ownership/refund checks refuse. -->
+      <path d="M400 358 V430 H350 V462" class="arrow"/>
+      <!-- Over-limit requests enter human review. -->
+      <path d="M480 358 V570 H270 V582" class="return"/>
+
+      <!-- label masks -->
+      <rect x="264" y="278" width="48" height="16" rx="2" fill="#f9f8f6"/><text x="288" y="290" text-anchor="middle" class="tag">LOOK UP</text>
+      <rect x="566" y="278" width="52" height="16" rx="2" fill="#f9f8f6"/><text x="592" y="290" text-anchor="middle" class="tag">CHECK</text>
+      <rect x="866" y="278" width="56" height="16" rx="2" fill="#f9f8f6"/><text x="894" y="290" text-anchor="middle" class="tag">IN WINDOW</text>
+      <rect x="772" y="394" width="92" height="16" rx="2" fill="#f9f8f6"/><text x="818" y="406" text-anchor="middle" class="tag">OUTSIDE WINDOW</text>
+      <rect x="1038" y="390" width="30" height="16" rx="2" fill="#f9f8f6"/><text x="1053" y="402" text-anchor="middle" class="tag">YES</text>
+      <rect x="668" y="554" width="92" height="16" rx="2" fill="#f9f8f6"/><text x="714" y="566" text-anchor="middle" class="tag">NO EVIDENCE</text>
+      <rect x="366" y="414" width="60" height="16" rx="2" fill="#f9f8f6"/><text x="396" y="426" text-anchor="middle" class="tag">REFUSE</text>
+      <rect x="376" y="554" width="72" height="16" rx="2" fill="#f9f8f6"/><text x="412" y="566" text-anchor="middle" class="tag">OVER LIMIT</text>
+
+      <!-- nodes -->
+      <rect x="64" y="262" width="188" height="96" rx="6" class="node"/>
+      <rect x="76" y="274" width="48" height="14" rx="2" fill="none" stroke="#025558" stroke-opacity=".55"/><text x="100" y="284" text-anchor="middle" class="tag">INPUT</text>
+      <text x="158" y="315" text-anchor="middle" class="name">Refund request</text>
+      <text x="158" y="338" text-anchor="middle" class="sub">order ID + reason</text>
+
+      <rect x="324" y="262" width="232" height="96" rx="6" class="node"/>
+      <rect x="336" y="274" width="56" height="14" rx="2" fill="none" stroke="#025558" stroke-opacity=".55"/><text x="364" y="284" text-anchor="middle" class="tag">FACTS</text>
+      <text x="440" y="315" text-anchor="middle" class="name">Order checks</text>
+      <text x="440" y="338" text-anchor="middle" class="sub">owner · refunded · amount</text>
+
+      <rect x="628" y="262" width="232" height="96" rx="6" class="node"/>
+      <rect x="640" y="274" width="64" height="14" rx="2" fill="none" stroke="#025558" stroke-opacity=".55"/><text x="672" y="284" text-anchor="middle" class="tag">WINDOW</text>
+      <text x="744" y="315" text-anchor="middle" class="name">Within 30 days?</text>
+      <text x="744" y="338" text-anchor="middle" class="sub">any reason is valid</text>
+
+      <rect x="932" y="262" width="224" height="96" rx="6" class="focal"/>
+      <rect x="944" y="274" width="56" height="14" rx="2" fill="none" stroke="#df5325" stroke-opacity=".7"/><text x="972" y="284" text-anchor="middle" class="tag">SUCCESS</text>
+      <text x="1044" y="315" text-anchor="middle" class="name">Issue refund</text>
+      <text x="1044" y="338" text-anchor="middle" class="sub">original payment method</text>
+
+      <rect x="888" y="462" width="224" height="96" rx="6" class="review"/>
+      <rect x="900" y="474" width="72" height="14" rx="2" fill="none" stroke="#025558" stroke-opacity=".55"/><text x="936" y="484" text-anchor="middle" class="tag">EVIDENCE</text>
+      <text x="1000" y="515" text-anchor="middle" class="name">Listed exception?</text>
+      <text x="1000" y="538" text-anchor="middle" class="sub">reason + evidence required</text>
+
+      <rect x="262" y="462" width="176" height="96" rx="6" class="node"/>
+      <rect x="274" y="474" width="56" height="14" rx="2" fill="none" stroke="#025558" stroke-opacity=".55"/><text x="302" y="484" text-anchor="middle" class="tag">REFUSE</text>
+      <text x="350" y="515" text-anchor="middle" class="name">Cannot refund</text>
+      <text x="350" y="538" text-anchor="middle" class="sub">not found · refunded</text>
+
+      <rect x="64" y="582" width="264" height="72" rx="6" class="review"/>
+      <rect x="76" y="594" width="56" height="14" rx="2" fill="none" stroke="#025558" stroke-opacity=".55"/><text x="104" y="604" text-anchor="middle" class="tag">HUMAN</text>
+      <text x="196" y="625" text-anchor="middle" class="name">Human review</text>
+      <text x="196" y="645" text-anchor="middle" class="sub">missing evidence · over limit</text>
+
+      <text x="640" y="680" text-anchor="middle" class="callout">The tool code decides the outcome; the prompt explains it to the customer.</text>
+    </svg>
+  </div>
+</body>
+</html>

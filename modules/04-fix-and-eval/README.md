@@ -23,9 +23,11 @@ Edit `app/data/instructions.md` to fix each behaviour on your list. By hand, or 
 Then publish it:
 
 ```bash {.terminal}
-# app/data/instructions.md -> the next major version
-make publish-agent-version
+uv run python -m app.refund_agent.entities publish \
+  --file app/data/instructions.md
 ```
+
+This calls `publish_version()` in `entities.py`: it compares the local instructions with the latest agent version, then publishes a major version only when they differ. `make publish-agent-version` is the shortcut.
 
 ```text
 ── Publish · your instructions as a new agent version ──
@@ -71,8 +73,10 @@ A version is therefore an experimentable artifact: replaying `@1.0.0` and `@2.0.
 ### Step 2 · Replay the problem conversations
 
 ```bash {.terminal}
-make agent-chat-ui
+uv run python -m app.web
 ```
+
+This starts the same local chat UI used earlier. `make agent-chat-ui` is the shortcut.
 
 Pick `@1.0.0`, send the opening message of a conversation that broke a rule. Switch to `@2.0.0`: the chat starts a new conversation for that version. Send the same message. Compare the answers and the tool chips.
 
@@ -90,25 +94,34 @@ for version in ["1.0.0", NEW]:
 The same comparison from the terminal: put those opening messages in `PROMPTS` in `modules/04-fix-and-eval/run.py`, then:
 
 ```bash {.terminal}
-make compare-versions VERSION=2.0.0
+uv run python modules/04-fix-and-eval/run.py 2.0.0
 ```
+
+The positional argument is the candidate version to compare with `@1.0.0`. `make compare-versions VERSION=2.0.0` is the shortcut.
 
 ![The same first message replayed in the chat UI on @1.0.0 (top) and @2.0.0 (bottom), each in a new conversation, with their tool chips and trace links.](assets/replay-v1-v2.png)
 
 ### Step 3 · Re-run the simulation on v2
 
 ```bash {.terminal}
-make simulate-agent VERSION=2.0.0
+uv run python modules/03-simulation/run.py 2.0.0
 ```
+
+This is the same simulation script from the previous module, now pointed at the published version.
 
 Done when none of the rules break, **including the control**: the ordinary refund must still be issued. Run it twice.
 
 ### Step 4 · The regression eval
 
 ```bash {.terminal}
-make regression-eval VERSION=2.0.0      # exit 0
-make regression-eval VERSION=1.0.0      # exit 1
+# Candidate version: every scorer should meet its threshold (exit 0)
+uv run python -m evals.regression --version 2.0.0
+
+# First version: known failures should keep this below a threshold (exit 1)
+uv run python -m evals.regression --version 1.0.0
 ```
+
+The module path identifies the evaluation runner; `--version` pins the managed agent it invokes. `make regression-eval VERSION=<version>` is the shortcut.
 
 `evals/regression.py` reads the rows of your orq.ai dataset `ws07-refund-eval` with `DatasetIdInput`, sends each message to `agent/ws07-refund-agent@<version>`, and scores every answer:
 
@@ -161,17 +174,17 @@ Open **Datasets** > `ws07-refund-eval`. These are the rows the eval just read.
 
 **Dataset view — read one row as an evaluation contract.** `message` is the agent input. `allowed_refunds` and `expected_decision` are structured expectations used by code scorers. The expected output gives the judge its reference context. This is why the regression script uses `DatasetIdInput`: edits you make here are the rows the next run actually evaluates.
 
-Add a row for a case your simulation found and the dataset does not cover yet; the next `make regression-eval` picks it up.
+Add a row for a case your simulation found and the dataset does not cover yet; the next `uv run python -m evals.regression --version <version>` picks it up.
 
 ## The same script as a GitHub check
 
-`make regression-eval` exits 1 on a regression, so it is a CI gate as it stands: a workflow that runs on every pull request touching `app/data/instructions.md`, publishes the change as a candidate version, and runs `make regression-eval VERSION=<that version>`. A red check is a prompt change that broke something the dataset knows about.
+`uv run python -m evals.regression --version <version>` exits 1 on a regression, so it is a CI gate as it stands: a workflow that runs on every pull request touching `app/data/instructions.md`, publishes the change as a candidate version, and runs that command. A red check is a prompt change that broke something the dataset knows about.
 
 ## With your coding agent
 
 Start your coding agent, then paste `modules/04-fix-and-eval/agent_prompt.md`, replacing the placeholder with your own list of behaviours:
 
-> Read `AGENTS.md` and `modules/04-fix-and-eval/README.md`. Here is the list of behaviours my simulation found in v1.0.0: `<paste your list>`. Edit `app/data/instructions.md` to fix each one without breaking an ordinary in-window refund. Keep the tone and keep it short. Then run `make publish-agent-version`, `make simulate-agent VERSION=<new version>` and `make regression-eval VERSION=<new version>`, and report what passed and what did not.
+> Read `AGENTS.md` and `modules/04-fix-and-eval/README.md`. Here is the list of behaviours my simulation found in v1.0.0: `<paste your list>`. Edit `app/data/instructions.md` to fix each one without breaking an ordinary in-window refund. Keep the tone and keep it short. Then run `uv run python -m app.refund_agent.entities publish`, `uv run python modules/03-simulation/run.py <new version>` and `uv run python -m evals.regression --version <new version>`, and report what passed and what did not.
 
 Keep the agent focused on the observed behaviours: it should not broaden the policy or edit the tools. Review the published version and the regression result before accepting the change.
 
@@ -187,4 +200,4 @@ Keep the agent focused on the observed behaviours: it should not broaden the pol
 
 ## Done when
 
-`make regression-eval VERSION=2.0.0` exits 0 and `VERSION=1.0.0` exits 1.
+`uv run python -m evals.regression --version 2.0.0` exits 0 and `--version 1.0.0` exits 1.

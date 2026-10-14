@@ -23,8 +23,15 @@ Every model call today, yours and the agent's, goes through the **orq.ai AI Gate
 ```bash {.terminal}
 git clone https://github.com/orq-ai/kickstarterai-techdays-workshop-2026
 cd kickstarterai-techdays-workshop-2026
-make setup                      # uv sync, and .env from .env.example
+
+# Install the locked workshop and docs dependencies.
+uv sync --all-groups
+
+# Create a local configuration file only on a fresh clone.
+test -f .env || cp .env.example .env
 ```
+
+`make setup` is the shortcut for these two setup operations.
 
 Paste the block from the email over the empty lines at the top of `.env`. The model lines below them are already filled in; leave them.
 
@@ -41,8 +48,11 @@ set +a              # stop auto-exporting future shell assignments
 Then check the CLI sees your key:
 
 ```bash {.terminal}
-make orq-doctor                 # orq whoami + orq doctor with the key from .env
+orq whoami
+orq doctor
 ```
+
+`orq whoami` verifies the credential source; `orq doctor` checks the configured endpoints and available tooling. `make orq-doctor` is the shortcut that runs both with `.env` exported.
 
 `orq whoami` must say `source: ORQ_API_KEY`. `orq doctor` may also mention your own `orq auth login` session; the key is what counts.
 
@@ -105,14 +115,16 @@ The gateway speaks the OpenAI API at `https://my.orq.ai/v3/router`. The same req
     print(response.output_text)
     ```
 
-The Python version is `app/smoke.py`, the last setup check:
+The Python version is `app/gateway_check.py`, the last setup check:
 
 ```bash {.terminal}
-make smoke-test
+uv run python -m app.gateway_check
 ```
 
+This runs the last onboarding check in `app/gateway_check.py`. It sends one request to the configured model through the orq.ai AI Gateway and prints its trace ID. `make gateway-check` is the shortcut.
+
 ```text
-── Smoke test · one request through the gateway ───────
+── Gateway check · one request through the gateway ───────
 endpoint : https://my.orq.ai/v3/router/responses
 model    : openai/gpt-6-luna
 answer   : An AI gateway sits between applications and AI models
@@ -129,12 +141,12 @@ Every response carries an `x-orq-trace-id` header: the proof the call went throu
 Pick another chat model from the Model Garden and send the same request; only the model id changes:
 
 ```bash {.terminal}
-uv run python -m app.smoke deepseek/deepseek-flash
+uv run python -m app.gateway_check deepseek/deepseek-flash
 ```
 
 Then open **Traces** in the Studio and search the two trace ids. Compare the model, tokens, cost and latency of the two calls.
 
-![The Traces page with the smoke test selected: one responses.openai trace with a gpt-6-luna span, its model, input, output and reasoning tokens, and estimated cost.](assets/gateway-trace.png)
+![The Traces page with the gateway check selected: one responses.openai trace with a gpt-6-luna span, its model, input, output and reasoning tokens, and estimated cost.](assets/gateway-trace.png)
 
 ## Gotchas
 
@@ -153,4 +165,4 @@ Then open **Traces** in the Studio and search the two trace ids. Compare the mod
 
 ## Done when
 
-`make smoke-test` prints a trace id and `verdict : OK`, and you have found that trace in the Studio.
+`uv run python -m app.gateway_check` prints a trace id and `verdict : OK`, and you have found that trace in the Studio.

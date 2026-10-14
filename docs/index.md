@@ -45,7 +45,7 @@ You do **not** need to install these packages individually with `pip`; `uv` uses
 | Clock | Block | You run | Page |
 |---|---|---|---|
 | 0:00 | Welcome | | |
-| 0:05 | Get your key, call a model through the gateway | `make setup orq-doctor smoke-test`, curl, Python | [Onboarding](modules/00.md) |
+| 0:05 | Get your key, call a model through the gateway | `make setup orq-doctor gateway-check`, curl, Python | [Onboarding](modules/00.md) |
 | 0:20 | Your coding agent (optional) | orqi, or the orq.ai plugin in your own agent | [Coding agents](modules/01.md) |
 | 0:30 | Create and meet the refund agent | `make seed-workspace agent-chat-ui invoke-agent` | [Refund agent](modules/02.md) |
 | 0:45 | Simulate customers | `make simulate-agent`, `make evaluatorq-dashboard` | [Simulation](modules/03.md) |

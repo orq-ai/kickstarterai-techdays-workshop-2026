@@ -266,6 +266,18 @@ html { font-size: 100%; }
 [data-md-color-scheme="slate"] .md-typeset table:not([class]) td {
   color: rgba(249, 248, 246, 0.9);
 }
+/* Navigation labels and table values are Material's muted foreground by
+   default. On this slate theme they need the same readable foreground as body
+   copy; only the selected navigation item carries the teal accent. */
+[data-md-color-scheme="slate"] .md-nav__link,
+[data-md-color-scheme="slate"] .md-nav__title,
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) th,
+[data-md-color-scheme="slate"] .md-typeset table:not([class]) td {
+  color: rgba(249, 248, 246, 0.9) !important;
+}
+[data-md-color-scheme="slate"] .md-nav__link--active {
+  color: var(--orq-teal-light) !important;
+}
 
 /* --- Static shell snippets: terminal frame in both color schemes ------- */
 /* Shell fences opt into this with `{.terminal}`. Keep Python and other

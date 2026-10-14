@@ -17,7 +17,7 @@ git clone https://github.com/orq-ai/kickstarterai-techdays-workshop-2026
 cd kickstarterai-techdays-workshop-2026
 make setup                          # uv sync, .env from the example
 # paste the block from your kickstart email into .env
-make orq-doctor smoke-test
+make orq-doctor gateway-check
 ```
 
 Then follow the docs site, or `make help` for every target in order.
@@ -26,7 +26,7 @@ Then follow the docs site, or `make help` for every target in order.
 
 | Page | Folder | You run |
 |---|---|---|
-| Onboarding | `modules/00-onboarding` | `make setup orq-doctor smoke-test`; the gateway from curl, CLI and Python |
+| Onboarding | `modules/00-onboarding` | `make setup orq-doctor gateway-check`; the gateway from curl, CLI and Python |
 | Coding agents | `modules/01-coding-agents` | orqi, or the orq.ai plugin in your own agent |
 | Refund agent | `modules/02-refund-agent` | `make seed-workspace`, `make agent-chat-ui`, `make invoke-agent` |
 | Simulation | `modules/03-simulation` | `make simulate-agent`, `make evaluatorq-dashboard` |

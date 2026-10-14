@@ -96,6 +96,7 @@ nav:
       - Onboarding: modules/00.md
       - Coding agents: modules/01.md
       - Refund agent:
+          - Business logic: modules/02-logic.md
           - Concepts: modules/02-concepts.md
           - Tutorial: modules/02.md
       - Simulation:
