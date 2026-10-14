@@ -10,14 +10,14 @@ Docs site: **https://orq-ai.github.io/kickstarterai-techdays-workshop-2026**
 
 ## Quickstart
 
-You need [uv](https://docs.astral.sh/uv/), `git`, `make` and the [orq CLI](https://docs.orq.ai/docs/cli). Your key, project and seat prefix come by email on the day.
+You need [uv](https://docs.astral.sh/uv/), `git`, `make` and the [orq CLI](https://docs.orq.ai/reference/cli). Your key, project and seat prefix come by email on the day.
 
 ```bash
 git clone https://github.com/orq-ai/kickstarterai-techdays-workshop-2026
 cd kickstarterai-techdays-workshop-2026
 make setup                          # uv sync, .env from the example
 # paste the block from your kickstart email into .env
-make orq-doctor seed-workspace smoke-test
+make orq-doctor smoke-test
 ```
 
 Then follow the docs site, or `make help` for every target in order.
@@ -26,9 +26,9 @@ Then follow the docs site, or `make help` for every target in order.
 
 | Page | Folder | You run |
 |---|---|---|
-| Onboarding | `modules/00-onboarding` | `make setup orq-doctor seed-workspace smoke-test` |
+| Onboarding | `modules/00-onboarding` | `make setup orq-doctor smoke-test`; the gateway from curl, CLI and Python |
 | Coding agents | `modules/01-coding-agents` | orqi, or the orq plugin in your own agent |
-| Refund agent | `modules/02-refund-agent` | `make agent-chat-ui`, `make invoke-agent` |
+| Refund agent | `modules/02-refund-agent` | `make seed-workspace`, `make agent-chat-ui`, `make invoke-agent` |
 | Simulation | `modules/03-simulation` | `make simulate-agent`, `make evaluatorq-dashboard` |
 | Fix and eval | `modules/04-fix-and-eval` | `make publish-agent-version`, `make compare-versions`, `make regression-eval` |
 

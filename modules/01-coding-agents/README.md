@@ -1,8 +1,5 @@
 # Coding agents
 
-!!! abstract "12-Factor Agents · Factor 11: trigger from anywhere"
-    The rest of the workshop works from a terminal. It also works from your coding agent: with the orq skills and the orq MCP server, the agent can read your traces, run a simulation or explain a failed eval in the same workspace you are using.
-
 | | |
 |---|---|
 | **Time** | 10 min |
@@ -24,7 +21,7 @@ The skills are workflows written for an agent (simulate an agent, build an evalu
     ```bash
     curl -fsSL https://raw.githubusercontent.com/orq-ai/orqi/main/install.sh | sh
     set -a; source .env; set +a     # export your workshop key into this shell
-    orqi "is my workspace ready for the workshop?"
+    orqi "which models are enabled in my workspace?"
     ```
 
     orqi does not read `.env` by itself: the `set -a` line exports the key for this shell only. Its header line ends with the credential it used; it must say `ORQ_API_KEY`.
@@ -54,10 +51,10 @@ The skills are workflows written for an agent (simulate an agent, build an evalu
 Ask your agent:
 
 ```text
-Which orq workspace are you connected to, and does it have an agent called <your WS_PREFIX>-refund-agent?
+Which orq workspace are you connected to? List the chat models enabled there.
 ```
 
-OAuth signs in as *you*, and your kickstart key is not a workspace membership: an agent connected over OAuth may land in your own workspace instead of the workshop one. If it does not find your agent, connect the MCP server with your workshop key instead. For Claude Code:
+The answer must name the workshop workspace and the same models you saw in the Model Garden. OAuth signs in as *you*, and your kickstart key is not a workspace membership: an agent connected over OAuth may land in your own workspace instead of the workshop one. If it does, connect the MCP server with your workshop key instead. For Claude Code:
 
 ```bash
 set -a; source .env; set +a
@@ -70,6 +67,13 @@ OAuth is the right path for your own workspace after today.
 
 The simulation and fix-and-eval modules each end with an **Ask your assistant** box: questions to hand to this agent once you have results.
 
+## Official docs
+
+- [Orq MCP server](https://docs.orq.ai/ai-studio/integrations/code-assistants/orq-mcp): tools on your workspace for any MCP client, OAuth or bearer key
+- [Orq Skills](https://docs.orq.ai/ai-studio/integrations/code-assistants/orq-skills): the workflows, and the Claude Code plugin
+- [Automate evals and observability in Claude Code](https://docs.orq.ai/ai-studio/cookbooks/evaluation-safety/automate-evals-and-observability-with-claude-code): a worked example
+- [orq CLI](https://docs.orq.ai/reference/cli)
+
 ## Done when
 
-Your coding agent (or orqi) names your `-refund-agent` and its version.
+Your coding agent (or orqi) names the workshop workspace and its models.

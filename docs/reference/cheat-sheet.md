@@ -3,7 +3,8 @@
 ## Make, in workshop order
 
 ```bash
-make setup orq-doctor seed-workspace smoke-test     # onboarding
+make setup orq-doctor smoke-test                    # onboarding: key + gateway
+make seed-workspace                                 # your agent v1.0.0, tools, dataset, judge
 make invoke-agent                                   # call your agent from Python
 make agent-chat-ui                                  # chat in the browser, pick a version
 make simulate-agent [VERSION=1.0.0]                 # simulated customers
@@ -12,6 +13,21 @@ make publish-agent-version [FILE=...]               # your instructions -> next 
 make compare-versions [VERSION=latest]              # replay prompts on @1.0.0 and VERSION
 make regression-eval [VERSION=2.0.0]                # orq dataset, exit 1 on regression
 make reset-workspace                                # delete your seat's entities
+```
+
+## The gateway
+
+```bash
+curl -s https://my.orq.ai/v3/router/responses -H "Authorization: Bearer $ORQ_API_KEY" \
+  -H "Content-Type: application/json" -d '{"model": "openai/gpt-6-luna", "input": "hi"}'
+orq models list -o json            # the Model Garden
+orq responses create --model openai/gpt-6-luna --input '"hi"' -o json
+```
+
+```python
+from openai import OpenAI
+client = OpenAI(api_key=ORQ_API_KEY, base_url="https://my.orq.ai/v3/router")
+client.responses.create(model="openai/gpt-6-luna", input="hi").output_text
 ```
 
 ## Your agent

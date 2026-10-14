@@ -1,8 +1,5 @@
 # Fix and eval
 
-!!! abstract "12-Factor Agents · Factor 2: own your prompts"
-    The fix is an edit to `app/data/instructions.md`, published as a new major version of the same agent. v1.0.0 stays: you can pin it, replay it and compare. The regression eval turns "it looks better" into a number that fails a build.
-
 | | |
 |---|---|
 | **Time** | 35 min |
@@ -105,6 +102,14 @@ Open **Datasets** > `ws07-refund-eval`. These are the rows the eval just read. A
 
 !!! question "Ask your assistant"
     `Compare the last two Experiment runs of ws07-refund-regression. Which rows changed verdict, and why?`
+
+## Official docs
+
+- [Build Agents](https://docs.orq.ai/ai-studio/ai-engineering/build-agents): updating an agent and its versions
+- [Build Datasets](https://docs.orq.ai/ai-studio/optimize/datasets): the rows the eval reads
+- [Create Evaluators](https://docs.orq.ai/ai-studio/optimize/evaluators): LLM-as-a-Judge, like your policy judge
+- [Build Experiments](https://docs.orq.ai/ai-studio/optimize/experiments): where each eval run lands
+- [Evaluatorq](https://docs.orq.ai/ai-studio/cookbooks/evaluation-safety/evaluator-q): `evaluatorq()`, `DatasetIdInput`, scorers
 
 ## Done when
 

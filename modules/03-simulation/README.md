@@ -1,8 +1,5 @@
 # Simulation
 
-!!! abstract "12-Factor Agents · Factor 12: make your agent a stateless reducer"
-    Each simulated turn sends your agent the whole conversation so far and gets the next reply back. Because the agent is a function of its input, the same simulation can replay against v1 today and v2 in twenty minutes, and the difference is the prompt, nothing else.
-
 | | |
 |---|---|
 | **Time** | 30 min |
@@ -67,6 +64,12 @@ Two questions that help:
 
 - **`goal achieved: false` is not a failure.** The simulated customer's goal can be one the agent *should* refuse. The criteria are what you judge the agent on.
 - **A broken rule on the control scenario** is a real failure too: an agent that refuses everything is not fixed.
+
+## Official docs
+
+- [Agent Simulation](https://docs.orq.ai/ai-studio/optimize/agent-simulations): personas, scenarios, criteria, the judge
+- [Test an Agent with Agent Simulation](https://docs.orq.ai/ai-studio/cookbooks/evaluation-safety/agent-simulations): the cookbook: simulate, fix, replay
+- [Evaluatorq](https://docs.orq.ai/ai-studio/cookbooks/evaluation-safety/evaluator-q): the framework behind `simulate()` and `eq dashboard`
 
 ## Done when
 

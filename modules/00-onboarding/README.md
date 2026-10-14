@@ -1,17 +1,14 @@
 # Onboarding
 
-!!! abstract "12-Factor Agents · Factor 2: own your prompts"
-    Your agent's prompt is a file in this repo, `app/data/instructions.md`. `make seed-workspace` turns it into version 1.0.0 of an agent in orq. Everything after this module is about changing that file on purpose and measuring what changed.
-
 | | |
 |---|---|
 | **Time** | 15 min |
-| **Prerequisites** | a laptop with [uv](https://docs.astral.sh/uv/), `git`, `make`, and the [orq CLI](https://docs.orq.ai/docs/cli) |
-| **You will have** | your own seat in the workshop workspace: a key, a seat prefix, your refund agent at v1.0.0 with three code tools, and one trace that proves it works |
+| **Prerequisites** | a laptop with [uv](https://docs.astral.sh/uv/), `git`, `make`, and the [orq CLI](https://docs.orq.ai/reference/cli) |
+| **You will have** | your own key and seat in the workshop workspace, the models it offers, and one model request sent through the orq AI Gateway from curl, the CLI and Python, with its trace |
 
 ## Why
 
-Thirty people share one orq workspace today. Each seat gets its own key and its own prefix (`ws07`), and every entity you create starts with it: `ws07-refund-agent`, `ws07-lookup_order`. Nobody overwrites anybody, and `make reset-workspace` only ever touches your own keys.
+Every model call today, yours and the agent's, goes through the **orq AI Gateway**: one OpenAI-compatible endpoint in front of every model the workspace has enabled. One key, one base URL, and each call becomes a trace with its cost, tokens and latency. Before anything else, check that this works with your key.
 
 ## Steps
 
@@ -31,47 +28,96 @@ make setup                      # uv sync, and .env from .env.example
 
 Paste the block from the email over the empty lines at the top of `.env`. The model lines below them are already filled in; leave them.
 
-!!! warning "Use the prefix from your email"
-    `make seed-workspace` refuses to run with an empty `WS_PREFIX` or a made-up one: the prefix is what keeps your entities apart from your neighbour's.
-
-### Step 3 · Check, seed, smoke
+Then check the CLI sees your key:
 
 ```bash
-make orq-doctor                 # the CLI with your key: who you are, endpoints, skills
-make seed-workspace             # your agent v1.0.0, its tools, the eval dataset and the judge
-make smoke-test                 # one turn to your agent
+make orq-doctor                 # orq whoami + orq doctor with the key from .env
 ```
 
-Expected output of the last two:
+`orq whoami` must say `source: ORQ_API_KEY`. `orq doctor` may also mention your own `orq auth login` session; the key is what counts.
+
+### Step 3 · The Model Garden
+
+Open [my.orq.ai](https://my.orq.ai), switch to the workshop workspace, and open **Model Garden**. These are the models the gateway serves to this workspace, each with its provider, type and price per token. A model id is always `provider/model`: `openai/gpt-6-luna` is the one in your `.env` as `MODEL`.
+
+The same list from the terminal:
+
+```bash
+set -a; source .env; set +a     # export the key into this shell (the CLI and curl need it)
+orq models list -o json | jq -r '.[] | select(.enabled) | "\(.provider)/\(.model_id)  \(.model_type)"'
+```
+
+### Step 4 · One request: curl, CLI, Python
+
+The gateway speaks the OpenAI API at `https://my.orq.ai/v3/router`. The same request three ways:
+
+=== "curl"
+
+    ```bash
+    curl -s https://my.orq.ai/v3/router/responses \
+      -H "Authorization: Bearer $ORQ_API_KEY" -H "Content-Type: application/json" \
+      -d "{\"model\": \"$MODEL\", \"input\": \"Say hello in five words.\"}" -D - | grep -i x-orq-trace-id
+    ```
+
+=== "orq CLI"
+
+    ```bash
+    orq responses create --model "$MODEL" --input '"Say hello in five words."' -o json
+    ```
+
+=== "Python"
+
+    ```python
+    from openai import OpenAI
+
+    client = OpenAI(api_key=ORQ_API_KEY, base_url="https://my.orq.ai/v3/router")
+    response = client.responses.create(model="openai/gpt-6-luna", input="Say hello in five words.")
+    print(response.output_text)
+    ```
+
+The Python version is `app/smoke.py`, the last setup check:
+
+```bash
+make smoke-test
+```
 
 ```text
-── Seed · create this seat's entities ─────────────────
-seat     : ws07 → <your project>/workshop
-tools    : ws07-lookup_order, ws07-issue_refund, ws07-get_policy (code tools, run by orq)
-agent    : ws07-refund-agent v1.0.0
-dataset  : ws07-refund-eval (01M4…)
-judge    : ws07-refund-policy-judge (01M4…)
-── Smoke test · one turn to your agent ────────────────
-agent    : ws07-refund-agent
-question : Hi, I want a refund for order ord_a1, I changed my mind.
-answer   : Your refund for order ord_a1 has been issued: €24.99.
-tools    : lookup_order → issue_refund
-trace    : dec8b671d962af0fbf70537773a7bc06
-verdict  : OK, orq ran your agent and its tools
+── Smoke test · one request through the gateway ───────
+endpoint : https://my.orq.ai/v3/router/responses
+model    : openai/gpt-6-luna
+answer   : An AI gateway sits between applications and AI models to manage and secure requests, ...
+tokens   : 17 in, 48 out
+trace    : 74c18139baffe8399c6029823b037995
+verdict  : OK, your key and the gateway work
 ```
 
-`make seed-workspace` is safe to run again: it only creates what is missing. It never changes an existing agent; new versions come from `make publish-agent-version` in the fix-and-eval module.
+Every response carries an `x-orq-trace-id` header: the proof the call went through orq.
 
-### Step 4 · Find it in the Studio
+### Step 5 · Swap the model, find the traces
 
-Open [my.orq.ai](https://my.orq.ai), switch to the workshop workspace, and open **Agents** > `ws07-refund-agent`. Then **Traces**: search the trace id from the smoke test.
+Pick another chat model from the Model Garden and send the same request; only the model id changes:
+
+```bash
+uv run python -m app.smoke deepseek/deepseek-flash
+```
+
+Then open **Traces** in the Studio and search the two trace ids. Compare the model, tokens, cost and latency of the two calls.
 
 ## Gotchas
 
-- **`orq-doctor` shows another workspace.** `orq doctor` also reports your own `orq auth login` session. The line that counts is `source: ORQ_API_KEY` from `orq whoami`: that is the key in `.env`.
-- **401 on seed.** The key in `.env` has a typo or a trailing space. Paste the block again.
-- **`WS_PREFIX='ws'` is not a seat prefix.** You kept the default. Use the one from your email.
+- **401 API key is not valid.** The key in `.env` has a typo or a trailing space, or your shell exports an older `ORQ_API_KEY`. Paste the block again; for curl and the CLI run `set -a; source .env; set +a` first.
+- **400 invalid model.** The model id has no provider, or is not enabled in the workspace. Copy it from the Model Garden as `provider/model`.
+
+## Official docs
+
+- [AI Gateway](https://docs.orq.ai/ai-gateway/get-started/introduction): one endpoint in front of every model
+- [Models (Model Garden)](https://docs.orq.ai/ai-gateway/using-the-router): browse and enable models, `provider/model` ids
+- [OpenAI-compatible API](https://docs.orq.ai/ai-gateway/features/openai-compatible-api): the OpenAI SDK with orq's base URL
+- [Responses API](https://docs.orq.ai/ai-gateway/features/responses-api): the endpoint every call today uses
+- [API keys](https://docs.orq.ai/ai-studio/organization/api-keys): project-scoped keys, like the one in your email
+- [Traces](https://docs.orq.ai/ai-studio/observability/traces): what each call records
+- [orq CLI](https://docs.orq.ai/reference/cli): `orq whoami`, `orq models`, `orq responses`
 
 ## Done when
 
-`make smoke-test` prints a trace id and `verdict : OK`.
+`make smoke-test` prints a trace id and `verdict : OK`, and you have found that trace in the Studio.

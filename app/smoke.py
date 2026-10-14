@@ -1,33 +1,38 @@
-"""make smoke-test: one turn to your managed agent. The last setup check.
+"""make smoke-test: one model request through the orq AI Gateway, from Python. The last setup check.
 
-What: one in-window refund request to `agent/<seat>-refund-agent`. orq runs the model and the
-code tools; this script only sends the message and prints what came back.
-Why: if this passes, the key, the seat prefix, the seeded agent and its tools all work. The trace
-id is the proof the call went through orq.
-How: `make smoke-test` (or `uv run python -m app.smoke`). Exits non-zero when a check fails.
+What: the plain OpenAI SDK with its base URL pointed at orq's router, one Responses API call to
+MODEL from .env. Nothing orq-specific in the call: any OpenAI-compatible client works this way.
+Why: if this passes, the key, the gateway and the model all work. The `x-orq-trace-id` header is
+the proof the call went through orq.
+How: `make smoke-test` (or `uv run python -m app.smoke [provider/model]`). Exits non-zero on failure.
 """
 
-from app.refund_agent.client import ask_agent
+import sys
+
+from openai import OpenAI
+
 from app.refund_agent.config import settings
 
-QUESTION = "Hi, I want a refund for order ord_a1, I changed my mind."
+QUESTION = "In one sentence: what does an AI gateway do?"
 
 
 def main() -> None:
-    settings.require_seat()
-    turn = ask_agent(QUESTION)
+    settings.require_key()
+    model = sys.argv[1] if len(sys.argv) > 1 else settings.model
+    client = OpenAI(api_key=settings.api_key, base_url=settings.router_url)  # the only orq-specific line
+    raw = client.responses.with_raw_response.create(model=model, input=QUESTION)
+    response = raw.parse()
+    trace_id = raw.headers.get("x-orq-trace-id")
 
-    print("── Smoke test · one turn to your agent ────────────────")
-    print(f"agent    : {settings.agent_key}")
-    print(f"question : {QUESTION}")
-    print(f"answer   : {turn.answer[:120]}")
-    print(f"tools    : {' → '.join(turn.tool_names) or 'none'}")
-    print(f"trace    : {turn.trace_id}")
+    print("── Smoke test · one request through the gateway ───────")
+    print(f"endpoint : {settings.router_url}/responses")
+    print(f"model    : {model}")
+    print(f"answer   : {response.output_text.strip()[:140]}")
+    print(f"tokens   : {response.usage.input_tokens} in, {response.usage.output_tokens} out")
+    print(f"trace    : {trace_id}")
 
-    assert turn.trace_id, "no trace id: the call did not go through orq"
-    assert "lookup_order" in turn.tool_names, "the agent did not call lookup_order: run `make seed-workspace`"
-
-    print("verdict  : OK, orq ran your agent and its tools")
+    assert trace_id, "no x-orq-trace-id header: the call did not go through orq"
+    print("verdict  : OK, your key and the gateway work")
     print("next     : open Traces in the Studio and search the trace id")
 
 
