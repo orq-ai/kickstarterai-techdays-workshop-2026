@@ -64,4 +64,7 @@ docs-build: ## Strict docs build (fails on broken links)
 slides: ## Render slides/workshop.md to HTML with Marp
 	$(MARP) slides/workshop.md --theme slides/orq-theme.css -o slides/workshop.html
 
-.PHONY: help setup orq-doctor seed-workspace smoke-test invoke-agent agent-chat-ui simulate-agent evaluatorq-dashboard publish-agent-version compare-versions regression-eval reset-workspace test docs-serve docs-build slides
+deck: ## Serve the reveal.js deck in slides/kickstart on :8000 (add ?code=XXXX to show the login code)
+	python3 -m http.server 8000 -d slides/kickstart
+
+.PHONY: help setup orq-doctor seed-workspace smoke-test invoke-agent agent-chat-ui simulate-agent evaluatorq-dashboard publish-agent-version compare-versions regression-eval reset-workspace test docs-serve docs-build slides deck
