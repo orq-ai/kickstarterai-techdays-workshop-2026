@@ -23,26 +23,21 @@ Every model call today, yours and the agent's, goes through the **orq.ai AI Gate
 git clone https://github.com/orq-ai/kickstarterai-techdays-workshop-2026
 cd kickstarterai-techdays-workshop-2026
 
-# Install the locked workshop and docs dependencies.
-uv sync --all-groups
-
-# Create a local configuration file only on a fresh clone.
-test -f .env || cp .env.example .env
+uv sync --all-groups                   # install dependencies
+test -f .env || cp .env.example .env   # create your config on a fresh clone
 ```
 
-`make setup` is the shortcut for these two setup operations.
+`make setup` does both of these.
 
 Paste the block from the email over the empty lines at the top of `.env`. The model lines below them are already filled in; leave them.
 
-**Once per new terminal**, load the workshop configuration so direct CLI and curl commands can read it:
+**In every new terminal**, load `.env` so `orq` and `curl` can read it (Python scripts load it themselves):
 
 ```bash {.terminal}
-set -a              # auto-export assignments to child commands
-source .env        # load ORQ_API_KEY, WS_PREFIX, MODEL, and other settings
-set +a              # stop auto-exporting future shell assignments
+set -a
+source .env
+set +a
 ```
-
-Workshop Python scripts load `.env` themselves. This export is for direct shell commands such as `orq` and `curl`.
 
 Check that the CLI uses your workshop key:
 
@@ -50,17 +45,19 @@ Check that the CLI uses your workshop key:
 orq whoami
 ```
 
-Look for `source: ORQ_API_KEY`. If authentication fails, `orq doctor` diagnoses the configured endpoints and tooling. `make orq-doctor` runs both commands with `.env` exported.
-
-A saved `orq auth login` session can point to another workspace. For this exercise, check that `orq whoami` reports `source: ORQ_API_KEY`.
+Look for `source: ORQ_API_KEY`. If you see another source (such as a saved `orq auth login` session) or an error, run `make orq-doctor`: it runs `orq whoami` and `orq doctor` with `.env` exported.
 
 ### Step 3 · Make one gateway request
 
-A model ID has the form `provider/model`. `app/gateway_check.py` uses `MODEL` from your `.env` to make one OpenAI-compatible Responses API call and print its trace ID.
+A model ID has the form `provider/model`. This script makes one OpenAI-compatible Responses API call with the `MODEL` from your `.env` and prints its trace ID:
 
-`make gateway-check` is an optional shortcut. Look for `verdict : OK` and save the trace ID.
+```bash {.terminal}
+uv run python -m app.gateway_check
+```
 
-Example session (your configured model, answer, tokens and trace ID can differ):
+`make gateway-check` does the same. Look for `verdict : OK` and save the trace ID.
+
+Example output (your model, answer, tokens and trace ID can differ):
 
 <!-- termynal -->
 
@@ -99,7 +96,7 @@ orq models list -o json |
   '
 ```
 
-The following tabs show the same request without the workshop script. They are alternative interfaces, not three additional required calls. The gateway speaks the OpenAI API at `https://my.orq.ai/v3/router`.
+The same request, three ways. Pick one or skip them; the script above already made it.
 
 === "curl"
 
@@ -139,8 +136,6 @@ The following tabs show the same request without the workshop script. They are a
     print(raw.parse().output_text)
     print(raw.headers.get("x-orq-trace-id"))
     ```
-
-These examples use the same gateway contract. `app/gateway_check.py` is the tested Python version from Step 3; the trace header confirms the request passed through orq.ai.
 
 ### Optional · Compare another model
 
