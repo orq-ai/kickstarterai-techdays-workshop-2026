@@ -104,9 +104,9 @@ def test_seed_eval_dataset_is_created_once(monkeypatch, tmp_path):
     rows.write_text('{"inputs": {"message": "a"}}\n\n{"inputs": {"message": "b"}}\n')
     datasets, created, added = [], [], []
 
-    def create(request):
-        created.append(request)
-        datasets.append(NS(display_name=request["display_name"], id="ds-1"))
+    def create(display_name, path=None):
+        created.append({"display_name": display_name, "path": path})
+        datasets.append(NS(display_name=display_name, id="ds-1"))
         return NS(id="ds-1")
 
     orq = NS(datasets=NS(

@@ -41,8 +41,8 @@ class Settings(BaseSettings):
     workspace: str = WORKSHOP_WORKSPACE
     # Your seat: every entity key starts with it (ws07-refund-agent), so seats never collide.
     prefix: str = Field(default="", validation_alias="WS_PREFIX")
-    model: str = Field(default="openai/gpt-6-luna", validation_alias="MODEL")
-    judge_model: str = Field(default="openai/gpt-6-luna", validation_alias="JUDGE_MODEL")
+    model: str = Field(default="wafer/GLM-5.3-Flash", validation_alias="MODEL")
+    judge_model: str = Field(default="wafer/GLM-5.3-Flash", validation_alias="JUDGE_MODEL")
     identity_id: str = Field(default="customer-user_001", validation_alias="IDENTITY_ID")
 
     @field_validator("base_url")

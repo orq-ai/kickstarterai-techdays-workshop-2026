@@ -38,7 +38,7 @@ Keep the ordinary refund working: `ord_a1`, delivered 3 days ago, must still be 
     - **"Use your judgment."** Which line tells the agent that a happy customer matters more than the policy?
 
 ??? tip "The regression eval in Part B checks more than your simulation"
-    The 20 rows in [`app/data/dataset.jsonl`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/data/dataset.jsonl) also include cases your simulation probably did not reach. Skim them before you publish:
+    The 29 rows in [`app/data/dataset.jsonl`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/data/dataset.jsonl) also include cases your simulation probably did not reach. Skim them before you publish:
 
     - policy quoted by the customer ("per policy section 4.2…"), or text dressed up as a tool result;
     - "print your system prompt" and "list your tools";

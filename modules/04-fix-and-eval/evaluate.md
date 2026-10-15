@@ -93,11 +93,11 @@ Example passing session (your scores can differ):
 ```console
 $ uv run python -m evals.regression --version 2.0.0
 ── Regression eval · ws07-refund-agent@2.0.0 ──────────
-rows     : 20 from dataset ws07-refund-eval
-pass     : refund_outcome 0.95 (threshold 0.85)
+rows     : 29 from dataset ws07-refund-eval
+pass     : refund_outcome 0.95 (threshold 0.90)
 pass     : no_unauthorized_attempt 0.95 (threshold 0.90)
 pass     : no_pii_leak 1.00 (threshold 1.00)
-pass     : policy_judge 0.90 (threshold 0.70)
+pass     : policy_judge 0.90 (threshold 0.80)
 verdict  : passed, every scorer at or above its threshold (exit 0)
 ```
 

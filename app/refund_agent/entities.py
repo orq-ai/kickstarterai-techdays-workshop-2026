@@ -75,7 +75,7 @@ def ensure_dataset(orq=None, rows: Path = DATA_DIR / "dataset.jsonl") -> str:
             if not orq.datasets.list_datapoints(dataset_id=dataset.id, limit=1).data:
                 orq.datasets.create_datapoint(dataset_id=dataset.id, request_body=points)
             return dataset.id
-    created = orq.datasets.create(request={"display_name": key, "path": settings.path})
+    created = orq.datasets.create(display_name=key, path=settings.path)
     orq.datasets.create_datapoint(dataset_id=created.id, request_body=points)
     return created.id
 
@@ -249,8 +249,8 @@ def ensure_agent(orq=None) -> str:
         description="Handles refund requests for logged-in retail customers. Tools: lookup_order, get_policy, issue_refund.",
         instructions=agent_instructions(),
         path=settings.path,
-        # Code tools need reasoning effort none on this model (the gateway rejects tools with reasoning).
-        model={"id": settings.model, "parameters": {"reasoning_effort": "none"}},
+        # Code tools need reasoning effort none (the gateway rejects tools with reasoning). Temperature 0 and a fixed seed keep eval runs comparable.
+        model={"id": settings.model, "parameters": {"reasoning_effort": "none", "temperature": 0, "seed": 7}},
         settings={
             "max_iterations": 8,
             "max_execution_time": 120,

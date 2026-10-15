@@ -65,7 +65,7 @@ Example output (your model, answer, tokens and trace ID can differ):
 $ uv run python -m app.gateway_check
 ── Gateway check · one request through the gateway ───────
 endpoint : https://my.orq.ai/v3/router/responses
-model    : openai/gpt-6-luna
+model    : wafer/GLM-5.3-Flash
 answer   : An AI gateway sits between applications and AI models
            to manage and secure requests, ...
 tokens   : 17 in, 48 out
