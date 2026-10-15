@@ -63,9 +63,7 @@ The pattern is the loop: **model decision → tool result → model decision →
 
 ## One turn on the wire
 
-A hello turn is one `responses.create(model="agent/<key>")` call: a `message` item plus a `telemetry.trace_id`. With tools, the same shape gains a `function_call` item and an `orq:<tool>` result item before the final message.
-
-The agent itself is a durable entity, not something your app rebuilds per request: `orq.agents.create()` configures it; `responses.create()` runs one turn. Pinning `agent/<key>@1.0.0` makes a call reproducible; the simulation module relies on it.
+`agent/<key>` always runs the latest version; `agent/<key>@1.0.0` pins one, so the same call gives the same configuration every time.
 
 ![Diagram: An application sends a message to a managed agent; the model requests a function call, orq.ai executes the code tool, returns an orq.ai tool-result item to the model, and returns a message with a trace ID.](assets/agent-turn-sequence.png)
 
