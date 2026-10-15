@@ -33,7 +33,9 @@ judge    : ws07-refund-policy-judge (01M4…)
 
 ### The SDK calls behind seed-eval
 
-The dataset is created once, then populated from the local JSONL rows. The judge is a separate boolean evaluator resource that stores its prompt and model configuration in orq.ai.
+The dataset is created once, then populated from the local JSONL rows. The judge is a separate boolean evaluator resource that stores its prompt and model configuration in orq.ai. [`seed_eval()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/entities.py#L413-L426) runs both.
+
+**Dataset.** The two calls below are in [`ensure_dataset()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/entities.py#L63-L80): [`datasets.create`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/entities.py#L78) and [`create_datapoint`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/entities.py#L79). It first looks for an existing dataset, so a rerun creates nothing twice.
 
 ```python {.code-frame}
 # app/refund_agent/entities.py
@@ -48,6 +50,8 @@ orq.datasets.create_datapoint(
     request_body=points,  # rows from app/data/dataset.jsonl
 )
 ```
+
+**Judge.** The call below is in [`ensure_llm_judge()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/entities.py#L91-L114), at [`evals.create`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/entities.py#L101-L113). It sends the prompt from [`app/data/judge_prompt.md`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/data/judge_prompt.md).
 
 ```python {.code-frame}
 orq.evals.create(
