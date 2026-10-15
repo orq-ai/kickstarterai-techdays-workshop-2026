@@ -15,14 +15,20 @@ Foundations covers the generic agent loop; [Use Case](https://orq-ai.github.io/k
 
 ### Step 1 · Create the refund agent
 
-Run this once. Everything it creates starts with your seat prefix (`ws07-…`), so your resources stay separate from other participants'. It is safe to run again: it only creates what is missing and never changes an existing agent. `make seed-workspace` runs `uv run python -m app.refund_agent.entities seed`.
+Run this once. Everything it creates starts with your seat prefix (`ws07-…`), so your resources stay separate from other participants'. It is safe to run again: it only creates what is missing and never changes an existing agent. The command runs the `seed` entry point in [`app/refund_agent/entities.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/entities.py), so you can open the code it runs.
+
+```bash {.terminal}
+uv run python -m app.refund_agent.entities seed
+```
+
+`make seed-workspace` is the shortcut for the same command.
 
 Example session (your seat prefix and entity IDs will differ):
 
 <!-- termynal -->
 
 ```console
-$ make seed-workspace
+$ uv run python -m app.refund_agent.entities seed
 ── Seed · create this seat's agent ───────────────────
 seat     : ws07 → <your project>/workshop
 tools    : ws07-lookup_order, ws07-issue_refund, ws07-get_policy (code tools, run by orq.ai)
@@ -120,6 +126,12 @@ Open [**Agents** in the workshop workspace](https://my.orq.ai/kickstartai-worksh
 6. The last line calls it with `params` and leaves the outcome in `result`.
 
 ### Step 3 · Inspect and call it from Python
+
+Every resource in the Studio has a **code snippet** you can copy. Open your agent and look at its **Invoke an Agent** dialog. It offers cURL, Python and TypeScript; we use **Python**, because that is what `run.py` is written in.
+
+![The Invoke an Agent dialog in the Studio, with cURL, Python and TypeScript tabs and a Python snippet that calls the agent by its key.](assets/invoke-agent-snippet.png)
+
+That snippet is the shape of the call you are about to write: the agent key as the `model`, plus an `input`. Use it as a guide for TODO 1.
 
 Open [`modules/02-refund-agent/run.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/02-refund-agent/run.py). Complete these two TODOs before you run it:
 
