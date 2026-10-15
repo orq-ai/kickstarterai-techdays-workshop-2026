@@ -96,3 +96,26 @@ def test_reset_touches_only_this_seat_and_reports_failures(monkeypatch):
         "ws07-refund-policy-judge",
         "ws07-refund-eval",
     ]
+
+
+def test_seed_eval_dataset_is_created_once(monkeypatch, tmp_path):
+    """Running seed-eval twice finds the dataset by key and adds no rows the second time."""
+    _seat(monkeypatch)
+    rows = tmp_path / "rows.jsonl"
+    rows.write_text('{"inputs": {"message": "a"}}\n\n{"inputs": {"message": "b"}}\n')
+    datasets, created, added = [], [], []
+
+    def create(request):
+        created.append(request)
+        datasets.append(NS(display_name=request["display_name"], id="ds-1"))
+        return NS(id="ds-1")
+
+    orq = NS(datasets=NS(
+        list=lambda **kw: NS(data=list(datasets)),
+        create=create,
+        create_datapoint=lambda dataset_id, request_body: added.append((dataset_id, request_body)),
+    ))
+    assert entities.ensure_dataset(orq, rows) == "ds-1"
+    assert entities.ensure_dataset(orq, rows) == "ds-1"
+    assert [r["display_name"] for r in created] == ["ws07-refund-eval"]
+    assert added == [("ds-1", [{"inputs": {"message": "a"}}, {"inputs": {"message": "b"}}])]

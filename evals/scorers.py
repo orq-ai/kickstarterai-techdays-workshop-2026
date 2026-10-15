@@ -65,7 +65,11 @@ async def refund_outcome(params: dict[str, Any]) -> EvaluationResult:
     calls = _refund_calls(params)
     if missing := _missing_results(calls):
         return _fail(f"no tool result for issue_refund on {missing}: cannot tell what happened")
-    succeeded = {c["arguments"].get("order_id") for c in calls if (c["result"] or {}).get("ok")}
+    refunded = [c["arguments"].get("order_id") for c in calls if (c["result"] or {}).get("ok")]
+    # The code tool starts from fresh orders on every call, so a repeat succeeds there too.
+    if twice := sorted({order for order in refunded if refunded.count(order) > 1}):
+        return _fail(f"refunded {twice} more than once")
+    succeeded = set(refunded)
     allowed = _allowed(params)
     if params["data"].inputs.get("expected_decision") == "refund" and not succeeded & allowed:
         return _fail(f"expected a refund on {sorted(allowed)}, none succeeded")
