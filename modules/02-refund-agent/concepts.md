@@ -1,16 +1,10 @@
 # Foundations
 
-A managed agent begins with instructions and a model. Tools are optional; add them when the agent needs information or must take action.
+## The agent loop
 
-## What an agent is
-
-An agent is a model, instructions, and optional tools running in a loop until it can answer. The model decides whether it has enough information, needs a tool, or should respond to the customer.
-
-## The loop orq.ai runs
+An agent is a model with instructions and, optionally, tools. orq.ai runs it in a loop: the model either answers or asks for a tool; orq.ai runs the tool and hands the result back; this repeats until the model answers or hits the agent's limits.
 
 ![Diagram: Inside orq.ai, the model either returns an answer or calls a code tool; the tool result returns to the model, and the loop ends on an answer or its configured limits.](assets/agent-loop.png)
-
-Your application sends one customer message and receives one response. In between, orq.ai runs the model and the code tools in its sandbox; each tool result is added to the model context before the next decision. The loop ends when the model answers or reaches the agent's limits.
 
 ### A hello agent
 
