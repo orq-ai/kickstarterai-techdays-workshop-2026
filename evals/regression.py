@@ -123,6 +123,7 @@ def main(argv: list[str] | None = None) -> int:
             parallelism=args.parallelism,
             print_results=True,
             description=f"agent/{settings.agent_key}@{args.version}",
+            path=settings.path,  # in the seat's project: a project-scoped key cannot open it elsewhere
             _experiment_url_out=url_out,
         )
     )
