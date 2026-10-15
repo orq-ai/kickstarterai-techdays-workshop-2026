@@ -39,6 +39,7 @@ simulate-agent: ## Simulate VERSION=1.0.0, or replay saved cases with REPLAY=pat
 	$(RUN) python modules/03-simulation/run.py $(or $(VERSION),1.0.0) $(if $(REPLAY),--replay "$(REPLAY)")
 
 evaluatorq-dashboard: ## Simulation and eval results in the browser (eq dashboard), with the key from .env
+	@test -f .env || { echo "No .env yet: run make setup and paste the block from your kickstart email."; exit 1; }
 	@set -a; source .env; set +a; $(RUN) eq dashboard
 
 # ── Fix and eval ──
