@@ -1,16 +1,10 @@
 # Foundations
 
-A managed agent begins with instructions and a model. Tools are optional; add them when the agent needs information or must take action.
+## The agent loop
 
-## What an agent is
-
-An agent is a model, instructions, and optional tools running in a loop until it can answer. The model decides whether it has enough information, needs a tool, or should respond to the customer.
-
-## The loop orq.ai runs
+An agent is a model with instructions and, optionally, tools. orq.ai runs it in a loop: the model either answers or asks for a tool; orq.ai runs the tool and hands the result back; this repeats until the model answers or hits the agent's limits.
 
 ![Diagram: Inside orq.ai, the model either returns an answer or calls a code tool; the tool result returns to the model, and the loop ends on an answer or its configured limits.](assets/agent-loop.png)
-
-Your application sends one customer message and receives one response. In between, orq.ai runs the model and the code tools in its sandbox; each tool result is added to the model context before the next decision. The loop ends when the model answers or reaches the agent's limits.
 
 ### A hello agent
 
@@ -46,7 +40,7 @@ The script creates `agent/<WS_PREFIX>-hello-agent` on first run, sends it `Hello
 
 ### One simple tool call
 
-Imagine attaching a hosted `get_weather(city)` tool. If a customer asks about the weather, the model can request it instead of guessing. This is a conceptual example: the runnable hello agent has no tools. orq.ai ships built-in server tools such as `current_date` and `google_search`; `get_weather` here stands for any custom tool you create (a code tool, an HTTP tool, or an MCP tool), like the refund agent's tools.
+Imagine a `get_weather(city)` tool. The model asks for it; orq.ai runs it and returns the result. (The hello agent above has no tools; this is only an illustration.)
 
 ```python {.code-frame}
 # The model asks for structured work.
@@ -65,13 +59,11 @@ Imagine attaching a hosted `get_weather(city)` tool. If a customer asks about th
 }
 ```
 
-A tool schema is a contract with the model: its name, argument shape, and description constrain what the model can request. The prompt decides **when** to ask `get_weather`; it cannot invent the weather result. The important pattern is not weather. It is the loop: **model decision → tool result → model decision → answer**. The refund agent uses the same loop with business-specific tools.
+The pattern is the loop: **model decision → tool result → model decision → answer**. The refund agent uses the same loop with its own tools.
 
 ## One turn on the wire
 
-A hello turn is one `responses.create(model="agent/<key>")` call: a `message` item plus a `telemetry.trace_id`. With tools, the same shape gains a `function_call` item and an `orq:<tool>` result item before the final message.
-
-The agent itself is a durable entity, not something your app rebuilds per request: `orq.agents.create()` configures it; `responses.create()` runs one turn. Pinning `agent/<key>@1.0.0` makes a call reproducible; the simulation module relies on it.
+`agent/<key>` always runs the latest version; `agent/<key>@1.0.0` pins one, so the same call gives the same configuration every time.
 
 ![Diagram: An application sends a message to a managed agent; the model requests a function call, orq.ai executes the code tool, returns an orq.ai tool-result item to the model, and returns a message with a trace ID.](assets/agent-turn-sequence.png)
 

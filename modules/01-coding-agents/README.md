@@ -13,6 +13,8 @@ The skills are workflows written for an agent (simulate an agent, build an evalu
 
 ### Step 1 · Pick your agent
 
+Run the once-per-terminal setup from [Onboarding](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/00/) first; the agents read your key from the shell.
+
 === "orqi"
 
     [orqi](https://github.com/orq-ai/orqi) is the orq.ai helper agent for the terminal, with the orq.ai tools and skills already wired in.
@@ -27,7 +29,7 @@ The skills are workflows written for an agent (simulate an agent, build an evalu
       orq.ai MCP server."
     ```
 
-    orqi does not read `.env` by itself. Complete the once-per-terminal environment setup in Onboarding before running it; its header line must say `ORQ_API_KEY`.
+    orqi does not read `.env` by itself, so its header line must say `ORQ_API_KEY`.
 
     Example output, abbreviated. The exact list reflects the connected MCP session and your permissions:
 
@@ -46,6 +48,9 @@ The skills are workflows written for an agent (simulate an agent, build an evalu
     12 chat models available.
     ```
 
+    !!! warning "orqi answers 401 Token verification failed"
+        You used orqi before with another account, and it reuses that stored login for model calls even with `ORQ_API_KEY` exported. Move it aside and retry: `mv ~/.orqi/agent/auth.json ~/.orqi/agent/auth.json.bak`.
+
 === "Claude Code"
 
     ```bash {.terminal}
@@ -55,42 +60,29 @@ The skills are workflows written for an agent (simulate an agent, build an evalu
 
     The plugin brings the skills, the MCP server and slash commands such as `/orq:traces`.
 
-    If OAuth does not expose the workshop models, complete the once-per-terminal environment setup in Onboarding, then add the workshop bearer-key connection:
-
-    ```bash {.terminal}
-    claude mcp add \
-      --transport http \
-      orq \
-      https://my.orq.ai/v2/mcp \
-      --header "Authorization: Bearer ${ORQ_API_KEY}"
-    ```
-
 === "Other agents"
 
     ```bash {.terminal}
     npx skills add orq-ai/assistant-plugins
     ```
 
-    Then add the MCP server `https://my.orq.ai/v2/mcp` (HTTP transport) in your agent's MCP settings. It signs you in with OAuth on first use. If OAuth does not expose the workshop models, configure the same URL with the header `Authorization: Bearer ${ORQ_API_KEY}` after completing the once-per-terminal environment setup in Onboarding.
+    Then add the MCP server `https://my.orq.ai/v2/mcp` (HTTP transport) in your agent's MCP settings. It signs you in with OAuth on first use.
 
-    **Manual MCP with `npx`.** If your coding agent accepts only local stdio MCP servers, use [`mcp-remote`](https://github.com/punkpeye/mcp-remote) as a local proxy. Add this to that agent's MCP configuration, then restart or reload its MCP servers:
+    ??? info "Only accepts stdio MCP servers?"
+        Use [`mcp-remote`](https://github.com/punkpeye/mcp-remote) as a local proxy. Add this to the agent's MCP configuration, then restart or reload its MCP servers:
 
-    ```json
-    {
-      "mcpServers": {
-        "orq": {
-          "command": "npx",
-          "args": [
-            "-y",
-            "mcp-remote",
-            "https://my.orq.ai/v2/mcp"
-          ]
+        ```json
+        {
+          "mcpServers": {
+            "orq": {
+              "command": "npx",
+              "args": ["-y", "mcp-remote", "https://my.orq.ai/v2/mcp"]
+            }
+          }
         }
-      }
-    }
-    ```
+        ```
 
-    The first connection opens the orq.ai OAuth flow in the browser. `npx` downloads the proxy on demand; no global installation is required.
+        The first connection opens the orq.ai OAuth flow in the browser; `npx` downloads the proxy on demand.
 
 !!! warning "One MCP path only"
     Install the MCP server through the plugin **or** by hand, not both, or it registers twice and every tool shows up double.
@@ -103,12 +95,20 @@ Ask your agent:
   <p>List the chat models available to me through the connected orq.ai MCP server. Return their provider/model IDs.</p>
 </blockquote>
 
-The agent can answer this with its model-list tool. Its answer reflects the models exposed to the current MCP session and your permissions, so compare it with the [**AI Gateway** > **Models** list](https://my.orq.ai/kickstartai-workshop-2026/router/models) you can see in the Studio. Do not ask it to identify the workspace: that is not a reliable MCP capability.
+Compare its list with [**AI Gateway** > **Models**](https://my.orq.ai/kickstartai-workshop-2026/router/models) in the Studio. They should match.
 
-!!! warning "orqi answers 401 Token verification failed"
-    You used orqi before with another account, and it reuses that stored login for model calls even with `ORQ_API_KEY` exported. Move it aside and retry: `mv ~/.orqi/agent/auth.json ~/.orqi/agent/auth.json.bak`.
+??? tip "Workshop models missing?"
+    Add the MCP URL with your key instead of OAuth: header `Authorization: Bearer ${ORQ_API_KEY}`. In Claude Code:
 
-The simulation and fix-and-eval modules each include a prompt, in the same frame, that you can hand to the same agent once you have results.
+    ```bash {.terminal}
+    claude mcp add \
+      --transport http \
+      orq \
+      https://my.orq.ai/v2/mcp \
+      --header "Authorization: Bearer ${ORQ_API_KEY}"
+    ```
+
+    For other agents, set the same header in their MCP settings.
 
 ## Official docs
 
