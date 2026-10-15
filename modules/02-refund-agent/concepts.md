@@ -40,7 +40,7 @@ The script creates `agent/<WS_PREFIX>-hello-agent` on first run, sends it `Hello
 
 ### One simple tool call
 
-Imagine attaching a hosted `get_weather(city)` tool. If a customer asks about the weather, the model can request it instead of guessing. This is a conceptual example: the runnable hello agent has no tools. orq.ai ships built-in server tools such as `current_date` and `google_search`; `get_weather` here stands for any custom tool you create (a code tool, an HTTP tool, or an MCP tool), like the refund agent's tools.
+Imagine a `get_weather(city)` tool. The model asks for it; orq.ai runs it and returns the result. (The hello agent above has no tools; this is only an illustration.)
 
 ```python {.code-frame}
 # The model asks for structured work.
@@ -59,7 +59,7 @@ Imagine attaching a hosted `get_weather(city)` tool. If a customer asks about th
 }
 ```
 
-A tool schema is a contract with the model: its name, argument shape, and description constrain what the model can request. The prompt decides **when** to ask `get_weather`; it cannot invent the weather result. The important pattern is not weather. It is the loop: **model decision → tool result → model decision → answer**. The refund agent uses the same loop with business-specific tools.
+The pattern is the loop: **model decision → tool result → model decision → answer**. The refund agent uses the same loop with its own tools.
 
 ## One turn on the wire
 
