@@ -481,6 +481,9 @@ html { font-size: 100%; }
 .terminal-session [data-ty] {
   line-height: 1.35;
 }
+.terminal-session [data-ty="input"] + [data-ty]:not([data-ty="input"]) {
+  margin-top: 0.65em;
+}
 .terminal-session .terminal-copy {
   position: absolute;
   top: 0.6rem;

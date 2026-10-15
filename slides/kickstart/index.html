@@ -29,6 +29,35 @@
 <section class="slide full">
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
+<h1>orq.ai</h1>
+<p class="subtitle">One platform to build, run and test AI agents. Today you use four parts of it. A fifth is on the way.</p>
+<div class="pillars">
+  <div class="card"><span class="eyebrow">01</span><h2>Gateway</h2><p>One API in front of every model provider.</p></div>
+  <div class="card"><span class="eyebrow">02</span><h2>Agents</h2><p>Prompt, model and tools, managed and run for you.</p></div>
+  <div class="card"><span class="eyebrow">03</span><h2>Traces</h2><p>Every request and tool call, recorded.</p></div>
+  <div class="card dark"><span class="eyebrow">04</span><h2>Evals</h2><p>Judges and simulated customers that score behavior.</p></div>
+  <div class="card soon"><span class="eyebrow">05 · COMING SOON</span><h2>Software Factory</h2><p>In development. More soon.</p></div>
+</div>
+</div>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
+</section>
+
+<section class="slide full">
+<header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
+<div class="slide-body">
+<h1>Who is talking</h1>
+<p class="subtitle">Two people from orq.ai. Ask us anything, anytime.</p>
+<div class="people">
+  <div class="card person"><img src="assets/bauke.jpg" alt="Bauke Brenninkmeijer"><h2>Bauke Brenninkmeijer</h2><span class="eyebrow">AI RESEARCHER · ORQ.AI</span></div>
+  <div class="card person"><img src="assets/arian.jpg" alt="Arian Pasquali"><h2>Arian Pasquali</h2><span class="eyebrow">AI RESEARCHER · ORQ.AI</span></div>
+</div>
+</div>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
+</section>
+
+<section class="slide full">
+<header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
+<div class="slide-body">
 <h1>Today</h1>
 <p class="subtitle">Break one agent, find out why, fix it, keep it fixed.</p>
 <svg class="flow" viewBox="0 60 1520 540" role="img" aria-label="Onboard with the CLI and your coding agent, meet the refund agent, simulate customers, then fix and evaluate. Trace insights are optional." xmlns="http://www.w3.org/2000/svg">
@@ -152,6 +181,34 @@
 <section class="slide">
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
+<h1>Design a simulated customer</h1>
+<p class="subtitle">Vary how the customer asks and the situation they bring.</p>
+<div class="meta"><div class="time"><strong>03</strong><span>DESIGN THE CASES</span></div><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/03-concepts/"><span>CONCEPTS</span>Read more</a></div>
+<div class="panel">
+<svg class="flow" viewBox="0 0 1270 620" role="img" aria-label="A fictional discount case separates persona, situation, customer goal and criteria. Two personas crossed with three scenarios produce six conversations." xmlns="http://www.w3.org/2000/svg"><g class="nodes"><rect x="0" y="0" width="610" height="235" rx="12" fill="var(--orange)"/><rect x="650" y="0" width="620" height="235" rx="12" fill="var(--card)"/><rect x="0" y="270" width="610" height="235" rx="12" fill="var(--card)"/><rect x="650" y="270" width="620" height="235" rx="12" fill="var(--ink)"/></g><text x="30" y="48" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--sand)">PERSONA · HOW</text><text x="30" y="116" font-family="Kurrent,Arial,sans-serif" font-size="32" fill="var(--sand)">An impatient customer</text><text x="30" y="177" font-family="Kurrent,Arial,sans-serif" font-size="24" fill="var(--sand)">Terse, assertive, little patience</text><text x="680" y="48" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--gray)">SCENARIO · SITUATION</text><text x="680" y="116" font-family="Kurrent,Arial,sans-serif" font-size="32" fill="var(--ink)">A discount request</text><text x="680" y="177" font-family="Kurrent,Arial,sans-serif" font-size="24" fill="var(--gray)">Knows the price; starts frustrated</text><text x="30" y="318" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--gray)">GOAL · WANTS</text><text x="30" y="386" font-family="Kurrent,Arial,sans-serif" font-size="32" fill="var(--ink)">Get a 30% discount</text><text x="30" y="447" font-family="Kurrent,Arial,sans-serif" font-size="24" fill="var(--gray)">The purpose the customer pursues</text><text x="680" y="318" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--sand)">CRITERIA · MUST RESPECT</text><text x="680" y="386" font-family="Kurrent,Arial,sans-serif" font-size="32" fill="var(--sand)">Never grant above 10%</text><text x="680" y="447" font-family="Kurrent,Arial,sans-serif" font-size="24" fill="var(--sand)">An observable rule for the judge</text><text x="30" y="578" font-family="Kurrent Mono,monospace" font-size="25" fill="var(--gray)">2 PERSONAS × 3 SCENARIOS = 6 CONVERSATIONS</text></svg>
+<p class="flow-caption">Each scenario carries its goal and criteria. Pair every persona with every scenario; write criteria the transcript can show.</p>
+</div>
+</div>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
+</section>
+
+<section class="slide">
+<header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
+<div class="slide-body">
+<h1>Goal achieved, criteria broken</h1>
+<p class="subtitle">Customer success and correct agent behaviour are separate questions.</p>
+<div class="meta"><div class="time"><strong>03</strong><span>READ BOTH VERDICTS</span></div><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/03-concepts/"><span>CONCEPTS</span>Read more</a></div>
+<div class="panel">
+<svg class="flow" viewBox="0 0 1270 620" role="img" aria-label="Discount example: granting 30 percent achieves the customer goal but violates a 10 percent limit. Offering 10 percent misses that goal while respecting the rule." xmlns="http://www.w3.org/2000/svg"><text x="0" y="35" font-family="Kurrent Mono,monospace" font-size="24" fill="var(--gray)">SAME CUSTOMER GOAL: GET 30% OFF</text><text x="0" y="83" font-family="Kurrent,Arial,sans-serif" font-size="30" fill="var(--ink)">Same rule: never grant a discount above 10%.</text><g class="nodes"><rect x="0" y="130" width="610" height="415" rx="12" fill="var(--orange)"/><rect x="650" y="130" width="620" height="415" rx="12" fill="var(--ink)"/></g><text x="30" y="185" font-family="Kurrent,Arial,sans-serif" font-size="32" fill="var(--sand)">Grants the request</text><text x="30" y="264" font-family="Kurrent,Arial,sans-serif" font-size="27" fill="var(--sand)">“Here is your 30% discount.”</text><text x="30" y="378" font-family="Kurrent Mono,monospace" font-size="22" fill="var(--sand)">GOAL ACHIEVED · YES</text><text x="30" y="443" font-family="Kurrent Mono,monospace" font-size="22" fill="var(--sand)">CRITERIA MET · NO</text><text x="680" y="185" font-family="Kurrent,Arial,sans-serif" font-size="32" fill="var(--sand)">Respects the limit</text><text x="680" y="264" font-family="Kurrent,Arial,sans-serif" font-size="27" fill="var(--sand)">“I can offer up to 10%.”</text><text x="680" y="378" font-family="Kurrent Mono,monospace" font-size="22" fill="var(--sand)">GOAL ACHIEVED · NO</text><text x="680" y="443" font-family="Kurrent Mono,monospace" font-size="22" fill="var(--orange)">CRITERIA MET · YES</text></svg>
+<p class="flow-caption">A correct refusal can miss the customer’s goal. Keep an ordinary, eligible request as a control so that refusing everything cannot look like a fix.</p>
+</div>
+</div>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
+</section>
+
+<section class="slide">
+<header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
+<div class="slide-body">
 <h1>Simulate customers</h1>
 <p class="subtitle">Fake customers find what you did not test.</p>
 <div class="meta"><div class="time"><strong>03</strong><span>SAVE V1 BASELINE</span></div><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/03/"><span>DOCS</span>Simulation</a></div>
@@ -190,6 +247,20 @@
 <section class="slide">
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
+<h1>What replay holds constant</h1>
+<p class="subtitle">Change the agent version; reuse the saved starting conditions.</p>
+<div class="meta"><div class="time"><strong>04</strong><span>COMPARE FAIRLY</span></div><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/04-concepts/"><span>CONCEPTS</span>Read more</a></div>
+<div class="panel">
+<svg class="flow" viewBox="0 0 1270 620" role="img" aria-label="Replay uses the same personas, scenarios, opening messages, criteria and turn budget against a new pinned agent version. Agent responses, tools and later simulator messages are generated again." xmlns="http://www.w3.org/2000/svg"><g class="nodes"><rect x="0" y="0" width="500" height="110" rx="12" fill="var(--orange)"/><rect x="770" y="0" width="500" height="110" rx="12" fill="var(--ink)"/></g><text x="30" y="68" font-family="Kurrent,Arial,sans-serif" font-size="30" fill="var(--sand)">V1 · SAVED BASELINE</text><text x="800" y="68" font-family="Kurrent,Arial,sans-serif" font-size="30" fill="var(--sand)">V2 · CANDIDATE</text><path d="M530 55H735M715 40L735 55L715 70" fill="none" stroke="var(--orange)" stroke-width="3"/><g class="nodes"><rect x="0" y="155" width="610" height="390" rx="12" fill="var(--card)"/><rect x="650" y="155" width="620" height="390" rx="12" fill="var(--card)"/></g><text x="30" y="205" font-family="Kurrent Mono,monospace" font-size="21" fill="var(--gray)">REUSED FROM THE REPORT</text><text x="680" y="205" font-family="Kurrent Mono,monospace" font-size="21" fill="var(--gray)">GENERATED AGAIN</text><text x="30" y="285" font-family="Kurrent,Arial,sans-serif" font-size="29" fill="var(--ink)">Personas and scenarios</text><text x="680" y="285" font-family="Kurrent,Arial,sans-serif" font-size="29" fill="var(--ink)">Candidate agent responses</text><text x="30" y="355" font-family="Kurrent,Arial,sans-serif" font-size="29" fill="var(--ink)">Opening customer messages</text><text x="680" y="355" font-family="Kurrent,Arial,sans-serif" font-size="29" fill="var(--ink)">Tool choices and results</text><text x="30" y="425" font-family="Kurrent,Arial,sans-serif" font-size="29" fill="var(--ink)">Criteria and turn budget</text><text x="680" y="425" font-family="Kurrent,Arial,sans-serif" font-size="29" fill="var(--ink)">Later simulator messages</text><text x="30" y="500" font-family="Kurrent,Arial,sans-serif" font-size="24" fill="var(--gray)">Same starting conditions</text><text x="680" y="500" font-family="Kurrent,Arial,sans-serif" font-size="24" fill="var(--gray)">Outcomes can still vary</text></svg>
+<p class="flow-caption">Pin v1 and v2 explicitly. Replay the saved baseline twice, compare the evidence, and check that the ordinary refund still works. Replay does not freeze the whole conversation.</p>
+</div>
+</div>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
+</section>
+
+<section class="slide">
+<header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
+<div class="slide-body">
 <h1>Fix and replay</h1>
 <p class="subtitle">Publish v2, compare versions, and replay the saved baseline.</p>
 <div class="meta"><div class="time"><strong>04</strong><span>REPLAY ON V2</span></div><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/04/"><span>DOCS</span>Fix and replay</a></div>
@@ -206,6 +277,20 @@
 <span class="p">❯</span> <span class="k">make</span> simulate-agent \
   VERSION=2.0.0 \
   REPLAY=".evaluatorq/sim-runs/&lt;baseline&gt;.json"  <span class="c"># run twice</span></code></pre></div></div>
+</div>
+</div>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
+</section>
+
+<section class="slide">
+<header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
+<div class="slide-body">
+<h1>From discovery to a gate</h1>
+<p class="subtitle">Keep a known behaviour under test on every agent change.</p>
+<div class="meta"><div class="time"><strong>05</strong><span>KEEP THE FIX</span></div><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/04-concepts/"><span>CONCEPTS</span>Read more</a></div>
+<div class="panel">
+<svg class="flow" viewBox="0 0 1270 620" role="img" aria-label="A discovered behaviour becomes a dataset row with an expected outcome. Run a pinned agent version, score with code and a policy judge, and compare scorer means with thresholds. Pass, fail and error have separate exit codes." xmlns="http://www.w3.org/2000/svg"><g class="nodes"><rect x="0" y="70" width="292" height="280" rx="12" fill="var(--orange)"/><rect x="326" y="70" width="292" height="280" rx="12" fill="var(--card)"/><rect x="652" y="70" width="292" height="280" rx="12" fill="var(--card)"/><rect x="978" y="70" width="292" height="280" rx="12" fill="var(--ink)"/></g><text x="24" y="118" font-family="Kurrent Mono,monospace" font-size="22" fill="var(--sand)">01</text><text x="24" y="185" font-family="Kurrent,Arial,sans-serif" font-size="34" fill="var(--sand)">Observe</text><text x="24" y="253" font-family="Kurrent,Arial,sans-serif" font-size="22" fill="var(--sand)">Read a transcript</text><text x="24" y="296" font-family="Kurrent,Arial,sans-serif" font-size="22" fill="var(--sand)">Name the behaviour</text><text x="350" y="118" font-family="Kurrent Mono,monospace" font-size="22" fill="var(--gray)">02</text><text x="350" y="185" font-family="Kurrent,Arial,sans-serif" font-size="34" fill="var(--ink)">Capture</text><text x="350" y="253" font-family="Kurrent,Arial,sans-serif" font-size="22" fill="var(--ink)">Fixed input</text><text x="350" y="296" font-family="Kurrent,Arial,sans-serif" font-size="22" fill="var(--ink)">Expected outcome</text><text x="676" y="118" font-family="Kurrent Mono,monospace" font-size="22" fill="var(--gray)">03</text><text x="676" y="185" font-family="Kurrent,Arial,sans-serif" font-size="34" fill="var(--ink)">Score</text><text x="676" y="253" font-family="Kurrent,Arial,sans-serif" font-size="22" fill="var(--ink)">Run pinned version</text><text x="676" y="296" font-family="Kurrent,Arial,sans-serif" font-size="22" fill="var(--ink)">Code + policy judge</text><text x="1002" y="118" font-family="Kurrent Mono,monospace" font-size="22" fill="var(--sand)">04</text><text x="1002" y="185" font-family="Kurrent,Arial,sans-serif" font-size="34" fill="var(--sand)">Gate</text><text x="1002" y="253" font-family="Kurrent,Arial,sans-serif" font-size="22" fill="var(--sand)">Compare each mean</text><text x="1002" y="296" font-family="Kurrent,Arial,sans-serif" font-size="22" fill="var(--sand)">With its threshold</text><path d="M300 210h16m-8 -8l8 8l-8 8" fill="none" stroke="var(--orange)" stroke-width="3"/><path d="M626 210h16m-8 -8l8 8l-8 8" fill="none" stroke="var(--orange)" stroke-width="3"/><path d="M952 210h16m-8 -8l8 8l-8 8" fill="none" stroke="var(--orange)" stroke-width="3"/><text x="0" y="430" font-family="Kurrent Mono,monospace" font-size="22" fill="var(--gray)">SIMULATION DISCOVERS · REGRESSION CHECKS KNOWN EXPECTATIONS</text><rect x="0" y="475" width="1270" height="110" rx="12" fill="var(--card)"/><text x="28" y="540" font-family="Kurrent,Arial,sans-serif" font-size="25" fill="var(--ink)">PASS · exit 0</text><text x="420" y="540" font-family="Kurrent,Arial,sans-serif" font-size="25" fill="var(--ink)">FAIL · exit 1</text><text x="820" y="540" font-family="Kurrent,Arial,sans-serif" font-size="25" fill="var(--orange)">ERROR · exit 2</text></svg>
+<p class="flow-caption">Use code for checkable facts and a judge for contextual policy. A quality failure misses a threshold; an execution or scoring error needs investigation and rerun.</p>
 </div>
 </div>
 <footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>

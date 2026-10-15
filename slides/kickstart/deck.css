@@ -389,3 +389,15 @@ body::before{background:linear-gradient(to top,rgba(223,83,37,.14),transparent)!
 .slide .term .s{color:#9fd3b8}.slide .term .o{color:#CBC4BD}
 .slide .term .c{color:#7d7782;font-style:normal}
 .slide .term .ok{color:#28c840}.slide .term .bad{color:#ff5f57}
+
+.pillars{display:grid;grid-template-columns:repeat(5,1fr);gap:24px;margin-top:24px}
+.pillars .card,.people .card{background:var(--card);border-radius:16px;padding:32px;box-shadow:0 24px 50px -28px rgba(20,19,25,.45);min-width:0}
+.pillars .card{min-height:440px;display:flex;flex-direction:column;gap:14px}
+.pillars .card.dark,.people .card.dark{background:linear-gradient(160deg,#26232c,#141319);border-top:4px solid var(--orange);color:var(--sand)}
+.pillars .card h2,.people .card h2{font:500 52px/1.1 Kurrent,Arial,sans-serif;letter-spacing:-.03em;margin:0}
+.pillars .card p{font-size:30px;line-height:1.35;margin:0}.pillars .card .eyebrow{margin:0}
+.people{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:24px}
+.people .card{display:flex;flex-direction:column;align-items:center;text-align:center;gap:20px;min-height:600px;justify-content:center}
+.people .card img{width:340px;height:340px;border-radius:50%;object-fit:cover;background:var(--sand);border:6px solid var(--orange);flex:none}
+.people .card .eyebrow{margin:12px 0 0}
+.pillars .card.soon{background:transparent;box-shadow:none;border:3px dashed var(--orange)}.pillars .card.soon p{color:var(--gray)}

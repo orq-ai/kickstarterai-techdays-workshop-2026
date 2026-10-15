@@ -11,28 +11,9 @@ You tried a handful of prompts by hand. Real customers bring different situation
 
 ## What
 
-An agent simulation is a conversation between a **user simulator** and the **agent under test**, with a **judge** auditing the transcript after each agent turn. The simulator plays a customer; your managed refund agent is the same one you called in the previous module. The judge reads the transcript so far, including returned tool arguments and results, and can end the conversation.
+You will write customer personas and scenarios, simulate six conversations against the managed refund agent at `@1.0.0`, and inspect the transcripts for behaviours to fix.
 
-| Piece | What you define |
-|---|---|
-| **Persona** | How the customer behaves: patience, assertiveness, politeness and communication style. Numeric traits range from 0 to 1. |
-| **Scenario** | The situation: the customer's goal, the facts they know (`context`) and their starting emotion. |
-| **Goal** | The main purpose the simulated customer pursues during the conversation. |
-| **Criteria** | The guardrails you judge the agent's behaviour against while it responds to that goal. |
-
-The goal and the criteria answer different questions. **Goal achieved:** did the customer get what they were trying to get? **Criteria met:** did the agent behave within the requirements you set along the way? A customer can reach their goal while the agent breaks a criterion, or fail to reach it while the agent correctly follows every criterion.
-
-Each criterion describes an observable event. `must_happen` requires that event on at least one turn; `must_not_happen` prohibits it on every turn. For example, in a fictional appointment conversation, the goal could be “find an available time,” with a required event “the agent states the date and time” and a prohibited event “the agent invents an available slot.” The judge audits after each agent reply. It can stop the simulation, but these checks do not intercept or undo tool calls. A later correction does not erase an earlier violation.
-
-![Diagram: a case starts a user simulator that talks to the managed refund agent. After each agent reply the judge audits the transcript and either continues the conversation or stops it with goal_achieved and criteria_met verdicts.](assets/simulation-loop.png)
-
-The dashed arrow is the loop: the judge audits after each agent reply and either asks the simulator for the next message or stops the conversation.
-
-The Python starter uses the model in `JUDGE_MODEL` for both the simulator and the judge, in separate calls. The refund agent uses the model configured when you seeded it from `MODEL`. Every model call goes through the orq.ai AI Gateway. Evaluatorq coordinates the conversations on your laptop, saves them for the local `eq dashboard`, and uploads the results to an Experiment in the Studio. You do not need to create a simulator or judge agent in the Studio. The `<WS_PREFIX>-refund-policy-judge` evaluator is a different thing: you create it in Improve and Evaluate with `make seed-eval`, for the regression eval.
-
-Each persona is paired with each scenario. Two personas and three scenarios produce six conversations in one run. We pin the agent to `@1.0.0` to keep the baseline stable when we compare it with a fixed version later.
-
-Read the [Simulation concepts](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/03-concepts/) for case design, what the judge can inspect, and why the ordinary refund is a control.
+Read [Simulation concepts](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/03-concepts/) first for the simulator–agent–judge loop, goals versus criteria, and case design.
 
 ## Steps
 
@@ -48,19 +29,7 @@ The refund agent has **no email or contact-update tools**. It cannot send a conf
 
 Write criteria the transcript can show. "The agent is helpful" cannot be judged; "the agent states the refunded amount" can.
 
-**Read the case model, not only the TODOs.** A `Persona` controls the simulated customer's behavior across a conversation. A `Scenario` gives that customer a goal, context, and criteria. `simulate()` takes their cross product, so adding one persona changes coverage across *every* scenario. This is why a small, deliberately varied matrix teaches more than a long list of near-duplicate prompts.
-
-Where these live: [`PERSONAS`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/run.py#L45-L58) and [`SCENARIOS`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/run.py#L62-L79) in `run.py`.
-
-```python {.code-frame}
-from evaluatorq.simulation.contracts import Persona, Scenario
-
-Persona(name="...", patience=0.2, assertiveness=0.9, ...)
-Scenario(name="...", goal="...", context="...", criteria=[...])
-# 2 personas × 3 scenarios = 6 independently judged conversations
-```
-
-Criteria are assertions over evidence, not instructions to the simulated customer. Use `must_happen` for required evidence and `must_not_happen` for an outcome the transcript or tool results must never show.
+Edit `PERSONAS` and `SCENARIOS` in `run.py`. When the TODOs are complete, you should have two personas and three scenarios: six conversations per run. See [designing a case](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/03-concepts/#designing-a-case) for the field definitions and an example.
 
 ### Step 2 · Run it against v1
 
@@ -84,29 +53,9 @@ saved    : .evaluatorq/sim-runs/ws07-sim-v1.0.0_<timestamp>-<run-id>.json
 next     : `make evaluatorq-dashboard` and open ws07-sim-v1.0.0; read the transcripts of the broken ones
 ```
 
-`rules: all held` means execution finished without an error or timeout and every criterion was audited and satisfied. It does not mean the customer achieved their goal. **UNKNOWN** means execution, a criterion audit, or an evaluator failed; it must not be counted as a pass. A confirmed violation can appear alongside UNKNOWN when execution later fails. A **coverage: INCOMPLETE** warning means fewer or more conversations came back than the requested case set.
-
-Each conversation also prints `stop` and its reason. `judge` is a stopping decision, not a pass; read the reason. `max_turns` means the three-turn budget ran out. `error` and `timeout` mean execution failed. Inspect these before judging the agent's quality; an unfinished goal may need more turns, while a missing audit needs investigation. See [why conversations stop](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/03-concepts/#why-the-conversation-stopped).
+`rules: all held` means every criterion was audited and satisfied with no execution error or timeout. **UNKNOWN** means the result is incomplete; investigate it before judging quality. A **coverage: INCOMPLETE** warning means the returned conversation count differs from the requested set. Read each `stop` reason too; see [stopping reasons and audit fields](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/03-concepts/#why-the-conversation-stopped) for details.
 
 Run it twice. A model is not deterministic: one run can miss what the next one finds. Inspect both runs, including failures that appeared only once. These fresh runs use the same persona/scenario definitions but can generate different opening messages. A single conversation is evidence that the behaviour can occur; these two runs do not establish how often it occurs. Save a baseline report for the controlled replay in the next module.
-
-**What evaluatorq is doing.** The library owns the conversation loop: it asks the simulator for a customer turn, invokes the native `agent:<key>@<version>` target, appends the answer and tool evidence to the transcript, and asks the judge whether criteria held. This repository supplies realistic cases and the release criteria; evaluatorq handles the managed-agent connection and tool-result matching.
-
-Where this lives: the [`simulate() call` in `run.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/run.py).
-
-```python {.code-frame}
-from app.refund_agent.config import settings
-from evaluatorq.simulation import simulate
-
-results = await simulate(
-    target=f"agent:{settings.agent_key}@1.0.0",
-    personas=PERSONAS,
-    scenarios=SCENARIOS,
-    max_turns=3,
-)
-```
-
-Each completed case returns one result. Its `goal_achieved` score is customer-oriented. Inspect execution status and audit completeness before interpreting `rules_broken`; missing or unaudited cases are not successful conversations.
 
 ### Step 3 · Read the transcripts
 
@@ -130,8 +79,6 @@ This opens evaluatorq's local dashboard over the saved run files. Start it with 
 
 ![eq dashboard, Agent Sim run ws01-sim-v1.0.0 against ws01-refund-agent@1.0.0: executive summary, 2 personas, 3 scenarios, 6 conversations, goal-met donut and quality metrics, with tabs for Breakdown, Recommendations and Transcripts.](assets/eq-dashboard.png)
 
-**How the dashboard and Studio relate.** The dashboard is evaluatorq's fast review surface: it groups the six conversations, judge reasoning, and recommendations. The same saved run is also an Experiment in orq.ai, where you can connect a conversation back to the agent version and its router traces. Use the dashboard to find a failure pattern; use the Studio trace when you need to inspect the model turns and managed tool calls behind one conversation.
-
 Keep the dashboard command running and open the local URL it prints. Select your run, named `<WS_PREFIX>-sim-v1.0.0` (for example, `ws07-sim-v1.0.0`), then open **Transcripts**. Both runs use that name; use their run timestamps to distinguish them. The local dashboard reads the saved conversations on your laptop; [**Experiments** in the orq.ai Studio](https://my.orq.ai/kickstartai-workshop-2026/experiments) shows the uploaded results.
 
 ![eq dashboard, Transcripts tab of ws01-sim-v1.0.0: a table of the conversations with persona, scenario, turns, score, terminated by, a Goal met or Goal missed status and a View Trace button, above the Evaluator Scores table.](assets/eq-transcripts.png)
@@ -144,7 +91,7 @@ For each conversation that broke a rule, read the transcript and the judge's rea
 
 **The Recommendations tab** groups every failed criterion by persona and scenario and suggests a fix for each. Use it to check that your list is complete: each `criterion_failed` line is one behaviour to write down. Do not press **Apply** here. You change the instructions yourself in the next module, so that the fix becomes a new published version you can compare with v1.
 
-Review UNKNOWN and missing cases too. In the saved JSON, `criteria_verified` and `metadata.criteria_meta` distinguish audited criteria from missing evidence; per-criterion `audited` and `evidence` show what the judge actually checked. A high average or an empty `rules_broken` list cannot replace that check.
+Review UNKNOWN and missing cases too. Use the [audit fields in the saved JSON](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/03-concepts/#why-the-conversation-stopped) to check what was actually assessed.
 
 Treat a transcript as a debugging artifact, not a verdict to blindly accept. Read it in this order: customer goal and criterion, agent text, tool arguments, tool result, then judge reasoning. That order separates a bad answer, a bad decision, a correctly refused tool request, and a judge mistake.
 
@@ -159,13 +106,13 @@ Start your coding agent, then paste [`modules/03-simulation/agent_prompt.md`](ht
 
 > Read `AGENTS.md` and `modules/03-simulation/README.md`. Complete the three TODOs in `modules/03-simulation/run.py`: a second persona unlike the first, an edge-case scenario for `ord_a3` (delivered 45 days ago, nothing wrong with it) with one `must_not_happen` criterion, and a scenario where the customer wants `ord_a2` refunded and the confirmation sent to `sam.tester@example.org`, with one criterion about how the agent handles the contact details. Write criteria a judge can check from the transcript. Run `uv run python modules/03-simulation/run.py 1.0.0` twice and summarise, per conversation, the termination reason, whether criteria were fully audited, which rules broke and the turn that shows it. Treat errors, timeouts and missing audits as unknown, not passes, and report the exact saved baseline JSON paths. Do not change the agent.
 
-The prompt asks the agent to run the simulation twice because the model is non-deterministic. It must leave the v1 instructions untouched: this module is for evidence, not the fix.
+Leave the v1 instructions untouched until the next module.
 
 ## Gotchas
 
 - **`goal achieved: false` is not a failure.** The simulated customer's goal can be one the agent *should* refuse. The criteria are what you judge the agent on.
 - **A broken rule on the control scenario** is a real failure too: an agent that refuses everything is not fixed.
-- **UNKNOWN is not a pass.** Fix execution or missing audits before accepting a run. The starter keeps exploratory runs going with `raise_on_execution_failure=False`; that setting does not turn failed criteria into a CI gate. The later regression eval supplies the release gate.
+- **UNKNOWN is not a pass.** Fix execution or missing audits before accepting a run. The later regression eval supplies the release gate; this simulation is exploratory.
 
 ## Official docs
 

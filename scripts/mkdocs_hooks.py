@@ -31,6 +31,9 @@ def on_page_content(content, **kwargs):
 
     def add_copy(match):
         terminal = match.group(0)
+        # Keep Termynal's page-load auto-initializer from starting this block
+        # before it is visible; docs/js/keyboard.js initializes it on entry.
+        terminal = terminal.replace('class="termy"', 'class="terminal-animation"', 1)
         inputs = re.findall(r'<span\b[^>]*data-ty="input"[^>]*>(.*?)</span>', terminal, re.S)
         commands = []
         for value in inputs:

@@ -23,9 +23,7 @@ Run the once-per-terminal setup from [Onboarding](https://orq-ai.github.io/kicks
 
     ```bash {.terminal}
     orq launch claude
-    ```
-
-    ```bash {.terminal}
+    # or
     orq launch codex
     ```
 

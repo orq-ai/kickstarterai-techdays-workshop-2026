@@ -8,7 +8,9 @@ Hand-written transcripts are useful examples, but they go stale and cover only t
 
 ## Three models, one transcript
 
-A user simulator plays a persona with a goal. The agent under test responds. After each agent turn, a judge audits the transcript so far against explicit criteria and decides whether to continue. Every model call goes through the router, where it is traced and costed. `max_turns` caps the conversation if the judge has not already ended it.
+A user simulator plays a persona with a goal. The agent under test responds. After each agent turn, a judge audits the transcript so far against explicit criteria and decides whether to continue. Evaluatorq coordinates this loop on your laptop, preserving the agent's answer and tool evidence in the transcript. `max_turns` caps the conversation if the judge has not already ended it. Each completed case returns one result.
+
+The Python starter uses the model in `JUDGE_MODEL` for both the simulator and the judge, in separate calls. The refund agent uses the model configured when you seeded it from `MODEL`. Every model call goes through the orq.ai AI Gateway, where it is traced and costed. Evaluatorq saves the conversations for the local `eq dashboard` and uploads the results to an Experiment in the Studio. You do not need to create a simulator or judge agent in the Studio. The `<WS_PREFIX>-refund-policy-judge` evaluator is a different thing: you create it in Improve and Evaluate with `make seed-eval`, for the regression eval.
 
 Source: the [`simulate() call`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/run.py) in `run.py`.
 
@@ -29,18 +31,38 @@ results = await simulate(
 
 ![Diagram: Cases feed a user simulator and the refund agent. The judge audits each turn and decides whether the conversation continues, while all model calls pass through the router.](assets/simulation-loop.png)
 
+The dashed arrow in the diagram is the loop: after each agent reply, the judge either requests the next customer message or stops the conversation.
+
 `target=f"agent:{settings.agent_key}@1.0.0"` uses evaluatorq's native managed-agent support. It reads `ORQ_API_KEY` and `ORQ_BASE_URL` from the environment and calls the same Responses API model, `agent/<key>@1.0.0`, as the chat UI. Importing the workshop settings loads `.env` first. Orq runs the agent and its tools; no custom target class is needed here.
 
 The starter still configures `SIM_LLM` separately: that is the model/client used by the simulator and judge, rather than the managed agent under test. Use the explicit version for a reproducible baseline; `target=f"agent:{settings.agent_key}"` selects the latest agent version.
 
-## A case is persona × scenario × criteria
+## Designing a case
 
-A persona describes traits such as patience, assertiveness, politeness, and technical level. A scenario supplies the customer goal. Its `must_happen` and `must_not_happen` criteria say what must be visible in the transcript. Two personas times three scenarios produce six conversations.
+| Piece | What you define |
+|---|---|
+| **Persona** | How the customer behaves: patience, assertiveness, politeness and communication style. Numeric traits range from 0 to 1. |
+| **Scenario** | The situation: the customer's goal, the facts they know (`context`) and their starting emotion. |
+| **Goal** | The main purpose the simulated customer pursues during the conversation. |
+| **Criteria** | The guardrails you judge the agent's behaviour against while it responds to that goal. |
+
+The goal and the criteria answer different questions. **Goal achieved** (`goal_achieved`): did the customer get what they were trying to get? **Criteria met** (`criteria_met`): did the agent behave within the requirements you set along the way? A customer can reach their goal while the agent breaks a criterion, or fail to reach it while the agent correctly follows every criterion.
+
+A `Persona` controls the simulated customer's behavior across a conversation. A `Scenario` gives that customer a goal, context, and criteria. `simulate()` takes their cross product, so adding one persona changes coverage across *every* scenario. This is why a small, deliberately varied matrix teaches more than a long list of near-duplicate prompts. Two personas and three scenarios produce six independently judged conversations. Each scenario carries its criteria; criteria are not another dimension of the case matrix.
+
+Criteria describe observable evidence. “The agent is helpful” is too vague; “the agent states the refunded amount” can be checked. They are assertions for the judge, rather than instructions to the simulated customer.
 
 Source: [`SCENARIOS`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/run.py#L62-L79) in `run.py`.
 
 ```python {.code-frame}
-from evaluatorq.simulation.contracts import Criterion, Scenario
+from evaluatorq.simulation.contracts import Criterion, Persona, Scenario
+
+Persona(
+    name="Example customer",
+    patience=0.2,
+    assertiveness=0.9,
+    background="Prefers brief answers and asks direct questions",
+)
 
 # A control case: the criterion names visible evidence, not a vague quality.
 Scenario(
@@ -64,6 +86,8 @@ The judge checks what occurred; evaluatorq derives pass or fail from the criteri
 - **`must_happen`** is satisfied once the required behaviour occurs on any turn. If the conversation finishes normally without it occurring, it fails.
 - **`must_not_happen`** is violated if the prohibited behaviour occurs on any turn. A later apology or correction does not erase that violation.
 
+For example, in a fictional appointment conversation, the goal could be “find an available time.” A required event could be “the agent states the date and time,” and a prohibited event “the agent invents an available slot.” The judge audits after each agent reply.
+
 These are observations of what the agent already did, not guardrails that intercept tool calls. A violation can stop the simulation, but it cannot undo an action.
 
 ## Why the conversation stopped
@@ -74,7 +98,11 @@ These are observations of what the agent already did, not guardrails that interc
 | `max_turns` | The turn budget ran out. Inspect whether the agent was progressing or stuck; an unfinished goal can reflect the budget. Audited criteria still apply. |
 | `error` or `timeout` | Execution did not finish normally. Treat missing verdicts as unknown and investigate `reason` before drawing a quality conclusion. |
 
-An empty `rules_broken` list does not establish that every rule held. Check `criteria_verified` and each entry's `audited` value in `metadata["criteria_meta"]`. Missing or false audit flags mean the evidence is incomplete. A failed evaluator is also an incomplete result. The starter labels these cases **UNKNOWN**, preserving any violations that were already confirmed.
+The runner prints `rules: all held` only when execution finished without an error or timeout and every criterion was audited and satisfied. This does not mean the customer achieved their goal. A **coverage: INCOMPLETE** warning means fewer or more conversations returned than the requested case set.
+
+An empty `rules_broken` list does not establish that every rule held. Check `criteria_verified` and each entry's `audited` value in `metadata["criteria_meta"]`. Per-criterion `evidence` records what the judge checked. Missing or false audit flags mean the evidence is incomplete. A failed evaluator is also an incomplete result. The starter labels these cases **UNKNOWN**, preserving any violations that were already confirmed.
+
+The starter uses `raise_on_execution_failure=False` to preserve exploratory results when execution fails. That does not make simulation a release gate; the later regression eval supplies that gate.
 
 ## What the judge can see
 
@@ -88,7 +116,7 @@ This only works when the agent returns those intermediate outputs and they are p
 
 An ordinary refund is a control: it must keep working while the other cases explore edge conditions. Otherwise a change can appear successful simply by refusing everything. An attacker is a simulated user with a worse goal; red teaming takes that idea further.
 
-Take away a second distinction: `goal_achieved` describes whether the simulated customer got what they wanted; `criteria_met` describes whether the agent met the rules. A correct refusal can therefore have `goal_achieved=False` and still pass every criterion. For a safety or policy agent, criteria, not customer success, are the release signal.
+A correct refusal can have `goal_achieved=False` and still satisfy every criterion. The control checks the complementary requirement: the agent must also help when it should.
 
 ## Official docs
 
