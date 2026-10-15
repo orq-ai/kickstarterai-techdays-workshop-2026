@@ -121,6 +121,12 @@ Open [**Agents** in the workshop workspace](https://my.orq.ai/kickstartai-worksh
 
 ### Step 3 · Inspect and call it from Python
 
+Every resource in the Studio has a **code snippet** you can copy. Open your agent and look at its **Invoke an Agent** dialog. It offers cURL, Python and TypeScript; we use **Python**, because that is what `run.py` is written in.
+
+![The Invoke an Agent dialog in the Studio, with cURL, Python and TypeScript tabs and a Python snippet that calls the agent by its key.](assets/invoke-agent-snippet.png)
+
+That snippet is the shape of the call you are about to write: the agent key as the `model`, plus an `input`. Use it as a guide for TODO 1.
+
 Open [`modules/02-refund-agent/run.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/02-refund-agent/run.py). Complete these two TODOs before you run it:
 
 | TODO | Where | What to implement | Done when |
