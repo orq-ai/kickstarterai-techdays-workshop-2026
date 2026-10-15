@@ -8,6 +8,12 @@ Hands-on KickstartAI TechDays material for a refund agent hosted in [orq.ai](htt
 
 Docs site: **https://orq-ai.github.io/kickstarterai-techdays-workshop-2026**
 
+<p align="center">
+  <img src="modules/02-refund-agent/assets/chat-ui.png" alt="The workshop chat UI: the refund agent issues a EUR 89 refund for ord_a2, with lookup_order and issue_refund tool chips and an Open trace link, next to the read-only list of workshop orders." width="820">
+</p>
+
+The chat UI you run locally (`make agent-chat-ui`): ask the refund agent for a refund, see which tools it called, and open the trace in orq.ai.
+
 ## Quickstart
 
 You need [uv](https://docs.astral.sh/uv/), `git`, `make` and the [orq.ai CLI](https://docs.orq.ai/reference/cli). Your key, project and seat prefix come by email on the day.
