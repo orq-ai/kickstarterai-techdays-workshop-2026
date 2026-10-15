@@ -58,3 +58,25 @@ def test_policy_topics():
     """A known topic resolves; an unknown one is `unknown_topic`."""
     assert get_policy("refund_basics")["ok"]
     assert get_policy("vip")["error"] == "unknown_topic"
+
+
+def _store_with(order_id, **fields):
+    store = OrderStore()
+    store.orders[order_id].update(fields)
+    return store
+
+
+def test_window_boundary_is_inclusive():
+    """Day 30 is still inside the window; day 31 is not."""
+    assert lookup_order(_store_with("ord_a1", delivered_days_ago=30), "ord_a1")["order"]["within_standard_window"]
+    assert issue_refund(_store_with("ord_a1", delivered_days_ago=30), "ord_a1", "changed mind")["ok"]
+    assert issue_refund(_store_with("ord_a1", delivered_days_ago=31), "ord_a1", "changed mind")["error"] == "outside_window"
+
+
+def test_limit_boundary_is_inclusive():
+    """EUR 500.00 refunds automatically; one cent more goes to a human."""
+    assert issue_refund(_store_with("ord_a1", amount=500.0), "ord_a1", "changed mind")["ok"]
+    assert (
+        issue_refund(_store_with("ord_a1", amount=500.01), "ord_a1", "changed mind")["error"]
+        == "above_limit_needs_human_review"
+    )

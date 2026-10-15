@@ -162,7 +162,7 @@
   <header class="chat-topbar">
     <div class="title-wrap"><span class="title-mark" aria-hidden="true"></span><div class="title-copy">
       <h1>Refund agent</h1>
-      <p id="agent">agent/… · hosted in orq</p>
+      <p id="agent">agent/… · hosted in orq.ai</p>
     </div>
     </div>
     <div class="controls">
@@ -344,7 +344,7 @@
     const r = await fetch("/api/agent");
     const data = await r.json().catch(() => ({ detail: "Could not read the setup response. Check the local server and try again." }));
     if (!r.ok) throw new Error(data.detail);
-    $("agent").textContent = "agent/" + data.key + " · hosted in orq";
+    $("agent").textContent = "agent/" + data.key + " · hosted in orq.ai";
     versionSelect.replaceChildren(...data.versions.map((v) => new Option("@" + v, v)));
     agentReady = true;
     setBusy(false);

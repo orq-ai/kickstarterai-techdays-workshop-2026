@@ -15,15 +15,14 @@ Your application sends one customer message and receives one response. In betwee
 ### A hello agent
 
 ```python {.code-frame}
-# Excerpt from modules/02-refund-agent/hello_agent.py
-HELLO_KEY = settings.key("hello-agent")  # your seat's key
+# Simplified from modules/02-refund-agent/hello_agent.py
 orq.agents.create(
-    key=HELLO_KEY,
+    key="your-unique-hello-agent-key",  # the script uses your seat: ws07-hello-agent
     instructions="Greet the customer in one friendly sentence.",
     path=settings.path,
     model={"id": settings.model, "parameters": {"reasoning_effort": "none"}},
 )
-response = orq.responses.create(model=f"agent/{HELLO_KEY}", input="Hello")
+response = orq.responses.create(model="agent/your-unique-hello-agent-key", input="Hello")
 ```
 
 The instructions tell the model what to do; the model supplies the language. The application sends one input and receives one response. That is already a managed agent, even without tools.
@@ -70,7 +69,7 @@ A tool schema is a contract with the model: its name, argument shape, and descri
 
 ## One turn on the wire
 
-A hello turn is one `responses.create(model=f"agent/{HELLO_KEY}")` call: a `message` item plus a `telemetry.trace_id`. With tools, the same shape gains a `function_call` item and an `orq:<tool>` result item before the final message.
+A hello turn is one `responses.create(model="agent/<key>")` call: a `message` item plus a `telemetry.trace_id`. With tools, the same shape gains a `function_call` item and an `orq:<tool>` result item before the final message.
 
 The agent itself is a durable entity, not something your app rebuilds per request: `orq.agents.create()` configures it; `responses.create()` runs one turn. Pinning `agent/<key>@1.0.0` makes a call reproducible; the simulation module relies on it.
 

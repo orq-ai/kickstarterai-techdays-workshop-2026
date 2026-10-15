@@ -11,9 +11,9 @@ hide: [navigation]
 
 ## How the pieces fit
 
-Your chat UI and simulation run on your laptop and call the AI Gateway. Orq runs the [managed refund agent](https://my.orq.ai/kickstartai-workshop-2026/agents)'s model loop and its three [code tools](https://my.orq.ai/kickstartai-workshop-2026/tools), then returns the answer and tool results. Every call leaves a [trace in the Studio](https://my.orq.ai/kickstartai-workshop-2026/traces). Your coding agent can also use the Orq MCP server to work with your workspace.
+Your chat UI and simulation run on your laptop and call the AI Gateway. orq.ai runs the [managed refund agent](https://my.orq.ai/kickstartai-workshop-2026/agents)'s model loop and its three [code tools](https://my.orq.ai/kickstartai-workshop-2026/tools), then returns the answer and tool results. Every call leaves a [trace in the Studio](https://my.orq.ai/kickstartai-workshop-2026/traces). Your coding agent can also use the orq.ai MCP server to work with your workspace.
 
-![Diagram: the chat and simulation call the Orq AI Gateway from your laptop. The managed refund agent and its code tools run in Orq, with traces in the Studio. Your coding agent connects to the gateway and the Orq MCP server.](assets/diagrams/workshop-map.png)
+![Diagram: the chat and simulation call the orq.ai AI Gateway from your laptop. The managed refund agent and its code tools run in orq.ai, with traces in the Studio. Your coding agent connects to the gateway and the orq.ai MCP server.](assets/diagrams/workshop-map.png)
 
 ## Requirements
 
@@ -50,8 +50,8 @@ You do **not** need to install these packages individually with `pip`; `uv` uses
 | Module | Focus | What you do | Page |
 |---|---|---|---|
 | Onboarding | Gateway access and traces | Make one model request and inspect its trace | [Onboarding](modules/00.md) |
-| Designing an agent | Managed agent fundamentals | Run hello, seed the refund agent, finish the Python call, inspect its trace | [Designing an agent](modules/02.md) |
 | Coding agents (optional) | Assistant setup | Connect orqi, Claude Code, or another MCP client when you need one | [Coding agents](modules/01.md) |
+| Build a Managed Agent | Managed agent fundamentals | Run hello, seed the refund agent, finish the Python call, inspect its trace | [Build a Managed Agent](modules/02.md) |
 | Simulation | Conversation evidence | Define cases and inspect judged transcripts | [Simulation](modules/03.md) |
 | Improve and Evaluate | Versioned improvement | Publish, replay, simulate, and gate a new version | [Improve and Evaluate](modules/04.md) |
 
@@ -59,4 +59,4 @@ You do **not** need to install these packages individually with `pip`; `uv` uses
 
 ## Go further
 
-For broader platform topics (AI Gateway, guardrails, tracing, knowledge bases, MCP, trace insights, and red teaming), see the full [orq.ai workshop](https://github.com/orq-ai/orq-workshop).
+For broader platform topics (AI Gateway, guardrails, tracing, knowledge bases, MCP, trace insights, and red teaming), see the [official orq.ai documentation](https://docs.orq.ai/).

@@ -21,26 +21,29 @@ make publish-agent-version [FILE=...]
 make compare-versions [VERSION=latest]
 
 # Regression gate and cleanup
+make seed-eval  # once: creates your dataset and judge
 make regression-eval [VERSION=2.0.0]
 make reset-workspace
 ```
 
 ## The gateway
 
+`$ORQ_API_KEY` and `$MODEL` come from your `.env`; export them once per terminal as in Onboarding.
+
 ```bash {.terminal}
 curl -s https://my.orq.ai/v3/router/responses \
   -H "Authorization: Bearer $ORQ_API_KEY" \
   -H "Content-Type: application/json" \
-  --data '{
-    "model": "openai/gpt-6-luna",
-    "input": "hi"
-  }'
+  --data "{
+    \"model\": \"$MODEL\",
+    \"input\": \"hi\"
+  }"
 
 # The Model Garden
 orq models list -o json
 
 orq responses create \
-  --model openai/gpt-6-luna \
+  --model "$MODEL" \
   --input '"hi"' \
   -o json
 ```
@@ -52,7 +55,7 @@ client = OpenAI(
     base_url="https://my.orq.ai/v3/router",
 )
 client.responses.create(
-    model="openai/gpt-6-luna",
+    model=MODEL,
     input="hi",
 ).output_text
 ```
@@ -89,7 +92,7 @@ orq responses create \
   -o json
 
 orq agents retrieve ws07-refund-agent -o json
-orq traces thread <trace_id>
+orq traces conversation <trace_id>
 ```
 
 ## Docs

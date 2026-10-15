@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Prerequisites** | designing an agent module done |
+| **Prerequisites** | Build a Managed Agent module done |
 | **You will have** | six simulated conversations against `@1.0.0`, judged against criteria you wrote, in `eq dashboard`, and a short list of behaviours to fix |
 
 ## Why
@@ -28,7 +28,7 @@ Each criterion describes an observable event. `must_happen` requires that event 
 
 The dashed arrow is the loop: the judge audits after each agent reply and either asks the simulator for the next message or stops the conversation.
 
-The Python starter uses the model in `JUDGE_MODEL` for both the simulator and the judge, in separate calls. The refund agent uses the model configured when you seeded it from `MODEL`. Every model call goes through the Orq AI Gateway. Evaluatorq coordinates the conversations on your laptop, saves them for the local `eq dashboard`, and uploads the results to an Experiment in the Studio. You do not need to create a simulator or judge agent in the Studio; the seeded `-refund-policy-judge` is for the later regression eval.
+The Python starter uses the model in `JUDGE_MODEL` for both the simulator and the judge, in separate calls. The refund agent uses the model configured when you seeded it from `MODEL`. Every model call goes through the orq.ai AI Gateway. Evaluatorq coordinates the conversations on your laptop, saves them for the local `eq dashboard`, and uploads the results to an Experiment in the Studio. You do not need to create a simulator or judge agent in the Studio. The `<WS_PREFIX>-refund-policy-judge` evaluator is a different thing: you create it in Improve and Evaluate with `make seed-eval`, for the regression eval.
 
 Each persona is paired with each scenario. Two personas and three scenarios produce six conversations in one run. We pin the agent to `@1.0.0` to keep the baseline stable when we compare it with a fixed version later.
 
@@ -111,12 +111,12 @@ Example startup output (the local URL can change if you choose another port):
 <!-- termynal -->
 
 ```console
-$ uv run eq dashboard
+$ make evaluatorq-dashboard
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8080 (Press CTRL+C to quit)
 ```
 
-This opens evaluatorq's local dashboard over the saved run files. `make evaluatorq-dashboard` is the shortcut.
+This opens evaluatorq's local dashboard over the saved run files. Start it with the make target: it loads `.env` first, so `eq` gets your key and the `EVALUATORQ_*` models. A bare `uv run eq dashboard` only sees what is exported in your shell, which can be an older key.
 
 !!! info "Find your simulation runs"
 
@@ -128,7 +128,7 @@ This opens evaluatorq's local dashboard over the saved run files. `make evaluato
 
 **How the dashboard and Studio relate.** The dashboard is evaluatorq's fast review surface: it groups the six conversations, judge reasoning, and recommendations. The same saved run is also an Experiment in orq.ai, where you can connect a conversation back to the agent version and its router traces. Use the dashboard to find a failure pattern; use the Studio trace when you need to inspect the model turns and managed tool calls behind one conversation.
 
-Keep the dashboard command running and open the local URL it prints. Select your run, named `<WS_PREFIX>-sim-v1.0.0` (for example, `ws07-sim-v1.0.0`), then open **Transcripts**. Both runs use that name; use their run timestamps to distinguish them. The local dashboard reads the saved conversations on your laptop; [**Experiments** in the Orq Studio](https://my.orq.ai/kickstartai-workshop-2026/experiments) shows the uploaded results.
+Keep the dashboard command running and open the local URL it prints. Select your run, named `<WS_PREFIX>-sim-v1.0.0` (for example, `ws07-sim-v1.0.0`), then open **Transcripts**. Both runs use that name; use their run timestamps to distinguish them. The local dashboard reads the saved conversations on your laptop; [**Experiments** in the orq.ai Studio](https://my.orq.ai/kickstartai-workshop-2026/experiments) shows the uploaded results.
 
 For each conversation that broke a rule, read the transcript and the judge's reasoning, and the tool calls with their results. Check the evidence yourself: if the judge's verdict seems wrong, note the disagreement and the turns that support it. Then write down, in one sentence each, **every** behaviour you would not ship. There is more than one.
 

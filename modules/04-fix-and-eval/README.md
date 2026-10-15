@@ -109,8 +109,8 @@ A version is therefore an experimentable artifact: replaying `@1.0.0` and `@2.0.
     ```bash {.terminal}
     git fetch origin solution
     git show \
-  origin/solution:modules/04-fix-and-eval/solution/instructions.md \
-  > app/data/instructions.md
+      origin/solution:modules/04-fix-and-eval/solution/instructions.md \
+      > app/data/instructions.md
     make publish-agent-version
     ```
 
@@ -240,9 +240,9 @@ Open [**Datasets**](https://my.orq.ai/kickstartai-workshop-2026/datasets) > your
 
 Add a row for a case your simulation found and the dataset does not cover yet; the next `uv run python -m evals.regression --version <version>` picks it up.
 
-## The same script as a GitHub check
+## Using it as a CI gate
 
-`uv run python -m evals.regression --version <version>` exits 1 on a regression, so it is a CI gate as it stands: a workflow that runs on every pull request touching `app/data/instructions.md`, publishes the change as a candidate version, and runs that command. A red check is a prompt change that broke something the dataset knows about.
+`uv run python -m evals.regression --version <version>` exits 1 on a regression, so it can gate a pull request: a workflow would publish the changed `app/data/instructions.md` as a candidate version and run this command, and a red check would be a prompt change that broke something the dataset knows about. This workshop does not set that workflow up; it would need an orq.ai key stored as a repository secret and a seat of its own.
 
 ## With your coding agent
 
