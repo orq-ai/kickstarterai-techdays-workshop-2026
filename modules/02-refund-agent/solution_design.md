@@ -11,85 +11,53 @@ The prompt guides conversation and tool selection. Hosted code tools enforce the
 ## One refund decision
 
 ```python {.code-frame}
-# 1. Start with facts the customer cannot choose.
+# 1. Check the order exists and belongs to this customer.
 order = lookup_order(order_id)
 if not order["ok"]:
     return explain("I cannot find that order")
 
-# 2. Use policy text when the eligibility path is unclear.
+# 2. Delivered more than 30 days ago? Read the exception policy
+#    and check the reason and evidence before going further.
 if not order["order"]["within_standard_window"]:
     policy = get_policy("post_window_exceptions")
     if not eligible_exception(customer_reason, evidence, policy):
         return route_to_human_review()
 
-# 3. Ask the enforcement tool to make the state change.
+# 3. Issue the refund. The tool runs the final checks and says if it worked.
 refund = issue_refund(order_id, reason, post_window_exception=exception)
-return explain(refund)  # success and failure are structured results
+return explain(refund)  # tell the customer what the tool returned
 ```
 
 The model chooses what to say and which tool to call next. It does not calculate ownership, invent eligibility, or mark an order refunded itself.
 
 ## Tool contracts and enforcement
 
-`app/data/kb/` holds policy text. `app/refund_agent/tools.py` turns the non-negotiable parts into executable checks.
+The policy text lives in `app/data/kb/`. The rules that must never bend live in `app/refund_agent/tools.py`. The prompt decides when to call a tool; the tool decides what is allowed.
+
+| Tool | What it does |
+|---|---|
+| `lookup_order` | Finds one of the customer's own orders. Any other order is `not_found`. |
+| `get_policy` | Returns the text of one policy topic, such as `refund_basics`. |
+| `issue_refund` | Refunds the order, but only if every check below passes. |
+
+`issue_refund` moves money, so it runs its checks in order and stops at the first one that fails:
 
 ```python {.code-frame}
-# app/refund_agent/tools.py: the tool is the hard boundary
-# issue_refund(store: OrderStore, order_id: str, ...) -> dict
-order = store.owned(order_id)
-if order is None:
-    return {"ok": False, "error": "not_found"}
-if order["amount"] > REFUND_LIMIT_EUR:
-    return {"ok": False, "error": "above_limit_needs_human_review"}
-```
-
-Tools enforce ownership, refund state, the EUR 500 ceiling, and the refund window. The prompt supplies judgment about how and when to use them. A tool schema is also a contract with the model: its name, argument shape, and description constrain what the model can request. Its returned `ok` and `error` fields are the contract with the rest of the system.
-
-| Tool | Model asks for | Tool guarantees | Important result |
-|---|---|---|---|
-| `lookup_order` | an order ID | ownership check; internal fields removed; window computed | public order data or `not_found` |
-| `get_policy` | a policy topic | one authoritative local policy document | policy text or `unknown_topic` |
-| `issue_refund` | order ID, reason, exception flag | ownership, duplicate, limit, and window checks | `ok: true` and refunded amount, or an error |
-
-```python {.code-frame}
-# lookup_order: reveal only a session-owned, public order.
-order = store.owned(order_id)
-if order is None:
-    return {"ok": False, "error": "not_found"}
-return {"ok": True, "order": public_order(order)}
-```
-
-```python {.code-frame}
-# app/refund_agent/tools.py
-POLICY_TOPICS = (
-    "refund_basics",
-    "post_window_exceptions",
-    "abuse_patterns",
-    "shipping_and_scope",
-)
-
-def get_policy(topic: str) -> dict:
-    if topic not in POLICY_TOPICS:
-        return {"ok": False, "error": "unknown_topic"}
-    return {"ok": True, "topic": topic, "text": policy_text(topic)}
-```
-
-The model supplies `topic` when it calls `get_policy`. The v1 instructions name the topics, and the tool schema exposes the same enum. For example, the model can ask for `refund_basics` before a standard decision or `post_window_exceptions` when the delivery window has passed.
-
-```python {.code-frame}
-# issue_refund: make the state change only after deterministic checks.
+# issue_refund, simplified from app/refund_agent/tools.py
 if not owned(order_id):
     return {"ok": False, "error": "not_found"}
 if already_refunded(order_id):
     return {"ok": False, "error": "already_refunded"}
-if amount(order_id) > REFUND_LIMIT_EUR:
+if amount(order_id) > 500:
     return {"ok": False, "error": "above_limit_needs_human_review"}
-return issue_refund_result(order_id)
+if outside_30_days(order_id) and not valid_exception(reason):
+    return {"ok": False, "error": "outside_window"}
+return {"ok": True, "amount_refunded": amount(order_id)}
 ```
 
 ## The v1 instructions
 
-`app/data/instructions.md` is the initial system prompt. This safe excerpt establishes the agent's role, available actions, policy baseline, and tone:
+`app/data/instructions.md` is the agent's prompt. The start of it:
 
 ```text
 You are the refund assistant for Lumen Goods.
@@ -107,14 +75,7 @@ How to work:
 - Be warm and concise.
 ```
 
-| Prompt element | What it gives the model | What it cannot guarantee |
-|---|---|---|
-| Role and scope | A customer-service role and refund-only task | Correct decisions in every ambiguous conversation |
-| Tool descriptions | The actions it may request | That the requested action will succeed |
-| Policy guidance | A natural-language starting point for eligibility | Deterministic enforcement of every rule |
-| Tone instruction | A concise customer-facing style | Safe handling of every input by itself |
-
-The full file is the artifact revised in Improve and Evaluate. The prompt shapes the model's choices; it does not replace policy source or code-tool checks.
+The prompt guides what the model chooses; the tools still decide what is allowed. You will see the full file, and change it, in Improve and Evaluate.
 
 ## Next
 
