@@ -34,11 +34,11 @@ The model chooses what to say and which tool to call next. It does not calculate
 
 The policy text lives in `app/data/kb/`. The rules that must never bend live in `app/refund_agent/tools.py`. The prompt decides when to call a tool; the tool decides what is allowed.
 
-| Tool | The model sends | The tool checks | It returns |
-|---|---|---|---|
-| `lookup_order` | an order ID | the order is the customer's; hides internal fields; works out the 30-day window | the order, or `not_found` |
-| `get_policy` | a topic: `refund_basics`, `post_window_exceptions`, `abuse_patterns` or `shipping_and_scope` | the topic exists | the policy text, or `unknown_topic` |
-| `issue_refund` | order ID, reason, exception flag | the order is the customer's, not refunded yet, at most EUR 500, within 30 days | `ok: true` and the amount, or an `error` |
+| Tool | What it does |
+|---|---|
+| `lookup_order` | Finds one of the customer's own orders. Any other order is `not_found`. |
+| `get_policy` | Returns the text of one policy topic, such as `refund_basics`. |
+| `issue_refund` | Refunds the order, but only if every check below passes. |
 
 `issue_refund` moves money, so it runs its checks in order and stops at the first one that fails:
 
