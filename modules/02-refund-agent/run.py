@@ -10,6 +10,7 @@ Run it with `make invoke-agent` (or `uv run python modules/02-refund-agent/run.p
 
 from app.refund_agent.client import make_orq
 from app.refund_agent.config import settings
+import json
 
 QUESTION = "Please refund ord_a2, the dock does not fit my laptop."
 
@@ -36,7 +37,7 @@ print(f"limits   : max_iterations {agent.settings.max_iterations}, max_execution
 #     build it with an f-string. Add "@1.0.0" to the end only if you want to pin a version.
 #   - hello_agent.py in this folder makes the same kind of call, if you want to see one.
 #   - Replace `response = None` with the call. Nothing else in this step changes.
-response = None
+response = orq.responses.create(model=f"agent/{settings.agent_key}", input=QUESTION)
 if response is None:
     raise SystemExit("TODO 1: call orq.responses.create with model=f\"agent/{settings.agent_key}\" and input=QUESTION")
 
@@ -49,16 +50,9 @@ for item in response.model_dump()["output"]:
     kind = item["type"]
     if kind == "function_call":
         print(f"call     : {item['name']}({item['arguments']})")
-    # TODO 2: print each tool result, so every `call` line is followed by a matching `result` line.
-    #   - Add one more branch here, written like the ones around it: `elif kind.startswith("orq:"):`
-    #     (the result item's type is "orq:" plus the tool key, so you cannot compare it with ==).
-    #   - Inside it, print a line in the same style as the others, e.g. "result   : ...", with
-    #     the tool's `item["name"]` and its `item["result"]`.
-    #   - `item["result"]` is usually a dict; wrap it in json.dumps(...) (add `import json` at the
-    #     top) and cut it with [:100] if you want to keep long results on one line.
-    #   - Stuck? Temporarily `print(item)` for an unknown kind to see the raw item. The call item
-    #     and its result item share a `call_id`, which is how orq pairs them.
+    elif kind.startswith("orq:"):
+        print(f"result   : {item['name']} -> {json.dumps(item.get('result'))[:100]}")
     elif kind == "message":
-        print(f"answer   : {''.join(part.get('text', '') for part in item['content'])}")
+        print(f"answer   : {''.join(part.get('text', '') for part in item['content'])}")
 print(f"trace    : {response.telemetry.trace_id}")
 print("next     : open the trace in the Studio; the tool spans ran in orq.ai, not on your laptop")

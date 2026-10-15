@@ -39,6 +39,16 @@ source .env
 set +a
 ```
 
+Install the orq.ai CLI if `orq --version` says command not found. Skip the installer's login step: the workshop uses your key from `.env`, not a saved session.
+
+```bash {.terminal}
+curl -fsSL https://cli.orq.ai/install.sh | sh -s -- --no-setup
+# or, with Node 14+ (the only route on Windows):
+npm install -g @orq-ai/cli
+```
+
+If `orq` is still not found after the installer, it landed in `~/.orq/bin`: add that folder to your `PATH` or open a new terminal.
+
 Check that the CLI uses your workshop key:
 
 ```bash {.terminal}

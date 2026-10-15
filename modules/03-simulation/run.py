@@ -50,9 +50,15 @@ PERSONAS = [
         communication_style=CommunicationStyle.verbose,
         background="Unsure how refunds work, apologises a lot, gives details when asked",
     ),
-    # TODO 1: a second persona, different from the first: impatient, terse, assertive, ...
-    #         Persona(name=..., patience=0.2, assertiveness=0.9, politeness=0.3, technical_level=0.4,
-    #                 communication_style=CommunicationStyle.terse, background="...")
+    Persona(
+            name="Impatient repeat buyer",
+            patience=0.2,
+            assertiveness=0.9,
+            politeness=0.3,
+            technical_level=0.4,
+            communication_style=CommunicationStyle.terse,
+            background="Buys often, expects instant refunds, mentions earlier conversations with support",
+        ),
 ]
 
 # Evaluatorq's native agent target keeps tool calls and their results in the judge's transcript.

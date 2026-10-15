@@ -531,3 +531,57 @@ header{font-size:20px}.slide>header{font-size:20px}.slide>footer{font-size:18px}
 .day45 .day-cap{max-width:none;margin-top:36px}
 .wrong+.day-cap{max-width:none}
 .wrong .icard code.src{min-height:calc(4.2em + 16px)}
+
+/* Review round 3 */
+.slide .rules-flow{display:block;width:100%;height:auto;margin-top:8px;overflow:visible}
+/* merged intro slide */
+.slide.intro h1{max-width:30ch;margin-bottom:20px}
+.slide.intro .people{gap:32px;margin-top:0}
+.slide.intro .people .card{flex-direction:row;text-align:left;min-height:0;gap:32px;padding:20px 32px;justify-content:flex-start}
+.slide.intro .people .card img{width:150px;height:150px;border-width:5px}
+.slide.intro .people .card h2{font-size:44px}
+.slide.intro .people .card .eyebrow{margin:8px 0 0}
+.slide.intro .pillars{margin-top:28px;gap:24px;align-items:stretch}
+.slide.intro .pillars .card{min-height:0;padding:28px 28px 24px;gap:10px}
+.slide.intro .pillars .card h2{font-size:44px}
+.slide.intro .pillars .card p{font-size:26px}
+.pillars .card .used{margin-top:auto;padding-top:18px;border-top:1px solid var(--rule);color:var(--gray)}
+.pillars .card.dark .used{border-top-color:#4a464c;color:#CBC4BD}
+/* Today as a full-width slide */
+.slide.today h1{max-width:24ch}
+.slide.today .steps{margin-top:36px}
+/* findings slide */
+.slide.wrongs .slide-body{display:flex;flex-direction:column;justify-content:center}
+.slide.wrongs .wrong{margin-top:24px}
+.wrong .icard.fragment:not(.visible){opacity:1;visibility:visible;background:transparent;box-shadow:none;border:3px dashed var(--rule)}
+.wrong .icard.fragment:not(.visible)>*{visibility:hidden}
+.wrong .icard code.src{display:block;background:#1d1b22;color:#EBE6E0;border:0;border-radius:10px;padding:16px 20px;text-decoration:line-through 2px rgba(255,95,87,.7);min-height:0}
+.wrong .icard code.src::before{content:"instructions.md";display:inline-block;width:100%;font-size:16px;color:#8c868f;text-decoration:none;margin-bottom:8px}
+.wrong+.day-cap{margin-top:40px}
+/* headings and step tweaks */
+.slide:not(.full) .meta{padding-top:40px}
+.steps.tall .step.dash{min-height:0}
+.step small{text-wrap:balance}
+.steps.five .step{min-height:150px;justify-content:center}
+.access-slide .card.code strong{font-size:104px;letter-spacing:.02em;line-height:1.02;white-space:normal}
+/* rail: wider so statement headlines hold in three lines; number card pinned */
+.slide:not(.full) .slide-body{grid-template-columns:500px minmax(0,1fr)}
+.slide:not(.full) h1{font-size:56px}
+.slide:not(.full) .subtitle{max-width:none;font-size:26px}
+.slide:not(.full) .meta{position:absolute;grid-area:auto;left:0;top:496px;margin:0;padding:0}
+
+.wifi-slide .access{grid-template-columns:1fr 1fr}
+.wifi-slide .card:not(.code){justify-content:flex-start;background:var(--card)}
+.wifi-slide .card:not(.code) .code-body{margin:auto 0}
+.wifi-slide .card strong{font:500 96px 'Kurrent Mono',monospace;letter-spacing:.02em;line-height:1.02;white-space:nowrap;overflow-wrap:normal}
+.wifi-slide .card:not(.code) strong{color:var(--ink)}
+.wifi-slide .card.code strong{font-size:96px;white-space:nowrap}
+
+/* Round 4 review */
+.steps.five{column-gap:40px;--gap:40px}.steps.five .step h2{font-size:30px}
+.callback code{white-space:nowrap}
+.access-slide:not(.wifi-slide) .card.code strong{white-space:normal;overflow-wrap:anywhere}
+.meta .time span{white-space:nowrap;letter-spacing:.05em}
+.access-slide:not(.wifi-slide) .access{margin-top:40px}.access-slide:not(.wifi-slide) .access .card{min-height:500px}.access-slide:not(.wifi-slide) .card img{max-width:360px}
+.wrong .icard code.src::before{font-size:20px;color:#a39da6}
+.access-slide:not(.wifi-slide) .card.code strong{font-size:92px}

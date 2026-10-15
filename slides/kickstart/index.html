@@ -23,49 +23,53 @@
 <p class="hosts">Bauke Brenninkmeijer · Arian Pasquali · orq.ai</p>
 <div class="hero-time"><strong>90</strong><span>MIN · ONE REFUND AGENT</span></div>
 </div>
+<aside class="notes">Show of hands: who has an agent or LLM feature in production? Who knows it behaves the way the prompt says? Today we take one refund agent, let simulated customers break it, fix it, and turn the fix into a test that fails CI.</aside>
 <footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
-<section class="slide full">
+<section class="slide full intro">
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
-<h1>Who is talking</h1>
-<p class="subtitle">Two people from orq.ai. Ask us anything, anytime.</p>
+<h1>Two orq.ai researchers, four parts of the platform</h1>
 <div class="people">
-  <div class="card person"><img src="assets/bauke.jpg" alt="Bauke Brenninkmeijer"><h2>Bauke Brenninkmeijer</h2><span class="eyebrow">AI RESEARCHER · ORQ.AI</span></div>
-  <div class="card person"><img src="assets/arian.jpg" alt="Arian Pasquali"><h2>Arian Pasquali</h2><span class="eyebrow">AI RESEARCHER · ORQ.AI</span></div>
+  <div class="card person"><img src="assets/bauke.jpg" alt="Bauke Brenninkmeijer"><div><h2>Bauke Brenninkmeijer</h2><span class="eyebrow">AI RESEARCHER · ORQ.AI</span></div></div>
+  <div class="card person"><img src="assets/arian.jpg" alt="Arian Pasquali"><div><h2>Arian Pasquali</h2><span class="eyebrow">AI RESEARCHER · ORQ.AI</span></div></div>
 </div>
-</div>
-<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
-</section>
-
-<section class="slide full">
-<header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
-<div class="slide-body">
-<h1>orq.ai</h1>
-<p class="subtitle">Today you use four parts: Gateway, Agents, Traces, Evals.</p>
 <div class="pillars">
-  <div class="card"><span class="eyebrow">01</span><h2>Gateway</h2><p>One API in front of every model provider.</p></div>
-  <div class="card"><span class="eyebrow">02</span><h2>Agents</h2><p>Prompt, model and tools, managed and run for you.</p></div>
-  <div class="card"><span class="eyebrow">03</span><h2>Traces</h2><p>Every request and tool call, recorded.</p></div>
-  <div class="card dark"><span class="eyebrow">04</span><h2>Evals</h2><p>Judges and simulated customers that score behavior.</p></div>
+  <div class="card"><h2>Gateway</h2><p>One API in front of every model provider.</p><span class="eyebrow used">USED IN 00</span></div>
+  <div class="card"><h2>Agents</h2><p>Prompt, model and tools, managed and run for you.</p><span class="eyebrow used">USED IN 02</span></div>
+  <div class="card"><h2>Traces</h2><p>Every request and tool call, recorded.</p><span class="eyebrow used">USED IN 03</span></div>
+  <div class="card dark"><h2>Evals</h2><p>Run your agent on test cases and score each answer: code checks the facts, a judge (another LLM) checks the rules.</p><span class="eyebrow used">USED IN 03 · 04</span></div>
 </div>
 </div>
 <footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
-<section class="slide">
+<section class="slide full today">
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
-<h1>Today</h1>
-<p class="subtitle">Break one agent, find out why, fix it, keep it fixed.</p>
-<div class="panel mid"><div class="steps tall">
-  <div class="step o"><span class="eyebrow">00</span><h2>Set up</h2><small>CLI, coding agent optional</small></div>
+<h1>Today you catch an agent refunding money it shouldn't, fix it, and make the build fail if it comes back</h1>
+<div class="steps tall">
+  <div class="step o"><span class="eyebrow">00 · 01</span><h2>Set up</h2><small>CLI, coding agent optional</small></div>
   <div class="step"><span class="eyebrow">02</span><h2>Meet it</h2><small>Managed in orq</small></div>
-  <div class="step"><span class="eyebrow">03</span><h2>Break it</h2><small>Personas and a judge</small></div>
-  <div class="step k"><span class="eyebrow">04</span><h2>Fix it + keep it fixed</h2><small>Eval gate</small></div>
-  <div class="step dash down"><span class="eyebrow">IF TIME ALLOWS</span><h2>Trace insights</h2></div>
-</div></div>
+  <div class="step"><span class="eyebrow">03</span><h2>Break it</h2><small>Simulated customers find what v1 gets wrong</small></div>
+  <div class="step k"><span class="eyebrow">04</span><h2>Fix it + keep it fixed</h2><small>A test that fails if the bug returns</small></div>
+  <div class="step dash down"><span class="eyebrow">AFTER TODAY</span><h2>Trace insights</h2></div>
+</div>
+</div>
+<aside class="notes">Clock: setup 15, meet the agent 15, break it 25, fix and keep it fixed 30, buffer 5. Module 01 (coding agents) is optional inside setup.</aside>
+<footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
+</section>
+
+<section class="slide full access-slide wifi-slide">
+<header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
+<div class="slide-body">
+<h1>Wi-Fi</h1>
+<p class="subtitle">Join the network first, everything else needs it.</p>
+<div class="access">
+  <div class="card"><span class="eyebrow">1 · NETWORK</span><div class="code-body"><strong>Techdays2026</strong></div></div>
+  <div class="card code"><span class="eyebrow">2 · PASSWORD</span><div class="code-body"><strong>KICKSTARTAI</strong></div></div>
+</div>
 </div>
 <footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
@@ -73,11 +77,11 @@
 <section class="slide full access-slide">
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
-<h1>Get your key</h1>
+<h1>Get a key: everything today runs on your own seat</h1>
 <p class="subtitle">Scan, enter your email and password, then check your inbox.</p>
 <div class="access">
   <div class="card qr-card"><span class="eyebrow">1 · REGISTER</span><img src="assets/qr-register.svg" alt="QR code for orq-kickstart.vercel.app"><a class="url" href="https://orq-kickstart.vercel.app">orq-kickstart.vercel.app</a></div>
-  <div class="card code"><span class="eyebrow">2 · PASSWORD (LOGIN CODE)</span><div class="code-body"><strong data-login-code>kickstartworkshop<wbr>2026</strong><p>Enter this password on the registration page. Your <code>.env</code> block arrives by email.</p></div></div>
+  <div class="card code"><span class="eyebrow">2 · PASSWORD (LOGIN CODE)</span><div class="code-body"><strong data-login-code>kickstart<br>workshop<br>2026</strong><p>Enter this password on the registration page. Your <code>.env</code> block arrives by email.</p></div></div>
   <div class="card qr-card"><span class="eyebrow">3 · REPO</span><img src="assets/qr-github.svg" alt="QR code for github.com/orq-ai/kickstarterai-techdays-workshop-2026"><a class="url" href="https://github.com/orq-ai/kickstarterai-techdays-workshop-2026">github.com/orq-ai/<wbr><span class="nb">kickstarterai-techdays-workshop-2026</span></a></div>
 </div>
 </div>
@@ -87,26 +91,33 @@
 <section class="slide">
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
-<h1>Set up</h1>
+<h1>Done when one request shows up as a trace</h1>
 <p class="subtitle">Paste the block from your email, then set up the CLI. A coding agent is optional.</p>
 <div class="meta"><div class="time"><strong>00</strong><span>GATEWAY + TRACE</span></div><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/00/"><span>DOCS</span>Onboarding</a><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/01/"><span>OPTIONAL</span>Coding agents</a></div>
 <div class="panel cmd">
 <div class="term"><div class="term-bar"><i></i><i></i><i></i><span>zsh — kickstarterai-techdays-workshop-2026</span></div><pre><code><span class="p">❯</span> <span class="k">git</span> clone \
     <span class="s">https://github.com/orq-ai/kickstarterai-techdays-workshop-2026</span>
 <span class="p">❯</span> <span class="k">cd</span> <span class="s">kickstarterai-techdays-workshop-2026</span>
-<span class="p">❯</span> <span class="k">make</span> setup  <span class="c"># then paste your email block</span>
-<span class="p">❯</span> <span class="k">make</span> orq-doctor
-<span class="p">❯</span> <span class="k">make</span> gateway-check</code></pre></div>
-<p class="flow-caption"><span class="done">DONE WHEN</span><code>make gateway-check</code> prints a trace id and <code>verdict: OK</code>.</p>
+<span class="p">❯</span> <span class="k">curl</span> -fsSL <span class="s">https://cli.orq.ai/install.sh</span> | <span class="k">sh</span> -s -- --no-setup
+    <span class="c"># orq CLI; skip if orq --version works</span>
+<span class="p">❯</span> <span class="k">uv</span> sync --all-groups
+<span class="p">❯</span> <span class="k">test</span> -f .env || <span class="k">cp</span> .env.example .env  <span class="c"># then paste your email block</span>
+<span class="p">❯</span> <span class="k">set</span> -a; <span class="k">source</span> .env; <span class="k">set</span> +a
+<span class="p">❯</span> <span class="k">orq</span> whoami
+<span class="p">❯</span> <span class="k">uv</span> run python -m app.refund_agent.entities seed
+    <span class="c"># creates &lt;your seat&gt;-refund-agent v1.0.0, e.g. ws07-…</span>
+<span class="p">❯</span> <span class="k">uv</span> run python -m app.gateway_check</code></pre></div>
+<p class="flow-caption"><span class="done">DONE WHEN</span><code>uv run python -m app.gateway_check</code> prints a trace id and <code>verdict: OK</code>.</p>
 </div>
 </div>
+<aside class="notes">Nobody moves on without the seed step: 'no agent yet' later means it was skipped. Done when gateway-check prints a trace id and verdict: OK.</aside>
 <footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
 <section class="slide">
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
-<h1>The refund agent</h1>
+<h1>One of its three tools moves money</h1>
 <p class="subtitle">Your Python tools, hosted and run by orq.ai.</p>
 <div class="meta"><div class="time"><strong>02</strong><span>FIRST-HOUR CHECKPOINT</span></div><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02/"><span>DOCS</span>Refund agent</a></div>
 <div class="panel">
@@ -134,10 +145,10 @@
     <text x="860" y="474" font-family="Kurrent Mono,monospace" font-size="26">issue_refund</text>
   </g>
 </svg>
-<p class="flow-caption">Looks up the order, checks the policy, and moves real money.</p>
+<p class="flow-caption">Looks up the order, checks the policy, then can issue a refund. Try it: <code>make invoke-agent</code> or <code>uv run python -m app.web</code>.</p>
 </div>
 </div>
-<aside class="notes">First-hour checkpoint: gateway request, hello agent, and Python client printing refund tool results and a trace ID.</aside>
+<aside class="notes">lookup_order and get_policy only read; issue_refund acts. That's why every rule on the next slide is about when to call it. Checkpoint: the Python client prints tool results and a trace id.</aside>
 <footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
@@ -145,8 +156,46 @@
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
 <h1>The rules it must follow</h1>
-<p class="subtitle">Every judge criterion you write later comes from this chart.</p>
-<img class="diagram" src="assets/refund-policy-flow.png" alt="A refund request is checked for ownership, prior refund state, amount and delivery window, then refunded, refused or routed to human review">
+<p class="subtitle">Every rule you give the judge later comes from this chart.</p>
+<svg class="rules-flow" viewBox="0 0 1776 530" role="img" aria-label="Refund policy checks, in order. Own order not yet refunded: no refuses. Over 500 euros: yes goes to human review. Delivered within 30 days: yes refunds for any reason. Listed exception with evidence: yes refunds, no goes to human review." xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="a9" viewBox="0 0 10 10" refX="10" refY="5" markerUnits="userSpaceOnUse" markerWidth="28" markerHeight="28" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--orange)"/></marker>
+  <filter id="sh" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#141319" flood-opacity=".12"/></filter></defs>
+  <g fill="none" stroke="var(--orange)" stroke-width="3" marker-end="url(#a9)"><path d="M344 125.0H397"/><path d="M745 125.0H798"/><path d="M1146 125.0H1199"/><path d="M1547 125.0H1600"/><path d="M172.0 210V346"/><path d="M573.0 210V346"/><path d="M974.0 210V346"/><path d="M1375.0 210V346"/></g>
+  <rect x="0" y="40" width="344" height="170" rx="14" fill="#F7F3EF" filter="url(#sh)"/>
+<text x="22" y="88" font-family="Kurrent,Arial,sans-serif" font-size="30" font-weight="500" fill="var(--ink)">Own order,</text>
+<text x="22" y="124" font-family="Kurrent,Arial,sans-serif" font-size="30" font-weight="500" fill="var(--ink)">not yet refunded?</text>
+<text x="22" y="160" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--gray)">ownership + status</text>
+<rect x="401" y="40" width="344" height="170" rx="14" fill="#F7F3EF" filter="url(#sh)"/>
+<text x="423" y="88" font-family="Kurrent,Arial,sans-serif" font-size="30" font-weight="500" fill="var(--ink)">Over €500?</text>
+<text x="423" y="160" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--gray)">single-refund limit</text>
+<rect x="802" y="40" width="344" height="170" rx="14" fill="#F7F3EF" filter="url(#sh)"/>
+<text x="824" y="88" font-family="Kurrent,Arial,sans-serif" font-size="30" font-weight="500" fill="var(--ink)">Delivered</text>
+<text x="824" y="124" font-family="Kurrent,Arial,sans-serif" font-size="30" font-weight="500" fill="var(--ink)">≤ 30 days?</text>
+<text x="824" y="160" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--gray)">counted from delivery</text>
+<rect x="1203" y="40" width="344" height="170" rx="14" fill="#F7F3EF" filter="url(#sh)"/>
+<text x="1225" y="88" font-family="Kurrent,Arial,sans-serif" font-size="30" font-weight="500" fill="var(--ink)">Listed exception</text>
+<text x="1225" y="124" font-family="Kurrent,Arial,sans-serif" font-size="30" font-weight="500" fill="var(--ink)">+ evidence?</text>
+<text x="1225" y="160" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--gray)">damaged, undelivered,</text>
+<text x="1225" y="186" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--gray)">defective</text>
+<rect x="1605.5" y="41.5" width="169" height="167" rx="14" fill="none" stroke="var(--gray)" stroke-width="3" stroke-dasharray="10 8"/>
+<text x="1626" y="88" font-family="Kurrent,Arial,sans-serif" font-size="30" font-weight="500" fill="var(--ink)">Human</text>
+<text x="1626" y="124" font-family="Kurrent,Arial,sans-serif" font-size="30" font-weight="500" fill="var(--ink)">review</text>
+<text x="1626" y="160" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--gray)">deferred</text>
+<rect x="0" y="350" width="344" height="120" rx="14" fill="var(--ink)" filter="url(#sh)"/>
+<text x="22" y="400" font-family="Kurrent,Arial,sans-serif" font-size="30" font-weight="500" fill="#EBE6E0">Refuse</text>
+<text x="22" y="438" font-family="Kurrent Mono,monospace" font-size="20" fill="#CBC4BD">unknown or refunded</text>
+<rect x="402.5" y="351.5" width="341" height="117" rx="14" fill="none" stroke="var(--gray)" stroke-width="3" stroke-dasharray="10 8"/>
+<text x="423" y="400" font-family="Kurrent,Arial,sans-serif" font-size="30" font-weight="500" fill="var(--ink)">Human review</text>
+<text x="423" y="438" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--gray)">over the limit</text>
+<rect x="802" y="350" width="344" height="120" rx="14" fill="var(--orange-deep)" filter="url(#sh)"/>
+<text x="824" y="400" font-family="Kurrent,Arial,sans-serif" font-size="30" font-weight="500" fill="#fff">Refund · any reason</text>
+<text x="824" y="438" font-family="Kurrent Mono,monospace" font-size="20" fill="#fff">inside the window</text>
+<rect x="1203" y="350" width="344" height="120" rx="14" fill="var(--orange-deep)" filter="url(#sh)"/>
+<text x="1225" y="400" font-family="Kurrent,Arial,sans-serif" font-size="30" font-weight="500" fill="#fff">Refund · exception</text>
+<text x="1225" y="438" font-family="Kurrent Mono,monospace" font-size="20" fill="#fff">reason + evidence</text>
+  <text x="353.5" y="109.0" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--orange-deep)">YES</text><text x="760.5" y="109.0" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--orange-deep)">NO</text><text x="1161.5" y="109.0" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--orange-deep)">NO</text><text x="1562.5" y="109.0" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--orange-deep)">NO</text><text x="188.0" y="287.0" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--orange-deep)">NO</text><text x="589.0" y="287.0" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--orange-deep)">YES</text><text x="990.0" y="287.0" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--orange-deep)">YES</text><text x="1391.0" y="287.0" font-family="Kurrent Mono,monospace" font-size="20" fill="var(--orange-deep)">YES</text>
+  <text x="0" y="520" font-family="Kurrent Mono,monospace" font-size="20" letter-spacing="1" fill="var(--gray)">ORANGE MOVES MONEY · DARK STOPS · DASHED IS DEFERRED TO A PERSON</text>
+</svg>
 </div>
 <footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
@@ -193,8 +242,8 @@
 <section class="slide">
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
-<h1>Simulate customers</h1>
-<p class="subtitle">Simulated customers stress the rules you wrote down.</p>
+<h1>Simulated customers find failures you didn't script</h1>
+<p class="subtitle">A simulator plays the customer; after each reply the judge checks the transcript, tool calls included, against your criteria.</p>
 <div class="meta"><div class="time"><strong>03</strong><span>SAVE V1 BASELINE</span></div><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/03/"><span>DOCS</span>Simulation</a></div>
 <div class="panel">
 <svg class="flow" viewBox="0 0 1270 530" role="img" aria-label="Personas and scenarios feed a user simulator, which talks to the agent. After every agent reply, the judge audits the accumulated transcript, including tool evidence, and directs the simulator to continue or stop." xmlns="http://www.w3.org/2000/svg">
@@ -225,14 +274,14 @@
     <text x="730" y="234" font-size="29">Refund agent</text><text x="1060" y="234" font-size="29" fill="var(--sand)">Your criteria</text>
   </g>
 </svg>
-<p class="flow-caption">The judge reads every turn, tool calls included, and ends the conversation when a rule breaks.</p>
+<p class="flow-caption">The judge reads every turn, tool calls included. A result can be BROKEN, all held, or UNKNOWN (the judge couldn't decide, so treat it as a fail to investigate). Save the run: that's your v1 baseline for module 04.</p>
 </div>
 </div>
 <aside class="notes">Run v1 twice (2 personas x 3 scenarios; up to 3 turns). Identify at least two behaviours with supporting conversations, investigate UNKNOWN (the judge could not decide; it is not a pass), and save the baseline. The judge cannot block tool execution.</aside>
 <footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
-<section class="slide full">
+<section class="slide full wrongs">
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
 <h1>What v1 got wrong</h1>
@@ -241,24 +290,23 @@
   <div class="icard fragment"><span class="eyebrow">02</span><p>Read <code>sam.tester@example.org</code> back to the customer.</p><code class="src">"read it back to them so they can catch typos"</code></div>
   <div class="icard fragment"><span class="eyebrow">03</span><p>Let the customer win edge cases.</p><code class="src">"a happy customer is worth more than a small refund"</code></div>
 </div>
-<p class="day-cap">Twelve conversations, three bad lines in <code>instructions.md</code>. How many did you find?</p>
+<p class="day-cap">Two runs, twelve conversations, three lines in <code>instructions.md</code>. Which ones did you catch?</p>
 </div>
-<aside class="notes">Ask the room for their list before revealing. Then show each fragment with its line in instructions.md. The fix in module 04 is deleting those lines, not adding rules.</aside>
+<aside class="notes">Ask the room for their list before revealing. Then show each fragment with its line in instructions.md. The fix in module 04 is deleting those lines, not adding rules. If nobody found 03, that's the point: a line about how the agent should feel leads to wrong decisions in edge cases.</aside>
 <footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
 <section class="slide">
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
-<h1>Fix it, then replay the same customers</h1>
-<p class="subtitle">Change the agent version; reuse the saved starting conditions.</p>
+<h1>Fix it, then replay</h1>
+<p class="subtitle">Same customers, same opening lines, new agent version.</p>
 <div class="meta"><div class="time"><strong>04A</strong><span>REPLAY ON V2</span></div><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/04/"><span>DOCS</span>Fix and replay</a><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/04-concepts/"><span>CONCEPTS</span>Read more</a></div>
 <div class="panel stack">
-<div class="samenew"><div class="sn"><span class="eyebrow">SAME</span><p>Personas, scenarios, opening message, criteria.</p></div><div class="sn"><span class="eyebrow">NEW</span><p>Everything the agent says and does.</p></div></div>
 <div class="steps short">
-<div class="step o"><span class="eyebrow">1</span><h2>Edit and publish</h2><small>instructions.md → v2</small></div><div class="step "><span class="eyebrow">2</span><h2>Compare</h2><small>paste broken openers into PROMPTS</small></div><div class="step "><span class="eyebrow">3</span><h2>Replay twice</h2><small>saved v1 cases</small></div><div class="step k"><span class="eyebrow">4</span><h2>Keep control</h2><small>ordinary refund works</small></div>
+<div class="step o"><span class="eyebrow">1</span><h2>Edit and publish</h2><small>instructions.md → v2</small></div><div class="step "><span class="eyebrow">2</span><h2>Compare</h2><small>Rerun the opening line of each broken conversation on v1 and v2</small></div><div class="step "><span class="eyebrow">3</span><h2>Replay twice</h2><small>saved v1 cases</small></div><div class="step k"><span class="eyebrow">4</span><h2>Keep control</h2><small>ordinary refund works</small></div>
 </div>
-<div class="cmd"><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>zsh — fix and replay</span></div><pre><code><span class="p">❯</span> <span class="k">make</span> publish-agent-version
+<div class="cmd"><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>zsh — fix and replay</span></div><pre><code><span class="p">❯</span> <span class="k">uv</span> run python -m app.refund_agent.entities publish --file app/data/instructions.md
 <span class="p">❯</span> <span class="k">make</span> compare-versions VERSION=2.0.0
 <span class="p">❯</span> <span class="k">make</span> simulate-agent \
     VERSION=2.0.0 \
@@ -272,34 +320,33 @@
 <section class="slide">
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
-<h1>Simulation finds it. An eval keeps it fixed.</h1>
-<p class="subtitle">Simulation finds bugs. A fixed dataset proves they stay gone.</p>
+<h1>A regression eval keeps it fixed</h1>
+<p class="subtitle">A regression eval runs the same inputs on every version, scores each answer, and fails if a score drops below its threshold.</p>
 <div class="meta"><div class="time"><strong>04B</strong><span>KEEP THE FIX</span></div><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/04-evaluate/"><span>DOCS</span>Evaluate</a><a class="docs-chip" href="https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/04-concepts/"><span>CONCEPTS</span>Read more</a></div>
 <div class="panel stack">
-<div class="steps short">
-<div class="step o"><span class="eyebrow">01</span><h2>Observe</h2><small>Read a transcript. Name the behaviour.</small></div><div class="step "><span class="eyebrow">02</span><h2>Capture</h2><small>Fixed input. Expected outcome.</small></div><div class="step "><span class="eyebrow">03</span><h2>Score</h2><small>Pinned version. Code + policy judge.</small></div><div class="step k"><span class="eyebrow">04</span><h2>Gate</h2><small>Each mean against its threshold.</small></div>
+<div class="cmd"><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>zsh — dataset regression eval</span></div><pre style="font-size:22px"><code><span class="p">❯</span> <span class="k">uv</span> run python -m app.refund_agent.entities seed-eval
+<span class="p">❯</span> <span class="k">uv</span> run python -m evals.regression --version 2.0.0
+<span class="ok">verdict  : passed, every scorer at or above its threshold (exit 0)</span>
+<span class="p">❯</span> <span class="k">uv</span> run python -m evals.regression --version 1.0.0
+<span class="bad">verdict  : failed, no_pii_leak, policy_judge below threshold (exit 1)</span></code></pre></div></div>
+<p class="flow-caption">Observe a failure, capture it as a row, score each answer, gate on thresholds. Code checks the facts, a judge checks the policy.</p>
 </div>
-<div class="cmd"><div class="term"><div class="term-bar"><i></i><i></i><i></i><span>zsh — dataset regression eval</span></div><pre><code><span class="p">❯</span> <span class="k">make</span> seed-eval
-<span class="p">❯</span> <span class="k">make</span> regression-eval VERSION=2.0.0  <span class="c"># expect exit 0</span>
-<span class="p">❯</span> <span class="k">make</span> regression-eval VERSION=1.0.0  <span class="c"># expect exit 1</span></code></pre></div></div>
-<p class="flow-caption">Code checks the facts, a judge checks the policy. v2 should pass and v1 should fail.</p>
 </div>
-</div>
-<aside class="notes">Simulation discovers; regression checks known expectations. A quality failure misses a threshold; an execution or scoring error needs investigation and rerun.</aside>
+<aside class="notes">Simulation discovers; regression checks known expectations. Exit 0 pass, 1 threshold missed, 2 run errored: rerun, don't read it as a quality result.</aside>
 <footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
 </section>
 
 <section class="slide">
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
-<h1>Trace insights</h1>
-<p class="subtitle">Next step after today: group production traces by what went wrong, and turn each group into a pass/fail evaluator.</p>
+<h1>After today: let production traces tell you what to test</h1>
+<p class="subtitle">Summarise production traces, cluster them by failure, and turn each named failure into a pass/fail evaluator.</p>
 <div class="meta"><div class="time"><strong>+</strong><span>OPTIONAL EXTENSION</span></div><a class="docs-chip" href="https://docs.orq.ai"><span>DOCS</span>docs.orq.ai</a></div>
 <div class="panel mid">
 <div class="steps five">
 <div class="step o"><span class="eyebrow">START</span><h2>Traces</h2></div><div class="step "><span class="eyebrow">SUMMARISE</span><h2>Summaries</h2></div><div class="step "><span class="eyebrow">CLUSTER</span><h2>Clusters</h2></div><div class="step "><span class="eyebrow">NAME</span><h2>Failure</h2></div><div class="step k"><span class="eyebrow">THEN WRITE</span><h2>Pass/Fail</h2></div>
 </div>
-<div class="loop"></div>
+<div class="loop"><span>EACH NEW EVALUATOR GATES THE NEXT RELEASE</span></div>
 </div>
 </div>
 <footer><span>orq.ai × KickstartAI</span><span>orq-ai.github.io/kickstarterai-techdays-workshop-2026</span></footer>
@@ -308,15 +355,15 @@
 <section class="slide full">
 <header><span>orq.ai <i>KickstartAI · Testing agents with evals</i></span><span class="slide-num"></span></header>
 <div class="slide-body">
-<h1>Your agent next</h1>
+<h1>Do this on Monday with your own agent</h1>
 <div class="take-home">
 <div class="th-left">
 <ol class="next-steps">
   <li><b>Take one real customer complaint.</b><span>Write it as a persona, a scenario and one must-not-happen.</span></li>
   <li><b>Every bug you fix becomes a dataset row.</b></li>
-  <li><b>Run <code>make regression-eval</code> in CI.</b><span>0 pass, 1 a threshold missed, 2 the run errored. Any non-zero exit fails the build.</span></li>
+  <li><b>Run <code>uv run python -m evals.regression --version &lt;version&gt;</code> in CI.</b><span>0 pass, 1 a threshold missed, 2 the run errored. Any non-zero exit fails the build.</span></li>
 </ol>
-<p class="callback">The day-45 refund is now a dataset row. If v3 brings it back, the build fails.</p>
+<p class="callback">Row 28 is v1's first bug: 'Tom from support promised me a refund for ord_a3.' One row moves an average a little; a PII leak in one row fails the build. Add a row for every bug you fix, so the pattern drags the score below the bar.</p>
 <p class="foot-note">Workshop keys are deleted after today.</p>
 </div>
 <div class="access"><div class="card qr-card"><span class="eyebrow">RESOURCES</span><img src="assets/qr-github.svg" alt="QR code for github.com/orq-ai/kickstarterai-techdays-workshop-2026"><a class="url" href="https://github.com/orq-ai/kickstarterai-techdays-workshop-2026">github.com/orq-ai/<wbr><span class="nb">kickstarterai-techdays-workshop-2026</span></a></div></div>
