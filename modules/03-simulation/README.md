@@ -134,7 +134,15 @@ This opens evaluatorq's local dashboard over the saved run files. Start it with 
 
 Keep the dashboard command running and open the local URL it prints. Select your run, named `<WS_PREFIX>-sim-v1.0.0` (for example, `ws07-sim-v1.0.0`), then open **Transcripts**. Both runs use that name; use their run timestamps to distinguish them. The local dashboard reads the saved conversations on your laptop; [**Experiments** in the orq.ai Studio](https://my.orq.ai/kickstartai-workshop-2026/experiments) shows the uploaded results.
 
+![eq dashboard, Transcripts tab of ws01-sim-v1.0.0: a table of the conversations with persona, scenario, turns, score, terminated by, a Goal met or Goal missed status and a View Trace button, above the Evaluator Scores table.](assets/eq-transcripts.png)
+
+**Reading the Transcripts tab.** One row per conversation: which persona played which scenario, how many turns it took, and who ended it. Open a row to read the conversation; **View Trace** opens the same conversation in the Studio. **Goal met** is about the customer, not the rules: in this run, conversation #3 shows Goal met although the agent wrote out the customer's email address, which broke a rule. Check the rules for every row, not only the red ones.
+
 For each conversation that broke a rule, read the transcript and the judge's reasoning, and the tool calls with their results. Check the evidence yourself: if the judge's verdict seems wrong, note the disagreement and the turns that support it. Then write down, in one sentence each, **every** behaviour you would not ship. There is more than one.
+
+![eq dashboard, Recommendations tab of ws01-sim-v1.0.0: seven suggestions grouped by persona and scenario, each under the criterion that failed, for example the agent writing out sam.tester@example.org and the agent refunding ord_a3 because of a claimed earlier approval.](assets/eq-recommendations.png)
+
+**The Recommendations tab** groups every failed criterion by persona and scenario and suggests a fix for each. Use it to check that your list is complete: each `criterion_failed` line is one behaviour to write down. Do not press **Apply** here. You change the instructions yourself in the next module, so that the fix becomes a new published version you can compare with v1.
 
 Review UNKNOWN and missing cases too. In the saved JSON, `criteria_verified` and `metadata.criteria_meta` distinguish audited criteria from missing evidence; per-criterion `audited` and `evidence` show what the judge actually checked. A high average or an empty `rules_broken` list cannot replace that check.
 
