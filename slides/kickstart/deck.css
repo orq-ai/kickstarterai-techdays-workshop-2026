@@ -401,3 +401,133 @@ body::before{background:linear-gradient(to top,rgba(223,83,37,.14),transparent)!
 .people .card img{width:340px;height:340px;border-radius:50%;object-fit:cover;background:var(--sand);border:6px solid var(--orange);flex:none}
 .people .card .eyebrow{margin:12px 0 0}
 .pillars .card.soon{background:transparent;box-shadow:none;border:3px dashed var(--orange)}.pillars .card.soon p{color:var(--gray)}
+
+/* Review round 4: contrast, shadows, step strips, merged slides */
+:root{--orange-deep:#C4421A}
+.slide-body,.slide:not(.full) .slide-body{overflow:visible}
+header{font-size:20px}.slide>header{font-size:20px}.slide>footer{font-size:18px}
+.slide .eyebrow{font-size:20px;color:var(--orange-deep)}
+.slide .term-bar span{font-size:20px}.docs-chip span{font-size:20px}.docs-chip{font-size:22px}
+.slide .flow-caption{font-size:28px;color:var(--ink);max-width:60ch;line-height:1.35}
+.slide:not(.full) .panel.cmd>.flow-caption{font-size:28px;align-self:stretch;border-radius:20px;color:var(--sand);padding:20px 32px}
+.panel.cmd{gap:24px}
+.flow-caption .done{font-size:20px}
+.slide:not(.full) .panel.mid{justify-content:center}
+.slide:not(.full) .panel.stack{justify-content:flex-start;gap:28px}
+.slide:not(.full) .panel.stack>.cmd,.slide:not(.full) .panel.stack>.flow-caption{margin-top:0}
+.slide:not(.full) .panel.mid>.flow-caption{margin-top:36px}
+/* URLs */
+.access .card .url{overflow-wrap:normal;word-break:normal;hyphens:none}
+.access .card .url .nb{white-space:nowrap}
+.access .card{padding:28px}
+.slide .term pre{white-space:pre;overflow-wrap:normal;overflow:visible;hyphens:none}
+.slide .panel.cmd .term pre{font-size:30px;line-height:1.7}
+/* Diagram PNGs */
+.slide .diagram{display:block;max-width:100%;max-height:640px;margin:0;align-self:flex-start;background:transparent;object-fit:contain;object-position:left top}
+/* Unified arrow: one 28px filled triangle */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);column-gap:70px;--gap:70px}
+.steps.five{grid-template-columns:repeat(5,1fr);column-gap:56px;--gap:56px}
+.step{position:relative;display:flex;flex-direction:column;gap:12px;text-align:left;padding:28px;min-height:230px;background:var(--card);border-radius:16px;box-shadow:0 24px 50px -28px rgba(20,19,25,.45);min-width:0}
+.steps.tall .step{min-height:280px}.steps.five .step{min-height:260px;padding:24px}
+.step .eyebrow{margin:0}
+.step h2{font:500 32px/1.15 Kurrent,Arial,sans-serif;letter-spacing:-.02em;margin:0}
+.step small{font-size:22px;line-height:1.35;color:var(--gray)}
+.steps>.step:nth-child(-n+3)::after{content:"";position:absolute;top:50%;right:calc(-1*(var(--gap) + 28px)/2);width:28px;height:28px;margin-top:-14px;background:var(--orange);clip-path:polygon(0 0,100% 50%,0 100%)}
+.steps.five>.step:nth-child(4)::after{content:"";position:absolute;top:50%;right:calc(-1*(var(--gap) + 28px)/2);width:28px;height:28px;margin-top:-14px;background:var(--orange);clip-path:polygon(0 0,100% 50%,0 100%)}
+.step.o{background:var(--orange-deep);color:#fff;font-weight:500}.step.o .eyebrow,.step.o small{color:#fff}
+.step.k{background:linear-gradient(160deg,#26232c,#141319);color:var(--sand);box-shadow:inset 0 4px 0 var(--orange),0 24px 50px -28px rgba(20,19,25,.6)}
+.step.k .eyebrow{color:var(--orange)}.step.k small{color:#CBC4BD}
+.step.dash{grid-column:3;grid-row:2;margin-top:60px;min-height:0;background:transparent;box-shadow:none;border:3px dashed var(--rule);padding:25px 28px}
+.step.dash.down::before{content:"";position:absolute;left:50%;top:-44px;width:28px;height:28px;margin-left:-14px;background:var(--orange);clip-path:polygon(0 0,100% 0,50% 100%)}
+.steps.short .step{min-height:220px}
+.stack .term pre{line-height:1.55;padding:20px 32px}
+.slide .panel>.cmd .term pre{font-size:26px}
+.loop{position:relative;margin:26px 104px 0;height:80px;border:3px solid var(--orange);border-top:0;border-radius:0 0 16px 16px}
+.loop::before{content:"";position:absolute;left:-15px;top:-30px;width:28px;height:28px;background:var(--orange);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.loop span{position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);background:var(--orange-deep);color:#fff;font:500 22px 'Kurrent Mono',monospace;letter-spacing:.06em;padding:10px 28px;border-radius:999px;white-space:nowrap}
+.loop{margin-bottom:40px}
+/* Same / new */
+.samenew{display:grid;grid-template-columns:1fr 1fr;column-gap:40px}
+.sn{position:relative;background:var(--card);border-radius:16px;padding:24px 28px;box-shadow:0 24px 50px -28px rgba(20,19,25,.45)}
+.sn .eyebrow{margin:0 0 8px}.sn p{margin:0;font-size:26px;line-height:1.3}
+.sn:first-child::after{content:"";position:absolute;top:50%;right:-34px;width:28px;height:28px;margin-top:-14px;background:var(--orange);clip-path:polygon(0 0,100% 50%,0 100%)}
+/* Case cards */
+.cards4{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.icard{background:var(--card);border-radius:16px;padding:32px;min-height:220px;box-shadow:0 24px 50px -28px rgba(20,19,25,.45);display:flex;flex-direction:column;gap:16px}
+.icard .eyebrow{margin:0}.icard p{margin:0;font-size:38px;line-height:1.2;font-weight:500}.icard p.long{font-size:32px}
+.icard code{font-size:.82em}
+.icard.o{background:var(--orange-deep);color:#fff}.icard.o .eyebrow{color:#fff}
+.icard.k{background:linear-gradient(160deg,#26232c,#141319);color:var(--sand);box-shadow:inset 0 4px 0 var(--orange),0 24px 50px -28px rgba(20,19,25,.6)}.icard.k .eyebrow{color:var(--orange)}
+.calc{font:500 26px 'Kurrent Mono',monospace;color:var(--ink);margin:32px 0 0}
+/* Verdicts */
+.same-rule{margin:0 0 10px;font-size:28px}.same-rule b{font:500 20px 'Kurrent Mono',monospace;letter-spacing:.08em;color:var(--gray);margin-right:20px}
+.verdicts{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:24px}
+.vcard{background:var(--card);border-radius:16px;padding:32px;min-height:380px;box-shadow:0 24px 50px -28px rgba(20,19,25,.45);display:flex;flex-direction:column;gap:20px}
+.vcard .eyebrow{margin:0;color:var(--gray)}.vcard q{font-size:38px;line-height:1.25;font-weight:500;quotes:"“" "”"}
+.toks{margin-top:auto;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.tok{font:500 22px 'Kurrent Mono',monospace;letter-spacing:.06em;padding:10px 20px;border-radius:999px}
+.tok.neu{border:2px solid var(--rule);color:var(--ink)}.tok.yes{background:#2F6F5E;color:#fff}.tok.bad{background:#B3261E;color:#fff}
+/* Day 45 + wrong slides */
+.day45 .slide-body{display:flex;flex-direction:column;justify-content:center}
+.slide.full.day45 h1{font-size:104px;max-width:20ch;margin-bottom:48px}
+.chat-body{display:grid;grid-template-columns:320px 1fr;row-gap:32px;align-items:baseline;padding:44px 48px}
+.chat-body b{font:500 20px 'Kurrent Mono',monospace;letter-spacing:.08em;color:#8c868f}
+.chat-body span{font-size:44px;line-height:1.2;color:var(--sand)}.chat-body .tool code{color:#F0915F;font-size:.9em}
+.slide .term.chat{max-width:1500px}
+.day-cap{font-size:40px;line-height:1.25;color:var(--ink);margin:48px 0 0;max-width:34ch}
+.wrong{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px}
+.wrong .icard{min-height:380px}.wrong .icard p{font-size:44px}
+.wrong+.day-cap{margin-top:56px}
+.slide .fragment{transition:none}
+/* Orq pillars */
+.pillars{grid-template-columns:repeat(4,1fr);align-items:center;margin-top:48px}
+.pillars .card{min-height:520px}
+.pillars .card.dark{border-top:0;box-shadow:inset 0 4px 0 var(--orange),0 24px 50px -28px rgba(20,19,25,.6)}
+.pillars .card.dark .eyebrow{color:var(--orange)}
+.people .card .eyebrow{color:var(--orange-deep)}
+/* Closing */
+.take-home{margin-top:48px}
+.th-left{display:flex;flex-direction:column;gap:32px;min-width:0}
+.next-steps b code{font-size:.8em}
+.slide .next-steps li{padding-bottom:20px}
+.callback{margin:0;background:linear-gradient(160deg,#26232c,#141319);color:var(--sand);border-radius:16px;padding:24px 32px;font-size:30px;line-height:1.3;box-shadow:inset 0 4px 0 var(--orange),0 24px 50px -24px rgba(20,19,25,.6)}
+.slide .foot-note{margin:0;font-size:20px;color:var(--gray)}
+.slide .panel.cmd .term pre{font-size:24px;line-height:1.85}
+.slide:not(.full) .panel.cmd>.flow-caption{max-width:none}
+.panel.cmd .flow-caption code{font-size:.85em}
+.steps.tall .step{min-height:340px;padding-top:36px}.steps.tall .step h2{font-size:40px}.steps.tall .step small{font-size:26px}
+.step.dash{min-height:200px}.step.dash h2{font-size:40px}
+.access .card .url{letter-spacing:-.02em}
+.pillars{margin-top:72px}.pillars .card{min-height:420px}
+.slide:not(.full) .panel.mid{min-height:740px}
+.steps.five .step{min-height:300px}
+.access .card{padding:24px}.access .card .url{letter-spacing:-.03em}
+
+/* Round 2 review */
+.slide:not(.full) .panel,.slide:not(.full) .panel.cmd,.slide:not(.full) .panel.stack{justify-content:center;min-height:740px}
+.slide:not(.full) .slide-body{grid-template-rows:auto auto 1fr}
+.meta{align-self:end;margin:0;padding-bottom:8px}
+.steps.five .step{min-height:180px}
+.loop{margin-top:34px}
+.loop::before{top:-34px}
+.loop::after{content:"";position:absolute;right:-3px;top:-34px;height:34px;border-right:3px solid var(--orange)}
+.step.dash{grid-column:4;min-height:0;padding:24px 28px}
+.step.dash .eyebrow{white-space:nowrap}
+.steps.tall .step{min-height:280px}
+.take-home .card.qr-card{background:var(--card);border:0;box-shadow:0 24px 50px -28px rgba(20,19,25,.45)}
+.slide .next-steps li::before{font-weight:500}
+.slide .flow-caption,.day-cap{text-wrap:balance}
+.pillars .card{min-height:300px}
+.wrong{grid-template-columns:repeat(3,1fr);gap:32px}
+.wrong .icard{min-height:0;padding:40px}
+.wrong .icard p{font-size:36px}
+.wrong .icard code.src{font-size:22px;line-height:1.4;color:var(--gray);border-top:1px solid var(--rule);padding-top:16px;margin-top:auto;overflow-wrap:anywhere}
+.icard{min-height:180px}
+.hero-time{right:0;bottom:auto;top:calc(100% - 190px)}
+.slide.title>header i{visibility:hidden}
+.panel.cmd .flow-caption code{font-size:.9em;background:rgba(255,255,255,.08);padding:2px 10px;border-radius:6px}
+.slide>footer{color:var(--gray)}
+.chat-body .tool code{font-size:.62em;overflow-wrap:anywhere}
+.day45 .day-cap{max-width:none;margin-top:36px}
+.wrong+.day-cap{max-width:none}
+.wrong .icard code.src{min-height:calc(4.2em + 16px)}
