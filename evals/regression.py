@@ -7,7 +7,7 @@ scorer.
 
 What makes it fail: any mean below its entry in THRESHOLDS exits 1. This is a regression gate,
 not a benchmark: the bars say "no worse than the version we shipped", with a margin so the
-model's own variance does not flake a green run. The same script runs as a GitHub check.
+model's own variance does not flake a green run. Its exit code makes it usable as a CI gate.
 
 Every run is also an Experiment in the Studio, next to the previous ones, with per-row verdicts.
 The same detail lands in evals/results/<version>.json.
