@@ -11,20 +11,21 @@ The prompt guides conversation and tool selection. Hosted code tools enforce the
 ## One refund decision
 
 ```python {.code-frame}
-# 1. Start with facts the customer cannot choose.
+# 1. Check the order exists and belongs to this customer.
 order = lookup_order(order_id)
 if not order["ok"]:
     return explain("I cannot find that order")
 
-# 2. Use policy text when the eligibility path is unclear.
+# 2. Delivered more than 30 days ago? Read the exception policy
+#    and check the reason and evidence before going further.
 if not order["order"]["within_standard_window"]:
     policy = get_policy("post_window_exceptions")
     if not eligible_exception(customer_reason, evidence, policy):
         return route_to_human_review()
 
-# 3. Ask the enforcement tool to make the state change.
+# 3. Issue the refund. The tool runs the final checks and says if it worked.
 refund = issue_refund(order_id, reason, post_window_exception=exception)
-return explain(refund)  # success and failure are structured results
+return explain(refund)  # tell the customer what the tool returned
 ```
 
 The model chooses what to say and which tool to call next. It does not calculate ownership, invent eligibility, or mark an order refunded itself.
