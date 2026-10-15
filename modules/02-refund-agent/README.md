@@ -15,14 +15,20 @@ Foundations covers the generic agent loop; [Use Case](https://orq-ai.github.io/k
 
 ### Step 1 · Create the refund agent
 
-Run this once. Everything it creates starts with your seat prefix (`ws07-…`), so your resources stay separate from other participants'. It is safe to run again: it only creates what is missing and never changes an existing agent. `make seed-workspace` runs `uv run python -m app.refund_agent.entities seed`.
+Run this once. Everything it creates starts with your seat prefix (`ws07-…`), so your resources stay separate from other participants'. It is safe to run again: it only creates what is missing and never changes an existing agent. The command runs the `seed` entry point in [`app/refund_agent/entities.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/entities.py), so you can open the code it runs.
+
+```bash {.terminal}
+uv run python -m app.refund_agent.entities seed
+```
+
+`make seed-workspace` is the shortcut for the same command.
 
 Example session (your seat prefix and entity IDs will differ):
 
 <!-- termynal -->
 
 ```console
-$ make seed-workspace
+$ uv run python -m app.refund_agent.entities seed
 ── Seed · create this seat's agent ───────────────────
 seat     : ws07 → <your project>/workshop
 tools    : ws07-lookup_order, ws07-issue_refund, ws07-get_policy (code tools, run by orq.ai)
