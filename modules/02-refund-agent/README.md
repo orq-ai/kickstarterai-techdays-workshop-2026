@@ -47,6 +47,8 @@ Afterward, the chat UI and scripts use the resource keys. They invoke the manage
 
     `ensure_tools()` creates each hosted code tool from the local Python source. `ensure_agent()` attaches those tool keys to the managed agent.
 
+    Source: [`ensure_tools()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/entities.py#L199-L223).
+
     ```python {.code-frame}
     # app/refund_agent/entities.py: one hosted code tool per schema
     orq.tools.create(
@@ -74,6 +76,8 @@ Afterward, the chat UI and scripts use the resource keys. They invoke the manage
     | Maximum execution time | `120` seconds | Caps the entire managed-agent run. |
     | Tools | three hosted `code` tools | orq.ai executes the order, policy, and refund code. |
     | Versioning | major increments on publish | Pins a complete agent configuration for comparison. |
+
+    Source: [`ensure_agent()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/entities.py#L234-L260).
 
     ```python {.code-frame}
     # app/refund_agent/entities.py
@@ -171,6 +175,8 @@ The **Workshop orders** panel shows the read-only data the code tools were built
 === "Python SDK"
 
     Use this in application code. `ask_agent()` is the workshop helper: it makes the call and gives you the answer, tool calls, results and trace ID.
+
+    Source: [`ask_agent()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/client.py#L92-L98).
 
     ```python {.code-frame}
     from app.refund_agent.client import ask_agent

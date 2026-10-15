@@ -10,6 +10,8 @@ Hand-written transcripts are useful examples, but they go stale and cover only t
 
 A user simulator plays a persona with a goal. The agent under test responds. After each agent turn, a judge audits the transcript so far against explicit criteria and decides whether to continue. Every model call goes through the router, where it is traced and costed. `max_turns` caps the conversation if the judge has not already ended it.
 
+Source: the [`simulate() call`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/run.py#L133) in `run.py`.
+
 ```python {.code-frame}
 from evaluatorq.simulation import simulate
 from evals.target import agent_target
@@ -28,6 +30,8 @@ results = await simulate(
 ![Diagram: Cases feed a user simulator and the refund agent. The judge audits each turn and decides whether the conversation continues, while all model calls pass through the router.](assets/simulation-loop.png)
 
 The simulation target is an adapter, not a second implementation of the agent. `agent_target()` points evaluatorq at the same managed `agent/<key>@<version>` that the chat UI calls. It uses an OpenAI-compatible router client, so evaluatorq can drive a managed agent while orq.ai executes its tools.
+
+Source: [`agent_target()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/target.py#L44-L48).
 
 ```python {.code-frame}
 from evaluatorq.contracts import LLMCallConfig
@@ -49,6 +53,8 @@ This adapter pattern is reusable: keep the agent implementation in one place, th
 ## A case is persona × scenario × criteria
 
 A persona describes traits such as patience, assertiveness, politeness, and technical level. A scenario supplies the customer goal. Its `must_happen` and `must_not_happen` criteria say what must be visible in the transcript. Two personas times three scenarios produce six conversations.
+
+Source: [`SCENARIOS`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/run.py#L62-L79) in `run.py`.
 
 ```python {.code-frame}
 from evaluatorq.simulation.contracts import Criterion, Scenario
@@ -92,6 +98,8 @@ An empty `rules_broken` list does not establish that every rule held. Check `cri
 Text alone can make a confident but incorrect answer look persuasive. This workshop's [`evals/target.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/target.py) keeps the managed agent's code-tool calls and their results on the transcript passed to the judge. The judge can therefore use execution evidence, not just the final wording.
 
 This only works when the agent returns those intermediate outputs and they are passed to the judge. If the agent returns only its final answer, the judge can evaluate only that answer; it cannot inspect tool calls or results that were not returned.
+
+Source: [`_normalise_response()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/target.py#L25-L41).
 
 ```python {.code-frame}
 import json

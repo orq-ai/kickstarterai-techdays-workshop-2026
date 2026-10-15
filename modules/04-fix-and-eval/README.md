@@ -120,6 +120,8 @@ Run it again without editing: `(unchanged: ...)`, no new version. Every later ed
 
 **What publishing means here.** `publish_version()` reads the current managed agent, compares its stored instructions with [`app/data/instructions.md`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/data/instructions.md), and calls the orq.ai SDK only when they differ. The model, tool schemas, code tools, and limits remain part of the versioned entity; this exercise changes the instructions, not the backend policy.
 
+Source: [`publish_version()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/entities.py#L285-L303).
+
 ```python {.code-frame}
 from app.refund_agent.client import make_orq
 from app.refund_agent.config import settings
@@ -241,6 +243,8 @@ uv run python -m evals.regression --version 1.0.0
 Every run also appears in [**Experiments** in the Studio](https://my.orq.ai/kickstartai-workshop-2026/experiments), next to the previous ones. Search for your seat prefix to find it.
 
 **Read the evaluatorq pipeline as data flow.** `DatasetIdInput` reads the rows from orq.ai, not from a local fixture. The `run_agent` job calls one pinned agent version per row and returns a stable dict: answer, tool calls, trace ID. The evaluators score that dict. Finally, the script averages each scorer and compares it with `THRESHOLDS`.
+
+Source: [`main()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/regression.py#L87-L171) in `evals/regression.py`, which holds the [`run_agent job`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/regression.py#L101-L113).
 
 ```python {.code-frame}
 from evaluatorq import DatasetIdInput, evaluatorq

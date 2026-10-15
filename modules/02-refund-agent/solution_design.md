@@ -42,6 +42,8 @@ The policy text lives in [`app/data/kb/`](https://github.com/orq-ai/kickstartera
 
 `issue_refund` moves money, so it runs its checks in order and stops at the first one that fails:
 
+Source: [`issue_refund()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/tools.py#L71-L106).
+
 ```python {.code-frame}
 # issue_refund, simplified from app/refund_agent/tools.py
 if not owned(order_id):

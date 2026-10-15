@@ -6,6 +6,8 @@ A prompt change is a hypothesis; repeatable evaluation is the evidence that it h
 
 Start with transcripts. Write one short observation per failure (open coding), then group the observations into two to eight named modes (axial coding). Those modes form a failure taxonomy, and each one gets a focused binary scorer.
 
+Source: [`no_unauthorized_attempt()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/scorers.py#L81-L92).
+
 ```python {.code-frame}
 from evaluatorq import EvaluationResult
 
@@ -25,6 +27,8 @@ async def no_unauthorized_attempt(params):
 
 Use code for checkable facts: `refund_outcome`, `no_unauthorized_attempt`, and the `no_pii_leak` regular expression. Use an LLM judge for contextual policy following. The code scorers read tool results rather than tool names, and a missing result fails closed.
 
+Source: [`refund_outcome()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/scorers.py#L59-L78).
+
 ```python {.code-frame}
 # evals/scorers.py: helpers are defined in the same scorer module.
 calls = _refund_calls(params)
@@ -39,6 +43,8 @@ succeeded = {call["arguments"]["order_id"] for call in calls
 ## A gate, not a demo
 
 A fixed set of dataset rows runs through `agent@version`. The scorer means are compared with calibrated thresholds, producing a pass or fail and an Experiment record. The policy judge gets a margin rather than an impossible demand for certainty. This workshop does not add a CI workflow.
+
+Source: [`THRESHOLDS`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/regression.py#L39-L44) and the exit code in [`main()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/regression.py#L87-L171).
 
 ```python {.code-frame}
 # evals/regression.py
@@ -56,6 +62,8 @@ return 1 if failed else 0
 ![Diagram: Fixed dataset rows run through a pinned agent version and scorers; their means are compared with thresholds to produce a verdict and an Experiment.](assets/eval-gate.png)
 
 The evaluatorq call has three deliberately separate layers: a **dataset source** supplies rows, a **job** invokes the agent and returns a stable output contract, and **evaluators** score that contract. Keeping these layers separate means you can replace the agent, dataset, or scorer without rewriting the other two.
+
+Source: the [`run_agent job`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/regression.py#L101-L113) in `evals/regression.py`.
 
 ```python {.code-frame}
 from evaluatorq import DataPoint, DatasetIdInput, evaluatorq, job
