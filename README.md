@@ -36,7 +36,7 @@ Then follow the docs site, or `make help` for every target in order.
 
 ## Go further
 
-For broader platform topics (AI Gateway, guardrails, tracing, knowledge bases, MCP, trace insights, and red teaming), see the full [orq.ai workshop](https://github.com/orq-ai/orq-workshop).
+For broader platform topics (AI Gateway, guardrails, tracing, knowledge bases, MCP, trace insights, and red teaming), see the [official orq.ai documentation](https://docs.orq.ai/).
 
 ## License
 
