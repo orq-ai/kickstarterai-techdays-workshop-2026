@@ -32,60 +32,27 @@ The model chooses what to say and which tool to call next. It does not calculate
 
 ## Tool contracts and enforcement
 
-`app/data/kb/` holds policy text. `app/refund_agent/tools.py` turns the non-negotiable parts into executable checks.
+The policy text lives in `app/data/kb/`. The rules that must never bend live in `app/refund_agent/tools.py`. The prompt decides when to call a tool; the tool decides what is allowed.
 
-```python {.code-frame}
-# app/refund_agent/tools.py: the tool is the hard boundary
-# issue_refund(store: OrderStore, order_id: str, ...) -> dict
-order = store.owned(order_id)
-if order is None:
-    return {"ok": False, "error": "not_found"}
-if order["amount"] > REFUND_LIMIT_EUR:
-    return {"ok": False, "error": "above_limit_needs_human_review"}
-```
-
-The tools enforce the rules: the order must be the customer's, not already refunded, at most EUR 500 and within 30 days. The prompt decides when to call them. Every tool returns `ok`, and on failure an `error` that says why.
-
-| Tool | Model asks for | Tool guarantees | Important result |
+| Tool | The model sends | The tool checks | It returns |
 |---|---|---|---|
-| `lookup_order` | an order ID | ownership check; internal fields removed; window computed | public order data or `not_found` |
-| `get_policy` | a policy topic | one authoritative local policy document | policy text or `unknown_topic` |
-| `issue_refund` | order ID, reason, exception flag | ownership, duplicate, limit, and window checks | `ok: true` and refunded amount, or an error |
+| `lookup_order` | an order ID | the order is the customer's; hides internal fields; works out the 30-day window | the order, or `not_found` |
+| `get_policy` | a topic: `refund_basics`, `post_window_exceptions`, `abuse_patterns` or `shipping_and_scope` | the topic exists | the policy text, or `unknown_topic` |
+| `issue_refund` | order ID, reason, exception flag | the order is the customer's, not refunded yet, at most EUR 500, within 30 days | `ok: true` and the amount, or an `error` |
+
+`issue_refund` moves money, so it runs its checks in order and stops at the first one that fails:
 
 ```python {.code-frame}
-# lookup_order: reveal only a session-owned, public order.
-order = store.owned(order_id)
-if order is None:
-    return {"ok": False, "error": "not_found"}
-return {"ok": True, "order": public_order(order)}
-```
-
-```python {.code-frame}
-# app/refund_agent/tools.py
-POLICY_TOPICS = (
-    "refund_basics",
-    "post_window_exceptions",
-    "abuse_patterns",
-    "shipping_and_scope",
-)
-
-def get_policy(topic: str) -> dict:
-    if topic not in POLICY_TOPICS:
-        return {"ok": False, "error": "unknown_topic"}
-    return {"ok": True, "topic": topic, "text": policy_text(topic)}
-```
-
-The model supplies `topic` when it calls `get_policy`. The v1 instructions name the topics, and the tool schema exposes the same enum. For example, the model can ask for `refund_basics` before a standard decision or `post_window_exceptions` when the delivery window has passed.
-
-```python {.code-frame}
-# issue_refund: make the state change only after deterministic checks.
+# issue_refund, simplified from app/refund_agent/tools.py
 if not owned(order_id):
     return {"ok": False, "error": "not_found"}
 if already_refunded(order_id):
     return {"ok": False, "error": "already_refunded"}
-if amount(order_id) > REFUND_LIMIT_EUR:
+if amount(order_id) > 500:
     return {"ok": False, "error": "above_limit_needs_human_review"}
-return issue_refund_result(order_id)
+if outside_30_days(order_id) and not valid_exception(reason):
+    return {"ok": False, "error": "outside_window"}
+return {"ok": True, "amount_refunded": amount(order_id)}
 ```
 
 ## The v1 instructions
