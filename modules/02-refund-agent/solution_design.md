@@ -44,7 +44,7 @@ if order["amount"] > REFUND_LIMIT_EUR:
     return {"ok": False, "error": "above_limit_needs_human_review"}
 ```
 
-Tools enforce ownership, refund state, the EUR 500 ceiling, and the refund window. The prompt supplies judgment about how and when to use them. A tool schema is also a contract with the model: its name, argument shape, and description constrain what the model can request. Its returned `ok` and `error` fields are the contract with the rest of the system.
+The tools enforce the rules: the order must be the customer's, not already refunded, at most EUR 500 and within 30 days. The prompt decides when to call them. Every tool returns `ok`, and on failure an `error` that says why.
 
 | Tool | Model asks for | Tool guarantees | Important result |
 |---|---|---|---|
