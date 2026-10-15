@@ -15,9 +15,7 @@ Foundations covers the generic agent loop; [Use Case](https://orq-ai.github.io/k
 
 ### Step 1 · Create the refund agent
 
-Your seat prefix from the email (`WS_PREFIX=ws07`) goes in front of every entity you create, keeping your agent and evaluation resources separate from other participants:
-
-The seed command creates the code tools and refund agent only when they do not already exist. `make seed-workspace` runs `uv run python -m app.refund_agent.entities seed`.
+Run this once. Everything it creates starts with your seat prefix (`ws07-…`), so your resources stay separate from other participants'. It is safe to run again: it only creates what is missing and never changes an existing agent. `make seed-workspace` runs `uv run python -m app.refund_agent.entities seed`.
 
 Example session (your seat prefix and entity IDs will differ):
 
@@ -31,7 +29,7 @@ tools    : ws07-lookup_order, ws07-issue_refund, ws07-get_policy (code tools, ru
 agent    : ws07-refund-agent v1.0.0
 ```
 
-The dataset and policy judge are introduced in Improve and Evaluate. The seed command is safe to run again: it only creates what is missing and never changes an existing agent. It refuses to run with an empty or made-up `WS_PREFIX`. `uv run python -m app.refund_agent.entities reset` deletes your seat's entities, and only those.
+It refuses to run with an empty or made-up `WS_PREFIX`. `uv run python -m app.refund_agent.entities reset` deletes your seat's entities, and only those.
 
 ### What this command creates
 
@@ -42,7 +40,7 @@ The seed script reads the local agent sources and creates the matching orq.ai re
 | `app/refund_agent/tools.py` | Three hosted code tools |
 | `app/data/instructions.md` | The first refund-agent version |
 
-Afterward, the chat UI and scripts use the resource keys. They invoke the managed agent; they do not run the tool implementation on your laptop. Improve and Evaluate creates its dataset and policy judge when that module needs them.
+Afterward, the chat UI and scripts use the resource keys. They invoke the managed agent; they do not run the tool implementation on your laptop. The dataset and policy judge come later, in Improve and Evaluate.
 
 ??? info "Optional: Inspect the SDK calls and agent settings"
     **The SDK calls behind seed**
@@ -98,8 +96,6 @@ Afterward, the chat UI and scripts use the resource keys. They invoke the manage
     )
     ```
 
-    This v1 agent does not configure fallback models, memory stores, knowledge bases, cost caps, or interactive tool gates. That boundary is useful beyond this workshop: seed or provision entities in a controlled path, then make product code invoke stable keys.
-
 ### Step 2 · Read the resources in the Studio
 
 Open [**Agents** in the workshop workspace](https://my.orq.ai/kickstartai-workshop-2026/agents), search for your `WS_PREFIX`, and open `-refund-agent`. Everything below is read-only; the full v1 instructions are left for the Improve and Evaluate module, after Agent Simulation.
@@ -118,8 +114,6 @@ Open [**Agents** in the workshop workspace](https://my.orq.ai/kickstartai-worksh
 4. `OrderStore`, which decides whether an order belongs to the signed-in customer.
 5. `issue_refund(...)`: the ordered early returns (`not_found`, `already_refunded`, `above_limit_needs_human_review`, `outside_window`, `reason_not_in_exception_list`) and then the successful result. This is the part that decides.
 6. The last line calls it with `params` and leaves the outcome in `result`.
-
-A model has no equivalent code editor: it is selected as a configuration value on the agent. The code you can inspect lives in the tool resource; the prompt you can inspect lives in the agent version; the request and result you can inspect live in the trace.
 
 ### Step 3 · Inspect and call it from Python
 
@@ -155,13 +149,7 @@ trace    : <your trace id>
 next     : open the trace in the Studio; the tool spans ran in orq.ai, not on your laptop
 ```
 
-A tool action has two records: the model proposes a call (`function_call`), then orq.ai executes it and returns a result (`orq:<tool key>`). Their matching `call_id` connects the request to its result. The final answer is a `message` item. TODO 2 asks you to print those result records so you can see what the tools actually did, alongside what the agent said.
-
-A result such as `{"ok": false, "error": "outside_window"}` is a tool refusing an action under its business rules. It does not mean the tool crashed. Read the arguments and result together when you inspect a trace.
-
-**What to read in `run.py`.** The call itself is intentionally one line. The important learning is the response shape: application code should preserve the final answer, structured calls, structured results, and trace ID rather than flattening everything into text. That same structured record powers the chat UI, traces, simulations, and regression scorers later.
-
-Search the printed trace ID in **Observability** > **Traces**. The trace shows model calls and one span per hosted tool call; compare its arguments and results with the lines your script printed.
+Each `call` line is what the model asked for; each `result` line is what the tool did. Find the trace ID under **Observability** > **Traces** to see the same calls.
 
 ![A refund trace in Studio shows the agent, model calls, and lookup_order and issue_refund tool spans, including the result amount_refunded 89.](assets/agent-trace.png)
 
@@ -178,13 +166,11 @@ The **Workshop orders** panel shows the read-only data the code tools were built
 
 ![The chat UI: Workshop orders on the left with six read-only order cards, and a v1.0.0 refund conversation on the right with tool chips and an Open trace link.](assets/chat-ui.png)
 
-The chat UI offers another way to open the same traces when you have more time.
-
 ### Optional · Call through Python, curl or the CLI
 
 === "Python SDK"
 
-    Use this in application code. `make_orq()` reads the API key and router URL from `.env`; `parse_turn()` is the workshop helper that gives you a clean answer, tool calls, results, and trace ID.
+    Use this in application code. `ask_agent()` is the workshop helper: it makes the call and gives you the answer, tool calls, results and trace ID.
 
     ```python {.code-frame}
     from app.refund_agent.client import ask_agent
@@ -226,21 +212,7 @@ The chat UI offers another way to open the same traces when you have more time.
       -o json
     ```
 
-These are three views of one contract:
-
-| Surface | What you write | When it is useful |
-|---|---|---|
-| Python SDK | `orq.responses.create(...)` | product code; typed entity and response helpers |
-| curl | HTTP method, headers, JSON body | inspect the exact gateway request and response |
-| `orq` CLI | model and input flags | reproduce a call quickly from a terminal |
-
-In every case, `model="agent/<key>[@<version>]"` selects the managed agent, `input` starts the turn, and `output` contains the message plus the intermediate work. The API key stays in `.env`; none of these examples require copying it into source code.
-
-`agent/<key>` is the latest version. `agent/<key>@1.0.0` pins one; the chat UI's version picker does the same.
-
-The Python SDK, raw HTTP call, and CLI all use the same Responses API contract. Use the SDK in application code for typed clients and convenient entity management; use HTTP or the CLI when debugging an exact request, automating a shell workflow, or comparing raw output items.
-
-
+All three send the same request; add `@1.0.0` to the model to pin a version.
 
 ## Official docs
 
@@ -255,25 +227,4 @@ The Python SDK, raw HTTP call, and CLI all use the same Responses API contract. 
 
 `make invoke-agent` prints every tool call with its result, and you have inspected its trace in Studio. The chat UI and other API surfaces are optional.
 
-The completed [solution script](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/solution/modules/02-refund-agent/run.py) produces a session shaped like this. Your seat, configured model, tool sequence, answer and trace ID can differ. Result lines are truncated to 100 characters by the script.
-
-<!-- termynal -->
-
-```console
-$ make invoke-agent
-uv run python modules/02-refund-agent/run.py
-── Step 1 · Inspect the agent ─────────────────────────
-agent    : ws07-refund-agent v1.0.0
-model    : <configured model>
-tools    : ws07-lookup_order, ws07-issue_refund, ws07-get_policy
-limits   : max_iterations 8, max_execution_time 120s
-── Step 2 · Call it and read the output items ─────────
-question : Please refund ord_a2, the dock does not fit my laptop.
-call     : ws07-lookup_order({"order_id":"ord_a2"})
-result   : ws07-lookup_order -> {"ok": true, "order": {"id": "ord_a2", "amount": 89.0, "item": "Charging dock Duo", "delivered_days_
-call     : ws07-issue_refund({"order_id":"ord_a2","reason":"dock does not fit laptop","post_window_exception":false})
-result   : ws07-issue_refund -> {"ok": true, "order_id": "ord_a2", "amount_refunded": 89.0, "currency": "EUR"}
-answer   : Your refund of €89 for order ord_a2 has been issued to your original payment method.
-trace    : <your trace id>
-next     : open the trace in the Studio; the tool spans ran in orq.ai, not on your laptop
-```
+The completed [solution script](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/solution/modules/02-refund-agent/run.py) is on the `solution` branch.
