@@ -63,15 +63,19 @@ def rest(method: str, path: str, body: dict[str, Any] | None = None) -> Any:
 def ensure_dataset(orq=None, rows: Path = DATA_DIR / "dataset.jsonl") -> str:
     """The dataset `<seat>-refund-eval`, filled once from the JSONL file. Returns its id.
 
-    Idempotency key: `display_name`. An existing dataset is returned as is, rows are not re-added.
+    Idempotency key: `display_name`. An existing dataset with rows is returned as is, rows are not
+    re-added; an existing *empty* one (a seed that failed after creating it) is filled.
     """
     orq = orq or make_orq()
     key = K("refund-eval")
-    for dataset in orq.datasets.list(limit=100).data or []:
+    points = [json.loads(line) for line in rows.read_text().splitlines() if line.strip()]
+    # search=: a shared workspace holds far more than one page of datasets (one per seat, at least).
+    for dataset in orq.datasets.list(limit=100, search=key).data or []:
         if dataset.display_name == key:
+            if not orq.datasets.list_datapoints(dataset_id=dataset.id, limit=1).data:
+                orq.datasets.create_datapoint(dataset_id=dataset.id, request_body=points)
             return dataset.id
     created = orq.datasets.create(request={"display_name": key, "path": settings.path})
-    points = [json.loads(line) for line in rows.read_text().splitlines() if line.strip()]
     orq.datasets.create_datapoint(dataset_id=created.id, request_body=points)
     return created.id
 
@@ -355,7 +359,7 @@ def reset(orq=None) -> int:
         ),
         (
             "dataset",
-            lambda: orq.datasets.list(limit=100).data,
+            lambda: orq.datasets.list(limit=100, search=prefix).data,
             lambda i: orq.datasets.delete(dataset_id=i),
             lambda x: x.display_name or "",
             lambda x: x.id,

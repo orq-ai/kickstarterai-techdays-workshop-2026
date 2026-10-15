@@ -129,6 +129,10 @@ def main(argv: list[str] | None = None) -> int:
 
     # ── Step 2 · Compare each mean with its threshold ──
     rows = rows_detail(results)
+    if not rows:
+        print(f"rows     : 0 from dataset {settings.key('refund-eval')}")
+        print("verdict  : nothing to score. Run `make seed-eval` to fill the dataset, then try again (exit 1)")
+        return 1
     scores = means(rows)
     failed = [scorer for scorer, bar in THRESHOLDS.items() if scores.get(scorer, 0.0) < bar]
     url = url_out[0] if url_out else ""
