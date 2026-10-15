@@ -57,7 +57,7 @@ return {"ok": True, "amount_refunded": amount(order_id)}
 
 ## The v1 instructions
 
-`app/data/instructions.md` is the initial system prompt. This safe excerpt establishes the agent's role, available actions, policy baseline, and tone:
+`app/data/instructions.md` is the agent's prompt. The start of it:
 
 ```text
 You are the refund assistant for Lumen Goods.
@@ -75,14 +75,7 @@ How to work:
 - Be warm and concise.
 ```
 
-| Prompt element | What it gives the model | What it cannot guarantee |
-|---|---|---|
-| Role and scope | A customer-service role and refund-only task | Correct decisions in every ambiguous conversation |
-| Tool descriptions | The actions it may request | That the requested action will succeed |
-| Policy guidance | A natural-language starting point for eligibility | Deterministic enforcement of every rule |
-| Tone instruction | A concise customer-facing style | Safe handling of every input by itself |
-
-The full file is the artifact revised in Improve and Evaluate. The prompt shapes the model's choices; it does not replace policy source or code-tool checks.
+The prompt guides what the model chooses; the tools still decide what is allowed. You will see the full file, and change it, in Improve and Evaluate.
 
 ## Next
 
