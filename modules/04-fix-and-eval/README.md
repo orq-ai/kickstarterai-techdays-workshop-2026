@@ -145,8 +145,6 @@ The positional argument is the candidate version to compare with `@1.0.0`. `make
 
 ![Illustrative replay in the current chat UI: the same first message on @1.0.0 (top) and @2.0.0 (bottom), each in a new conversation, with tool chips and Open trace links.](assets/replay-v1-v2.png)
 
-The comparison reuses the example replies from the earlier screenshot, rendered in the current UI; it is not a new live comparison run.
-
 ### Step 4 · Replay the saved simulation on v2
 
 Find your v1 baseline's **`saved:`** path from the previous module, or run `uv run eq sim runs`. By default, reports live in **`.evaluatorq/sim-runs/`** in the repo root. Pick a specific v1 report; do not select a newer candidate run by mistake.
