@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" width="1000" height="620" role="img" aria-labelledby="workshop-map-title workshop-map-desc">
+  <title id="workshop-map-title">How the pieces fit</title>
+  <desc id="workshop-map-desc">Your chat UI and simulation call the orq.ai AI Gateway from your laptop. The managed refund agent runs its model loop against the model provider and its code tools in orq.ai. Studio records every call. An optional coding agent connects through the orq.ai MCP server.</desc>
+  <style>@import url("../../../scripts/diagram.css");</style>
+  <defs><marker id="a" markerWidth="14" markerHeight="12" refX="12" refY="6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0 0 14 6 0 12z" fill="context-stroke"/></marker></defs>
+  <rect width="1000" height="620" fill="#f9f8f6"/>
+
+  <rect x="24" y="24" width="220" height="572" rx="12" class="zone"/>
+  <text x="44" y="58" class="zone-title">YOUR LAPTOP</text>
+  <rect x="44" y="80" width="180" height="92" rx="10" class="node"/>
+  <text x="134" y="120" text-anchor="middle" class="name">Chat UI</text>
+  <text x="134" y="150" text-anchor="middle" class="sub">local web app</text>
+  <rect x="44" y="212" width="180" height="104" rx="10" class="node"/>
+  <text x="134" y="254" text-anchor="middle" class="name">Simulation</text>
+  <text x="134" y="284" text-anchor="middle" class="sub">evaluatorq</text>
+  <rect x="44" y="488" width="180" height="80" rx="10" class="quiet"/>
+  <text x="134" y="524" text-anchor="middle" class="q">Coding agent</text>
+  <text x="134" y="552" text-anchor="middle" class="sub">optional</text>
+
+  <rect x="284" y="24" width="480" height="572" rx="12" class="zone"/>
+  <text x="308" y="58" class="zone-title">ORQ.AI</text>
+  <rect x="308" y="80" width="432" height="92" rx="10" class="node"/>
+  <text x="524" y="120" text-anchor="middle" class="name">AI Gateway</text>
+  <text x="524" y="150" text-anchor="middle" class="sub">Responses API · agent/&lt;key&gt;</text>
+  <rect x="308" y="212" width="432" height="104" rx="10" class="focal"/>
+  <text x="524" y="254" text-anchor="middle" class="name">Managed refund agent</text>
+  <text x="524" y="284" text-anchor="middle" class="sub">instructions + model + tool loop</text>
+  <rect x="308" y="356" width="432" height="92" rx="10" class="node"/>
+  <text x="524" y="396" text-anchor="middle" class="name">Hosted code tools</text>
+  <text x="524" y="426" text-anchor="middle" class="sub">lookup_order · get_policy · issue_refund</text>
+  <rect x="308" y="488" width="206" height="80" rx="10" class="node"/>
+  <text x="411" y="524" text-anchor="middle" class="name">MCP server</text>
+  <text x="411" y="552" text-anchor="middle" class="sub">workspace access</text>
+  <rect x="534" y="488" width="206" height="80" rx="10" class="node"/>
+  <text x="637" y="524" text-anchor="middle" class="name">Studio</text>
+  <text x="637" y="552" text-anchor="middle" class="sub">a trace per call</text>
+
+  <rect x="804" y="212" width="172" height="104" rx="10" class="node"/>
+  <text x="890" y="254" text-anchor="middle" class="name">Model</text>
+  <text x="890" y="284" text-anchor="middle" class="sub">external</text>
+
+  <path d="M224 116 H308" class="arrow"/>
+  <path d="M224 264 H256 Q264 264 264 256 V148 Q264 140 272 140 H308" class="arrow"/>
+  <path d="M400 172 V212" class="arrow"/>
+  <path d="M660 212 V172" class="arrow dash"/>
+  <text x="672" y="198" class="lbl">answer + tool results</text>
+  <path d="M740 264 H804" class="accent"/>
+  <path d="M400 316 V356" class="accent"/>
+  <text x="412" y="342" class="lbl">tool call</text>
+  <path d="M660 356 V316" class="accent dash"/>
+  <text x="672" y="342" class="lbl">result</text>
+  <path d="M224 528 H308" class="arrow dash"/>
+  <text x="266" y="516" text-anchor="middle" class="lbl">MCP</text>
+</svg>

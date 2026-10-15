@@ -1,6 +1,7 @@
 """The chat UI's server: the read-only backend view and the chat route, with the agent faked. No network."""
 
 import json
+from dataclasses import replace
 
 from starlette.testclient import TestClient
 
@@ -34,10 +35,12 @@ def _fake_agent(monkeypatch):
                 ToolCall("issue_refund", {"order_id": "ord_a1"}, {"ok": False, "error": "outside_window"}),
             ],
             trace_id="t1",
+            span_id="s1",
             version=version,
         )
 
     monkeypatch.setattr(web, "ask_agent", ask_agent)
+    monkeypatch.setattr(web, "settings", replace(web.settings, api_key="test-key"))
     return calls
 
 
@@ -48,9 +51,14 @@ def test_chat_sends_history_and_version_and_returns_chips(monkeypatch):
     assert res.status_code == 200
     body = res.json()
     assert calls == [([*history, {"role": "user", "content": "refund ord_a1"}], "1.0.0")]
-    assert body["tool_calls"] == [{"name": "lookup_order", "ok": True}, {"name": "issue_refund", "ok": False}]
+    assert body["tool_calls"] == [
+        {"name": "lookup_order", "ok": True, "error": None},
+        {"name": "issue_refund", "ok": False, "error": "outside_window"},
+    ]
     assert body["history"][-1] == {"role": "assistant", "content": "Refunded EUR 24.99."}
     assert body["trace_id"] == "t1" and body["version"] == "1.0.0"
+    assert body["span_id"] == "s1"
+    assert body["trace_url"] == web.trace_url("t1")
 
 
 def test_replay_on_two_versions_starts_from_the_same_input(monkeypatch):

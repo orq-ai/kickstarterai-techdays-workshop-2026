@@ -1,4 +1,4 @@
-"""Fix and eval: replay the customer messages your simulation broke on, on two versions side by side.
+"""Improve and evaluate: replay the customer messages your simulation broke on, on two versions side by side.
 
 Each message goes to `@1.0.0` and to the version you published, each in a fresh conversation, so
 the two answers start from the same input. Tool calls are printed with their result: a call to

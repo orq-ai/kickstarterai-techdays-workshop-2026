@@ -42,11 +42,9 @@ ORDER_FIELDS = ("id", "item", "amount", "delivered_days_ago", "refunded")  # nev
 
 
 def trace_url(trace_id: str | None) -> str | None:
-    """Studio deep link to one trace; the Traces page when ORQ_WORKSPACE is not set."""
+    """Open the response's trace in its Studio workspace."""
     if not trace_id:
         return None
-    if not settings.workspace:
-        return f"{settings.base_url}/traces"
     return f"{settings.base_url}/{quote(settings.workspace, safe='')}/traces/(trace:{quote(trace_id, safe='')})"
 
 
@@ -71,7 +69,12 @@ def index(request: Request) -> FileResponse:
 
 
 async def get_agent(request: Request) -> JSONResponse:
-    agent = await run_in_threadpool(lambda: current_agent(make_orq()))
+    if not settings.api_key:
+        return _error(503, "ORQ_API_KEY is empty. Add the block from your kickstart email to .env, then restart the chat.")
+    try:
+        agent = await run_in_threadpool(lambda: current_agent(make_orq()))
+    except Exception:  # noqa: BLE001  the UI exposes setup guidance, not provider diagnostics
+        return _error(502, "Could not reach orq.ai to load agent setup. Check ORQ_API_KEY and your connection, then try again.")
     if agent is None:
         return _error(404, f"{settings.agent_key} does not exist yet: run `make seed-workspace`")
     return JSONResponse({"key": settings.agent_key, "versions": ["latest", *versions(agent)]})
@@ -116,15 +119,20 @@ async def post_chat(request: Request) -> JSONResponse:
     try:
         turn = await run_in_threadpool(ask_agent, conversation, version)
     except Exception as exc:  # noqa: BLE001  shown in the chat, not a stack trace
-        return _error(502, f"orq error: {str(exc)[:300]}")
+        return _error(502, f"orq.ai error: {str(exc)[:300]}")
     return JSONResponse(
         {
             "answer": turn.answer,
             "tool_calls": [
-                {"name": c.name, "ok": isinstance(c.result, dict) and bool(c.result.get("ok"))}
+                {
+                    "name": c.name,
+                    "ok": isinstance(c.result, dict) and bool(c.result.get("ok")),
+                    "error": c.result.get("error") if isinstance(c.result, dict) else None,
+                }
                 for c in turn.tool_calls
             ],
             "trace_id": turn.trace_id,
+            "span_id": turn.span_id,
             "trace_url": trace_url(turn.trace_id),
             "history": [*conversation, {"role": "assistant", "content": turn.answer}],
             "version": version,
@@ -135,6 +143,11 @@ async def post_chat(request: Request) -> JSONResponse:
 
 app = Starlette(
     routes=[
+        Route("/favicon.svg", lambda request: FileResponse(ROOT / "docs/assets/orq-favicon.svg")),
+        Route("/fonts/kurrent.woff2", lambda request: FileResponse(ROOT / "slides/kickstart/assets/ESKlarheitKurrent-Rg.woff2")),
+        Route("/fonts/kurrent-medium.woff2", lambda request: FileResponse(ROOT / "slides/kickstart/assets/ESKlarheitKurrent-Md.woff2")),
+        Route("/fonts/kurrent-semibold.woff2", lambda request: FileResponse(ROOT / "slides/kickstart/assets/ESKlarheitKurrent-Smbd.woff2")),
+        Route("/fonts/kurrent-mono.ttf", lambda request: FileResponse(ROOT / "slides/kickstart/assets/ESKlarheitKurrentMono-Md.ttf")),
         Route("/", index),
         Route("/api/agent", get_agent),
         Route("/api/backend", get_backend),

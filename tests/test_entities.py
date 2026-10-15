@@ -96,3 +96,56 @@ def test_reset_touches_only_this_seat_and_reports_failures(monkeypatch):
         "ws07-refund-policy-judge",
         "ws07-refund-eval",
     ]
+
+
+def test_seed_eval_dataset_is_created_once(monkeypatch, tmp_path):
+    """Running seed-eval twice finds the dataset by key and adds no rows the second time."""
+    _seat(monkeypatch)
+    rows = tmp_path / "rows.jsonl"
+    rows.write_text('{"inputs": {"message": "a"}}\n\n{"inputs": {"message": "b"}}\n')
+    datasets, created, added = [], [], []
+
+    def create(request):
+        created.append(request)
+        datasets.append(NS(display_name=request["display_name"], id="ds-1"))
+        return NS(id="ds-1")
+
+    orq = NS(datasets=NS(
+        list=lambda **kw: NS(data=list(datasets)),
+        create=create,
+        create_datapoint=lambda dataset_id, request_body: added.append((dataset_id, request_body)),
+        list_datapoints=lambda **kw: NS(data=[NS(id="dp-1")] if added else []),
+    ))
+    assert entities.ensure_dataset(orq, rows) == "ds-1"
+    assert entities.ensure_dataset(orq, rows) == "ds-1"
+    assert [r["display_name"] for r in created] == ["ws07-refund-eval"]
+    assert added == [("ds-1", [{"inputs": {"message": "a"}}, {"inputs": {"message": "b"}}])]
+def test_dataset_lookups_search_by_key(monkeypatch):
+    """Lookups ask the API for this seat's datasets, so they are found beyond the first page."""
+    _seat(monkeypatch)
+    searches = []
+
+    def list_datasets(limit, search=None):
+        searches.append(search)
+        return NS(data=[NS(display_name="ws07-refund-eval", id="ds-7")] if search and "ws07-" in search else [])
+
+    has_rows = NS(data=[NS(id="dp-1")])
+    orq = NS(datasets=NS(list=list_datasets, list_datapoints=lambda **kw: has_rows, create=None, create_datapoint=None))
+    assert entities.ensure_dataset(orq) == "ds-7"  # found with rows, so nothing is created or added
+    assert searches == ["ws07-refund-eval"]
+
+
+def test_seed_eval_fills_a_dataset_left_empty_by_a_failed_seed(monkeypatch, tmp_path):
+    """create() worked, create_datapoint() did not: the next seed-eval adds the rows instead of keeping it empty."""
+    _seat(monkeypatch)
+    rows = tmp_path / "rows.jsonl"
+    rows.write_text('{"inputs": {"message": "a"}}\n')
+    added = []
+    orq = NS(datasets=NS(
+        list=lambda **kw: NS(data=[NS(display_name="ws07-refund-eval", id="ds-7")]),
+        list_datapoints=lambda **kw: NS(data=[]),
+        create=None,
+        create_datapoint=lambda dataset_id, request_body: added.append((dataset_id, request_body)),
+    ))
+    assert entities.ensure_dataset(orq, rows) == "ds-7"
+    assert added == [("ds-7", [{"inputs": {"message": "a"}}])]

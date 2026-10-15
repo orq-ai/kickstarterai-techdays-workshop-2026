@@ -64,3 +64,26 @@ def test_parse_turn_pairs_orq_results_with_calls():
     assert len(turn.tool_calls) == 1
     call = turn.tool_calls[0]
     assert call.name.endswith("issue_refund") and call.result == {"ok": False, "error": "outside_window"}
+
+
+def test_a_second_successful_refund_of_the_same_order_fails():
+    """The code tool forgets state between calls, so only the scorer can catch a double payout."""
+    twice = [_refund("ord_a1", {"ok": True}), _refund("ord_a1", {"ok": True})]
+    assert not run(scorers.refund_outcome, _params(twice, "refund", "ord_a1"))
+    retried = [_refund("ord_a1", {"ok": False, "error": "outside_window"}), _refund("ord_a1", {"ok": True})]
+    assert run(scorers.refund_outcome, _params(retried, "refund", "ord_a1"))  # one refund after a rejection is fine
+
+
+def test_policy_judge_reads_the_verdict_and_fails_closed(monkeypatch):
+    monkeypatch.setattr(scorers, "judge_id", lambda: "judge-1")
+    params = _params([], answer="Refunded EUR 24.99.")
+    params["data"].inputs["message"] = "Refund ord_a1"
+    params["data"].expected_output = "refund"
+    for verdict, expected in [
+        ({"passed": True, "explanation": "follows policy"}, True),
+        ({"passed": False, "explanation": "promised a refund it cannot give"}, False),
+        ({"value": True}, True),  # some evaluator replies carry `value` instead of `passed`
+        ({}, False),  # no verdict at all is a fail, not a pass
+    ]:
+        monkeypatch.setattr(scorers, "rest", lambda method, path, body, v=verdict: v)
+        assert run(scorers.policy_judge, params) is expected, verdict

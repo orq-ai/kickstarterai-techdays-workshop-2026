@@ -1,15 +1,18 @@
 """Create, version and delete the orq entities this workshop uses, all under your seat prefix.
 
 What `make seed-workspace` creates (idempotent: each `ensure_*` looks for its key first):
-    <seat>-lookup_order, <seat>-issue_refund, <seat>-get_policy   code tools, run by orq
+    <seat>-lookup_order, <seat>-issue_refund, <seat>-get_policy   code tools, run by orq.ai
     <seat>-refund-agent                                           the agent, v1.0.0 from app/data/instructions.md
-    <seat>-refund-eval                                            the regression dataset (module 04)
-    <seat>-refund-policy-judge                                    the LLM judge (module 04)
+
+What `make seed-eval` creates (module 04):
+    <seat>-refund-eval                                            the regression dataset
+    <seat>-refund-policy-judge                                    the LLM judge
 
 `make publish-agent-version` sends your edited instructions as the next major version.
 `make reset-workspace` deletes exactly those kinds, and only keys that start with `<seat>-`.
 
     uv run python -m app.refund_agent.entities seed
+    uv run python -m app.refund_agent.entities seed-eval
     uv run python -m app.refund_agent.entities publish [--file path/to/instructions.md]
     uv run python -m app.refund_agent.entities reset
 """
@@ -60,15 +63,19 @@ def rest(method: str, path: str, body: dict[str, Any] | None = None) -> Any:
 def ensure_dataset(orq=None, rows: Path = DATA_DIR / "dataset.jsonl") -> str:
     """The dataset `<seat>-refund-eval`, filled once from the JSONL file. Returns its id.
 
-    Idempotency key: `display_name`. An existing dataset is returned as is, rows are not re-added.
+    Idempotency key: `display_name`. An existing dataset with rows is returned as is, rows are not
+    re-added; an existing *empty* one (a seed that failed after creating it) is filled.
     """
     orq = orq or make_orq()
     key = K("refund-eval")
-    for dataset in orq.datasets.list(limit=100).data or []:
+    points = [json.loads(line) for line in rows.read_text().splitlines() if line.strip()]
+    # search=: a shared workspace holds far more than one page of datasets (one per seat, at least).
+    for dataset in orq.datasets.list(limit=100, search=key).data or []:
         if dataset.display_name == key:
+            if not orq.datasets.list_datapoints(dataset_id=dataset.id, limit=1).data:
+                orq.datasets.create_datapoint(dataset_id=dataset.id, request_body=points)
             return dataset.id
     created = orq.datasets.create(request={"display_name": key, "path": settings.path})
-    points = [json.loads(line) for line in rows.read_text().splitlines() if line.strip()]
     orq.datasets.create_datapoint(dataset_id=created.id, request_body=points)
     return created.id
 
@@ -352,7 +359,7 @@ def reset(orq=None) -> int:
         ),
         (
             "dataset",
-            lambda: orq.datasets.list(limit=100).data,
+            lambda: orq.datasets.list(limit=100, search=prefix).data,
             lambda i: orq.datasets.delete(dataset_id=i),
             lambda x: x.display_name or "",
             lambda x: x.id,
@@ -386,32 +393,51 @@ def reset(orq=None) -> int:
 
 
 def seed(orq=None) -> None:
-    """Create everything the modules expect, for this seat. Safe to rerun."""
+    """Create the code tools and refund agent for this seat. Safe to rerun."""
     settings.require_seat()
     orq = orq or make_orq()
     started = time.time()
-    print("── Seed · create this seat's entities ─────────────────")
+    print("── Seed · create this seat's agent ───────────────────")
     print(f"seat     : {settings.prefix} → {settings.path}")
     try:
-        print(f"tools    : {', '.join(ensure_tools(orq))} (code tools, run by orq)")
+        print(f"tools    : {', '.join(ensure_tools(orq))} (code tools, run by orq.ai)")
         print(f"agent    : {ensure_agent(orq)} v{current_agent(orq)['version']}")
-        print(f"dataset  : {K('refund-eval')} ({ensure_dataset(orq)})")
-        print(f"judge    : {K('refund-policy-judge')} ({ensure_llm_judge(orq)})")
     except Exception as exc:
         raise SystemExit(
             f"seed failed: {str(exc)[:300]}\nfix: check that ORQ_API_KEY, ORQ_PROJECT and WS_PREFIX are the ones from your email"
         ) from exc
     print(f"elapsed  : {time.time() - started:.0f}s")
-    print(f"next     : `make agent-chat-ui`; in the Studio, search {settings.prefix} in your key's project")
+    print(f"next     : `uv run python modules/02-refund-agent/run.py` or `uv run python -m app.web`")
+
+
+def seed_eval(orq=None) -> None:
+    """Create the dataset and policy judge used only by Improve and Evaluate. Safe to rerun."""
+    settings.require_seat()
+    orq = orq or make_orq()
+    started = time.time()
+    print("── Seed · create this seat's evaluation resources ────")
+    print(f"seat     : {settings.prefix} → {settings.path}")
+    try:
+        print(f"dataset  : {K('refund-eval')} ({ensure_dataset(orq)})")
+        print(f"judge    : {K('refund-policy-judge')} ({ensure_llm_judge(orq)})")
+    except Exception as exc:
+        raise SystemExit(
+            f"seed-eval failed: {str(exc)[:300]}\nfix: check that ORQ_API_KEY, ORQ_PROJECT and WS_PREFIX are the ones from your email"
+        ) from exc
+    print(f"elapsed  : {time.time() - started:.0f}s")
+    print("next     : continue with the regression-evaluation steps")
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("command", choices=["seed", "publish", "reset"])
+    parser.add_argument("command", choices=["seed", "seed-eval", "publish", "reset"])
     parser.add_argument("--file", default=str(INSTRUCTIONS), help="instructions to publish (publish only)")
     args = parser.parse_args(argv)
     if args.command == "seed":
         seed()
+        return 0
+    if args.command == "seed-eval":
+        seed_eval()
         return 0
     if args.command == "reset":
         return 1 if reset() else 0

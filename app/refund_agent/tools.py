@@ -112,8 +112,7 @@ def get_policy(topic: str, kb_dir: Path = KB_DIR) -> dict[str, Any]:
     Rules:
       1. `topic` must be one of POLICY_TOPICS, else `unknown_topic` (with the list, so the model
          can retry with a valid one).
-      2. The text comes from the local markdown file; `source: "local"` says so. Module 09
-         swaps this function for a knowledge-base search through `policy_fn`.
+      2. The text comes from the local markdown file; `source: "local"` says so.
     """
     if topic not in POLICY_TOPICS:
         return {"ok": False, "error": "unknown_topic", "topics": list(POLICY_TOPICS)}

@@ -1,31 +1,61 @@
-name: docs
+name: Build and deploy docs
+
 on:
   push:
     branches: [main]
-    paths: ["docs/**", "modules/**/README.md", "modules/**/assets/**", "mkdocs.yml", "overrides/**", "scripts/mkdocs_hooks.py"]
+    paths:
+      - "docs/**"
+      - "modules/**/*.md"
+      - "modules/**/assets/**"
+      - "overrides/**"
+      - "scripts/mkdocs_hooks.py"
+      - "mkdocs.yml"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/docs.yml"
   pull_request:
-    paths: ["docs/**", "modules/**/README.md", "modules/**/assets/**", "mkdocs.yml", "overrides/**", "scripts/mkdocs_hooks.py"]
+    paths:
+      - "docs/**"
+      - "modules/**/*.md"
+      - "modules/**/assets/**"
+      - "overrides/**"
+      - "scripts/mkdocs_hooks.py"
+      - "mkdocs.yml"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/docs.yml"
   workflow_dispatch:
+
+concurrency:
+  group: "docs-${{ github.ref }}"
+  cancel-in-progress: true
+
 permissions:
   contents: read
-  pages: write
-  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
-      - run: uv sync --only-group docs
+      - run: uv sync --group docs --locked
       - run: uv run mkdocs build --strict
       - uses: actions/upload-pages-artifact@v3
         if: github.ref == 'refs/heads/main'
-        with: { path: site }
+        with:
+          path: site
+
   deploy:
     if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
-    environment: { name: github-pages, url: "${{ steps.deployment.outputs.page_url }}" }
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: "${{ steps.deployment.outputs.page_url }}"
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4

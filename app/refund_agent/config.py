@@ -22,6 +22,7 @@ INSTRUCTIONS = DATA_DIR / "instructions.md"  # the agent's prompt: v1 on a fresh
 load_dotenv(os.environ.get("ORQ_ENV_FILE", ROOT / ".env"), override=True)
 
 SEAT_PREFIX = re.compile(r"^ws\d{2,3}$")  # ws07: one per participant, from the kickstart email
+WORKSHOP_WORKSPACE = "kickstartai-workshop-2026"
 
 
 def _env(name: str, default: str = "") -> str:
@@ -38,9 +39,9 @@ class Settings:
         default_factory=lambda: _env("ORQ_BASE_URL", "https://my.orq.ai").rstrip("/")
     )
     project: str = field(default_factory=lambda: _env("ORQ_PROJECT"))
-    # Workspace key (the slug in Studio URLs). The API key only carries the workspace UUID, so
-    # the chat UI reads this to deep-link a trace.
-    workspace: str = field(default_factory=lambda: _env("ORQ_WORKSPACE"))
+    # Studio URLs need the workspace slug; response telemetry only contains trace/span IDs.
+    # Blank values in older .env files also use the workshop workspace.
+    workspace: str = field(default_factory=lambda: _env("ORQ_WORKSPACE") or WORKSHOP_WORKSPACE)
     # Your seat: every entity key starts with it (ws07-refund-agent), so seats never collide.
     prefix: str = field(default_factory=lambda: _env("WS_PREFIX"))
     model: str = field(default_factory=lambda: _env("MODEL", "openai/gpt-6-luna"))

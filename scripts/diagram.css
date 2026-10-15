@@ -1,0 +1,33 @@
+/* Shared style for the diagram sources in modules/*/assets/*.svg (see scripts/export_diagrams.py).
+   Sizes are tuned for a ~1000px viewBox shown at about 850px wide: names 26px, subtitles 19px. */
+@font-face { font-family: "Avio Sans"; font-weight: 400; src: url("../docs/stylesheets/fonts/AvioSans-Regular.woff2") format("woff2"); }
+@font-face { font-family: "Avio Sans"; font-weight: 400; font-style: italic; src: url("../docs/stylesheets/fonts/AvioSans-RegularItalic.woff2") format("woff2"); }
+@font-face { font-family: "Avio Sans"; font-weight: 600; src: url("../docs/stylesheets/fonts/AvioSans-SemiBold.woff2") format("woff2"); }
+@font-face { font-family: "Kurrent"; font-weight: 600; src: url("../docs/stylesheets/fonts/ESKlarheitKurrent-Smbd.woff2") format("woff2"); }
+@font-face { font-family: "Kurrent Mono"; font-weight: 500; src: url("../docs/stylesheets/fonts/ESKlarheitKurrentMono-Md.woff2") format("woff2"); }
+
+text { font-family: "Avio Sans", sans-serif; fill: #25232e; }
+.name  { font-size: 24px; font-weight: 600; }
+.q     { font-size: 24px; font-weight: 600; }
+.sub   { font-size: 20px; fill: #025558; }
+.msg   { font-size: 20px; }
+.code  { font: 500 20px "Kurrent Mono", monospace; fill: #025558; }
+.tool  { font: 500 20px "Kurrent Mono", monospace; fill: #25232e; }
+.zone-title { font: 500 16px "Kurrent Mono", monospace; letter-spacing: 0.14em; fill: #025558; }
+.lbl   { font-size: 20px; font-weight: 500; fill: #025558; paint-order: stroke; stroke: #f9f8f6; stroke-width: 8px; stroke-linejoin: round; }
+.note  { font-size: 20px; font-style: italic; }
+
+.node  { fill: #fff; stroke: #25232e; stroke-width: 1.6; }
+.focal { fill: #fdf0ea; stroke: #df5325; stroke-width: 2.2; }
+.quiet { fill: #fff; stroke: #b9b6b0; stroke-width: 1.6; stroke-dasharray: 7 6; }
+.soft  { fill: #eaf1f0; stroke: #025558; stroke-width: 1.6; }
+.zone  { fill: #f1efeb; stroke: #d6d3cc; stroke-width: 1.5; }
+.track { fill: #e4e1db; }
+.fill  { fill: #025558; }
+
+.arrow   { fill: none; stroke: #025558; stroke-width: 2.2; marker-end: url(#a); }
+.accent  { fill: none; stroke: #df5325; stroke-width: 2.4; marker-end: url(#a); }
+.dash    { stroke-dasharray: 7 6; }
+.life    { stroke: #c9c6bf; stroke-width: 1.5; stroke-dasharray: 5 6; }
+.q   { font-size: 24px; font-weight: 600; }
+.msg { font-size: 21px; }
