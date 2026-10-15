@@ -1,6 +1,5 @@
 """Seat checks, versioning and reset, against a fake orq client. No network."""
 
-from dataclasses import replace
 from types import SimpleNamespace as NS
 
 import pytest
@@ -9,7 +8,7 @@ from app.refund_agent import config, entities
 
 
 def _seat(monkeypatch, **changes):
-    seat = replace(config.settings, **{"api_key": "k", "prefix": "ws07", "project": "p", **changes})
+    seat = config.settings.model_copy(update={"api_key": "k", "prefix": "ws07", "project": "p", **changes})
     monkeypatch.setattr(entities, "settings", seat)
     monkeypatch.setattr(entities, "K", seat.key)
     return seat

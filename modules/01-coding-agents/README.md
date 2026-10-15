@@ -2,18 +2,45 @@
 
 | | |
 |---|---|
-| **Prerequisites** | onboarding done; one coding agent of your choice, or none (orqi below needs nothing else) |
+| **Prerequisites** | onboarding done; install an agent CLI if you use `orq launch`; `orqi` can run in the terminal |
 | **You will have** | a coding agent that answers questions about your orq.ai workspace |
 
 ## Why
 
-The skills are workflows written for an agent (simulate an agent, build an evaluator, analyze traces); the MCP server gives it the tools to act on your workspace. Pick **one** path below. You can skip this module entirely and follow along by hand.
+The skills are workflows written for an agent (simulate an agent, build an evaluator, analyze traces); the MCP server gives it tools to act on your workspace. Choose one path below. `orq launch` routes model calls through the AI Gateway and can provide Orq skills and MCP tools for that session; the other agent paths configure workspace tools directly. You can skip this module entirely and follow along by hand.
 
 ## Steps
 
 ### Step 1 · Pick your agent
 
 Run the once-per-terminal setup from [Onboarding](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/00/) first; the agents read your key from the shell.
+
+=== "orq launch"
+
+    `orq launch` starts an installed coding agent with its model calls routed through the orq.ai AI Gateway for that session. For supported integrations, Orq skills and MCP tools are available in the launched session by default; no separate plugin or MCP setup is needed for this path. The session setup ends when the agent exits.
+
+    Use the workshop `ORQ_API_KEY` exported by onboarding. An active orq CLI profile takes precedence over that environment variable.
+
+    ```bash {.terminal}
+    orq launch claude
+    ```
+
+    ```bash {.terminal}
+    orq launch codex
+    ```
+
+    Choose the command for the coding agent installed on your machine:
+
+    | Command | Coding agent |
+    |---|---|
+    | `orq launch claude` | Claude Code |
+    | `orq launch codex` | OpenAI Codex CLI |
+    | `orq launch copilot` | GitHub Copilot CLI (launch only) |
+    | `orq launch gemini` | Gemini CLI (launch only) |
+    | `orq launch kilo` | Kilo CLI |
+    | `orq launch kimi` | Kimi Code |
+    | `orq launch opencode` | OpenCode |
+    | `orq launch pi` | Pi Coding Agent |
 
 === "orqi"
 
@@ -84,8 +111,8 @@ Run the once-per-terminal setup from [Onboarding](https://orq-ai.github.io/kicks
 
         The first connection opens the orq.ai OAuth flow in the browser; `npx` downloads the proxy on demand.
 
-!!! warning "One MCP path only"
-    Install the MCP server through the plugin **or** by hand, not both, or it registers twice and every tool shows up double.
+!!! warning "One MCP setup for manual paths"
+    For Claude Code or another manually configured agent, install the MCP server through the plugin **or** by hand, not both, or it registers twice and every tool shows up double. With `orq launch`, use the session's MCP setup without adding a second MCP registration for that same launched agent.
 
 ### Step 2 · Check which models it can access
 
@@ -95,7 +122,7 @@ Ask your agent:
   <p>List the chat models available to me through the connected orq.ai MCP server. Return their provider/model IDs.</p>
 </blockquote>
 
-Compare its list with [**AI Gateway** > **Models**](https://my.orq.ai/kickstartai-workshop-2026/router/models) in the Studio. They should match.
+Compare its list with [**AI Gateway** > **Models**](https://my.orq.ai/kickstartai-workshop-2026/router/models) in the workshop workspace. They should match when MCP uses your supplied workshop key. This is the same `ORQ_API_KEY` from your email; you do not need another key. An OAuth connection can use a different workspace, so use the bearer-key setup below if necessary. Setting the key in `.env` alone does not configure an OAuth MCP connection.
 
 ??? tip "Workshop models missing?"
     Add the MCP URL with your key instead of OAuth: header `Authorization: Bearer ${ORQ_API_KEY}`. In Claude Code:
@@ -115,7 +142,7 @@ Compare its list with [**AI Gateway** > **Models**](https://my.orq.ai/kickstarta
 - [orq.ai MCP server](https://docs.orq.ai/ai-studio/integrations/code-assistants/orq-mcp): tools on your workspace for any MCP client, OAuth or bearer key
 - [orq.ai Skills](https://docs.orq.ai/ai-studio/integrations/code-assistants/orq-skills): the workflows, and the Claude Code plugin
 - [Automate evals and observability in Claude Code](https://docs.orq.ai/ai-studio/cookbooks/evaluation-safety/automate-evals-and-observability-with-claude-code): a worked example
-- [orq.ai CLI](https://docs.orq.ai/reference/cli)
+- [orq.ai CLI · coding agents](https://docs.orq.ai/reference/cli#coding-agents)
 
 ## Done when
 

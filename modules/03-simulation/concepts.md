@@ -10,15 +10,15 @@ Hand-written transcripts are useful examples, but they go stale and cover only t
 
 A user simulator plays a persona with a goal. The agent under test responds. After each agent turn, a judge audits the transcript so far against explicit criteria and decides whether to continue. Every model call goes through the router, where it is traced and costed. `max_turns` caps the conversation if the judge has not already ended it.
 
-Source: the [`simulate() call`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/run.py#L133) in `run.py`.
+Source: the [`simulate() call`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/run.py) in `run.py`.
 
 ```python {.code-frame}
+from app.refund_agent.config import settings
 from evaluatorq.simulation import simulate
-from evals.target import agent_target
 
 # modules/03-simulation/run.py
 results = await simulate(
-    target=agent_target("1.0.0"),
+    target=f"agent:{settings.agent_key}@1.0.0",
     personas=PERSONAS,
     scenarios=SCENARIOS,
     max_turns=3,
@@ -29,26 +29,9 @@ results = await simulate(
 
 ![Diagram: Cases feed a user simulator and the refund agent. The judge audits each turn and decides whether the conversation continues, while all model calls pass through the router.](assets/simulation-loop.png)
 
-The simulation target is an adapter, not a second implementation of the agent. `agent_target()` points evaluatorq at the same managed `agent/<key>@<version>` that the chat UI calls. It uses an OpenAI-compatible router client, so evaluatorq can drive a managed agent while orq.ai executes its tools.
+`target=f"agent:{settings.agent_key}@1.0.0"` uses evaluatorq's native managed-agent support. It reads `ORQ_API_KEY` and `ORQ_BASE_URL` from the environment and calls the same Responses API model, `agent/<key>@1.0.0`, as the chat UI. Importing the workshop settings loads `.env` first. Orq runs the agent and its tools; no custom target class is needed here.
 
-Source: [`agent_target()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/target.py#L44-L48).
-
-```python {.code-frame}
-from evaluatorq.contracts import LLMCallConfig
-from openai import AsyncOpenAI
-from app.refund_agent.config import settings
-
-# evals/target.py
-model = f"agent/{settings.agent_key}@{version}"
-router = AsyncOpenAI(base_url=settings.router_url, api_key=settings.api_key)
-return ManagedAgentTarget(
-    LLMCallConfig(model=model, client=router),
-    client=router,
-    require_orq=True,
-)
-```
-
-This adapter pattern is reusable: keep the agent implementation in one place, then adapt its input and output to the evaluator framework.
+The starter still configures `SIM_LLM` separately: that is the model/client used by the simulator and judge, rather than the managed agent under test. Use the explicit version for a reproducible baseline; `target=f"agent:{settings.agent_key}"` selects the latest agent version.
 
 ## A case is persona × scenario × criteria
 
@@ -95,24 +78,9 @@ An empty `rules_broken` list does not establish that every rule held. Check `cri
 
 ## What the judge can see
 
-Text alone can make a confident but incorrect answer look persuasive. This workshop's [`evals/target.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/target.py) keeps the managed agent's code-tool calls and their results on the transcript passed to the judge. The judge can therefore use execution evidence, not just the final wording.
+Text alone can make a confident but incorrect answer look persuasive. Evaluatorq's native target keeps the managed agent's code-tool calls and their results on the transcript passed to the judge. It matches separate call and result records by `call_id`, preserving the original arguments. The judge therefore sees the requested action and its outcome, not just the final wording.
 
 This only works when the agent returns those intermediate outputs and they are passed to the judge. If the agent returns only its final answer, the judge can evaluate only that answer; it cannot inspect tool calls or results that were not returned.
-
-Source: [`_normalise_response()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/target.py#L25-L41).
-
-```python {.code-frame}
-import json
-
-# evals/target.py, inside ManagedAgentTarget._normalise_response()
-for item in response.output or []:
-    raw = item if isinstance(item, dict) else item.model_dump()
-    if str(raw.get("type", "")).startswith("orq:"):
-        results[raw.get("call_id")] = raw.get("result", raw.get("status"))
-
-# The matched function call keeps the managed tool result.
-item = item.model_copy(update={"result": json.dumps(results[item.call_id])})
-```
 
 ![Diagram: A text-only judge sees a customer and agent transcript, while this workshop's judge also sees each tool call and result as evidence.](assets/judge-visibility.png)
 

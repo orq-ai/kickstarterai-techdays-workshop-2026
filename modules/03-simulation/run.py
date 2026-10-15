@@ -37,8 +37,6 @@ from evaluatorq.simulation.contracts import (
 )
 from openai import AsyncOpenAI
 
-from evals.target import agent_target
-
 ROUTER = AsyncOpenAI(base_url=settings.router_url, api_key=settings.api_key)
 SIM_LLM = LLMCallConfig(model=settings.judge_model, client=ROUTER)  # user simulator + judge
 
@@ -57,8 +55,8 @@ PERSONAS = [
     #                 communication_style=CommunicationStyle.terse, background="...")
 ]
 
-# The judge reads the transcript, including the tool calls and their results (evals/target.py
-# keeps them). Write each criterion so the transcript can show it.
+# Evaluatorq's native agent target keeps tool calls and their results in the judge's transcript.
+# Write each criterion so the transcript can show it.
 SCENARIOS = [
     # The control: an ordinary refund the agent must still get right after any fix.
     Scenario(
@@ -130,15 +128,18 @@ async def main(argv=None) -> None:
     print(f"runs     : {expected} conversations, max {max_turns} turns each")
     if args.replay:
         print(f"replay   : {args.replay} (same personas, scenarios and opening messages)")
+    target = f"agent:{settings.agent_key}"
+    if args.version != "latest":
+        target += f"@{args.version}"
     results = await simulate(
         run_name=name,
-        target=agent_target(args.version),
+        target=target,
         **cases,
         max_turns=max_turns,
         llm_config=SIM_LLM,
         upload_results=True,
         raise_on_execution_failure=False,  # exploratory: report incomplete results as UNKNOWN below
-        executive_summary=False,
+        executive_summary=True,
         save=True,  # without it `eq dashboard` has no run to show
         report_path=report,
     )

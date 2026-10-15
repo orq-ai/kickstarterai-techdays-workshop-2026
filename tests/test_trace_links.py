@@ -1,6 +1,5 @@
 """Response telemetry must open the matching trace in its Studio workspace."""
 
-from dataclasses import replace
 from types import SimpleNamespace
 from urllib.parse import urlsplit
 
@@ -9,7 +8,7 @@ from orq_ai_sdk.models.responsetelemetry import ResponseTelemetry
 
 from app import web
 from app.refund_agent.client import parse_turn
-from app.refund_agent.config import Settings, WORKSHOP_WORKSPACE
+from app.refund_agent.config import WORKSHOP_WORKSPACE, Settings
 
 TRACE = "0ab923725ff5b3419b26ebe72a46a258"
 SPAN = "1dbc5a2821bc2730"
@@ -36,7 +35,7 @@ def test_response_telemetry_reaches_the_studio_link(monkeypatch, sdk_object):
     if sdk_object:
         response = SimpleNamespace(output=[], telemetry=ResponseTelemetry(**telemetry))
     turn = parse_turn(response)
-    monkeypatch.setattr(web, "settings", replace(web.settings, base_url="https://my.orq.ai", workspace=WORKSHOP_WORKSPACE))
+    monkeypatch.setattr(web, "settings", web.settings.model_copy(update={"base_url": "https://my.orq.ai", "workspace": WORKSHOP_WORKSPACE}))
     assert turn.span_id == SPAN
     assert web.trace_url(turn.trace_id) == (
         "https://my.orq.ai/kickstartai-workshop-2026/traces/"
@@ -45,7 +44,7 @@ def test_response_telemetry_reaches_the_studio_link(monkeypatch, sdk_object):
 
 
 def test_trace_only_and_missing_telemetry(monkeypatch):
-    monkeypatch.setattr(web, "settings", replace(web.settings, base_url="https://my.orq.ai", workspace="other-workspace"))
+    monkeypatch.setattr(web, "settings", web.settings.model_copy(update={"base_url": "https://my.orq.ai", "workspace": "other-workspace"}))
     link = urlsplit(web.trace_url(TRACE))
     assert link.path == f"/other-workspace/traces/(trace:{TRACE})"
     assert link.query == ""

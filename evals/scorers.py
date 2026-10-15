@@ -118,7 +118,9 @@ async def policy_judge(params: dict[str, Any]) -> EvaluationResult:
         "reference": str(datapoint.expected_output or ""),
     }
     verdict = await asyncio.to_thread(rest, "POST", f"/v3/evaluators/{judge_id()}/invoke", body)
-    passed = bool(verdict.get("passed", verdict.get("value")))
+    passed = verdict.get("passed", verdict.get("value"))
+    if not isinstance(passed, bool):
+        raise ValueError("Policy judge returned no valid boolean verdict; rerun the evaluation")
     return EvaluationResult(value=passed, pass_=passed, explanation=(verdict.get("explanation") or "")[:300])
 
 

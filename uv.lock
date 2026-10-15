@@ -283,7 +283,7 @@ wheels = [
 
 [[package]]
 name = "evaluatorq"
-version = "1.73.0"
+version = "1.73.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
@@ -294,9 +294,9 @@ dependencies = [
     { name = "rich" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ba/82/6fd5fe28d1ab555c5e7c9b35196b1dceaeb8107818e732fdad4e9be1b111/evaluatorq-1.73.0.tar.gz", hash = "sha256:e9f2ad0c7ef66903348132ddd22c61a2a7da75d1f4d1f9f9844c6bcc122f8b05", size = 26011971, upload-time = "2026-10-14T11:23:21.234Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a3/53/2cfb833c2755c565ce5b3073c1ccd35cf22c054348e84f7db12302314e91/evaluatorq-1.73.1.tar.gz", hash = "sha256:6ab2f6f16a24314eb24710a794ae5f7d2cbde0010648ecb0ce3d7f912d666c7a", size = 26016331, upload-time = "2026-10-15T07:41:15.888Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/38/d5/2c71218bc17e5dc2834d4bb1b243a58b9a97e0987862aa55fb96f7436d0d/evaluatorq-1.73.0-py3-none-any.whl", hash = "sha256:7cd6587b06bb4ddaa73db0c5e1367b19dc7b64ca9676885cbd5335b35b7a01f3", size = 3869035, upload-time = "2026-10-14T11:23:18.325Z" },
+    { url = "https://files.pythonhosted.org/packages/02/17/84ab12bbeacb972f8c17a446b29a7f5c77badff7f31239a9d7a161b1d243/evaluatorq-1.73.1-py3-none-any.whl", hash = "sha256:4e02c75ef7213970d25582206f05c989100c14ab2bc18e44c2ad04d51b892231", size = 3873683, upload-time = "2026-10-15T07:41:13.83Z" },
 ]
 
 [package.optional-dependencies]
@@ -618,6 +618,8 @@ dependencies = [
     { name = "httpx" },
     { name = "openai" },
     { name = "orq-ai-sdk" },
+    { name = "pydantic" },
+    { name = "pydantic-settings" },
     { name = "python-dotenv" },
     { name = "starlette" },
     { name = "uvicorn" },
@@ -637,10 +639,12 @@ docs = [
 
 [package.metadata]
 requires-dist = [
-    { name = "evaluatorq", extras = ["redteam", "dashboard", "insights"], specifier = ">=1.73.0" },
+    { name = "evaluatorq", extras = ["dashboard", "insights", "redteam"], specifier = ">=1.73.1" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "openai", specifier = ">=1.60" },
-    { name = "orq-ai-sdk", specifier = ">=4.14,<5" },
+    { name = "orq-ai-sdk", specifier = ">=4.16.8,<5" },
+    { name = "pydantic", specifier = ">=2,<3" },
+    { name = "pydantic-settings", specifier = ">=2,<3" },
     { name = "python-dotenv", specifier = ">=1.0" },
     { name = "starlette", specifier = ">=0.40" },
     { name = "uvicorn", specifier = ">=0.30" },
@@ -1026,7 +1030,7 @@ wheels = [
 
 [[package]]
 name = "orq-ai-sdk"
-version = "4.14.14"
+version = "4.16.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpcore" },
@@ -1034,9 +1038,9 @@ dependencies = [
     { name = "pydantic" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7b/7d/4fff07ee95e12043dee8771fad7d93bbc98fc3b3b196847224e236a85a1e/orq_ai_sdk-4.14.14.tar.gz", hash = "sha256:d1dd4e083be242c219fd61c5946c7b37d17bafd9124f276abcaaf8208e9d44aa", size = 926313, upload-time = "2026-09-07T10:05:47.178Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/09/b8/ea4e54954daf0346b899b46456e73cecf2fbe13f6be069163e38d1d791eb/orq_ai_sdk-4.16.8.tar.gz", hash = "sha256:428f37aee3c491e94931a466ad819135be053c8cf4b19cc80c04f3f6cfb5a8df", size = 1002632, upload-time = "2026-10-14T17:54:27.739Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/65/b8/9f70daa864964d747278345f226f84a94cab3dab58985a74fb5909c04f0f/orq_ai_sdk-4.14.14-py3-none-any.whl", hash = "sha256:5221fcc9b1db84b0713f03fa9462e8333671b2ab0a12b001b5b1452a526dd9dd", size = 1430174, upload-time = "2026-09-07T10:05:43.992Z" },
+    { url = "https://files.pythonhosted.org/packages/30/04/15d031713c2231fc5891b1cb8b174bedbdb692c899fc94590e4ef16869b3/orq_ai_sdk-4.16.8-py3-none-any.whl", hash = "sha256:93bdbdaa9a5f81e7cae195af04ba0b29b393a0b83dc547faefa8d9a64cf8c02a", size = 1609709, upload-time = "2026-10-14T17:54:26.002Z" },
 ]
 
 [[package]]
@@ -1178,6 +1182,21 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/c2/d7/ad493864a7fb21c0c4df98f965e2db430cb25a9d7369b5778d5016c09fd9/pydantic_core-2.46.5-pp311-pypy311_pp73-musllinux_1_1_armv7l.whl", hash = "sha256:2d330aaba8621b1edcec8ae2c4050f63b84ccf6d98723a8f212e9684713abf0e", size = 2294560, upload-time = "2026-08-28T10:01:23.495Z" },
     { url = "https://files.pythonhosted.org/packages/02/8e/b41c84c913f29973a268e6c2b5bbf13c95adb9956c126d10da11ba3b2bef/pydantic_core-2.46.5-pp311-pypy311_pp73-musllinux_1_1_x86_64.whl", hash = "sha256:b6acfb46a814762367fb7ba0828b0a17d441b92ce249a0e007474c9072662dda", size = 2317531, upload-time = "2026-08-28T10:01:26.334Z" },
     { url = "https://files.pythonhosted.org/packages/db/1d/068464f23075f66a8f1b806935e9cd9363ee446636ea70d2c22ee8659dbf/pydantic_core-2.46.5-pp311-pypy311_pp73-win_amd64.whl", hash = "sha256:d0a24b40877af2de4950252be9d21eaf7fb07660f3c2cae1f56c6b599ada5266", size = 2140686, upload-time = "2026-08-28T10:01:28.947Z" },
+]
+
+[[package]]
+name = "pydantic-settings"
+version = "2.16.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+    { name = "typing-extensions" },
+    { name = "typing-inspection" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2e/3b/a5d2294799b53b448319978cfb5bd139d5a9d45e862af91661614f14c922/pydantic_settings-2.16.0.tar.gz", hash = "sha256:5b6c578049ede4db0e2ef3b4eaa4ad4069cfa9211f83fb38df899dfade50a614", size = 301031, upload-time = "2026-10-14T12:44:09.998Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/53/f4/b987bf8c51e5b19a95fa66d1ee596074141e085d9c2ddf97920803c7029b/pydantic_settings-2.16.0-py3-none-any.whl", hash = "sha256:7e73acf7f61936a15e5a3b6eedaea29f133357faf7272f2607ba479b049dd7f2", size = 80364, upload-time = "2026-10-14T12:44:08.233Z" },
 ]
 
 [[package]]

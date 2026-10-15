@@ -9,10 +9,11 @@ from __future__ import annotations
 
 import os
 import re
-from dataclasses import dataclass, field
 from pathlib import Path
 
 from dotenv import load_dotenv
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = ROOT / "app" / "data"
@@ -25,28 +26,34 @@ SEAT_PREFIX = re.compile(r"^ws\d{2,3}$")  # ws07: one per participant, from the 
 WORKSHOP_WORKSPACE = "kickstartai-workshop-2026"
 
 
-def _env(name: str, default: str = "") -> str:
-    """One variable, stripped; the default (empty by default) when it is unset."""
-    return os.environ.get(name, default).strip()
-
-
-@dataclass(frozen=True)
-class Settings:
+class Settings(BaseSettings):
     """Read once at import; `settings` below is the single instance the whole app shares."""
 
-    api_key: str = field(default_factory=lambda: _env("ORQ_API_KEY"))
-    base_url: str = field(
-        default_factory=lambda: _env("ORQ_BASE_URL", "https://my.orq.ai").rstrip("/")
+    model_config = SettingsConfigDict(
+        env_prefix="ORQ_", str_strip_whitespace=True, frozen=True, populate_by_name=True,
     )
-    project: str = field(default_factory=lambda: _env("ORQ_PROJECT"))
+
+    api_key: str = Field(default="", repr=False)
+    base_url: str = "https://my.orq.ai"
+    project: str = ""
     # Studio URLs need the workspace slug; response telemetry only contains trace/span IDs.
     # Blank values in older .env files also use the workshop workspace.
-    workspace: str = field(default_factory=lambda: _env("ORQ_WORKSPACE") or WORKSHOP_WORKSPACE)
+    workspace: str = WORKSHOP_WORKSPACE
     # Your seat: every entity key starts with it (ws07-refund-agent), so seats never collide.
-    prefix: str = field(default_factory=lambda: _env("WS_PREFIX"))
-    model: str = field(default_factory=lambda: _env("MODEL", "openai/gpt-6-luna"))
-    judge_model: str = field(default_factory=lambda: _env("JUDGE_MODEL", "openai/gpt-6-luna"))
-    identity_id: str = field(default_factory=lambda: _env("IDENTITY_ID", "customer-user_001"))
+    prefix: str = Field(default="", validation_alias="WS_PREFIX")
+    model: str = Field(default="openai/gpt-6-luna", validation_alias="MODEL")
+    judge_model: str = Field(default="openai/gpt-6-luna", validation_alias="JUDGE_MODEL")
+    identity_id: str = Field(default="customer-user_001", validation_alias="IDENTITY_ID")
+
+    @field_validator("base_url")
+    @classmethod
+    def strip_trailing_slash(cls, value: str) -> str:
+        return value.rstrip("/")
+
+    @field_validator("workspace")
+    @classmethod
+    def default_workspace(cls, value: str) -> str:
+        return value or WORKSHOP_WORKSPACE
 
     @property
     def router_url(self) -> str:
@@ -64,7 +71,7 @@ class Settings:
     @property
     def path(self) -> str:
         """Entity storage path: `<project>/workshop`, or ORQ_PATH when the email gives one."""
-        return _env("ORQ_PATH", f"{self.project}/workshop")
+        return os.environ.get("ORQ_PATH", f"{self.project}/workshop").strip()
 
     def require_key(self) -> Settings:
         """Fail early with a fix, instead of a 401 three calls later."""
@@ -79,7 +86,7 @@ class Settings:
             raise SystemExit(
                 f"WS_PREFIX={self.prefix!r} is not a seat prefix. Use the one from your kickstart email, e.g. WS_PREFIX=ws07."
             )
-        if not self.project and not _env("ORQ_PATH"):
+        if not self.project and not os.environ.get("ORQ_PATH", "").strip():
             raise SystemExit("ORQ_PROJECT is empty. Paste it from your kickstart email.")
         return self
 

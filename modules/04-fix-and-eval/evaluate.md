@@ -84,6 +84,8 @@ The module path identifies the evaluation runner; `--version` pins the managed a
 
 The scorers read tool *results*, not tool names: calling `issue_refund` is not a refund, and a call with no result fails closed. Each mean must be at or above its threshold in `THRESHOLDS`:
 
+The runner reports three outcomes: **passed** (exit 0), **failed** because a completed scorer missed its threshold (exit 1), or **error** because execution or scoring was incomplete (exit 2). Errors list the affected row and scorer in the terminal and saved JSON. An affected scorer has no mean until every row has a usable verdict. Resolve the error and rerun before judging the agent's quality; an error also stops the CI gate.
+
 Example passing session (your scores can differ):
 
 <!-- termynal -->

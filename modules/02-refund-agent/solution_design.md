@@ -32,7 +32,7 @@ The model chooses what to say and which tool to call next. It does not calculate
 
 ## Tool contracts and enforcement
 
-The policy text lives in [`app/data/kb/`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/tree/main/app/data/kb). The rules that must never bend live in [`app/refund_agent/tools.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/tools.py). The prompt decides when to call a tool; the tool decides what is allowed.
+The policy text lives in [`app/data/kb/`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/tree/main/app/data/kb). The tools in [`app/refund_agent/tools.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/tools.py) enforce mechanical checks: ownership, prior refund status, amount, delivery window and allowed exception reasons. The agent assesses the customer's reason and supporting evidence, then chooses whether to request a refund. The tool checks that request against its rules; it does not independently verify the evidence.
 
 | Tool | What it does |
 |---|---|
@@ -40,7 +40,7 @@ The policy text lives in [`app/data/kb/`](https://github.com/orq-ai/kickstartera
 | `get_policy` | Returns the text of one policy topic, such as `refund_basics`. |
 | `issue_refund` | Refunds the order, but only if every check below passes. |
 
-`issue_refund` moves money, so it runs its checks in order and stops at the first one that fails:
+In a real storefront, `issue_refund` would move money. In this workshop it simulates that action using sample orders hosted with the tools on orq.ai; no payment is made, and each tool call starts from fresh fixtures. It runs its checks in order and stops at the first one that fails:
 
 Source: [`issue_refund()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/tools.py#L71-L106).
 

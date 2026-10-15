@@ -68,7 +68,6 @@ def fake_run(monkeypatch, tmp_path):
     monkeypatch.setattr(runner, "settings", SimpleNamespace(
         require_seat=lambda: None, key=lambda name: "ws07-" + name, agent_key="ws07-refund-agent"
     ))
-    monkeypatch.setattr(runner, "agent_target", lambda version: "target@" + version)
     monkeypatch.setenv("EVALUATORQ_DIR", str(tmp_path / ".evaluatorq"))
 
     async def simulate(**kwargs):
@@ -102,7 +101,7 @@ def test_replay_uses_the_saved_cases_and_budget_and_keeps_baseline(fake_run, tmp
     call = fake_run[0]
     assert call["previous_run"] == str(baseline)
     assert "personas" not in call and "scenarios" not in call
-    assert call["max_turns"] == 5 and call["target"] == "target@2.0.0"
+    assert call["max_turns"] == 5 and call["target"] == "agent:ws07-refund-agent@2.0.0"
     assert baseline.read_bytes() == original
     output = capsys.readouterr().out
     assert "saved    : " + str(call["report_path"]) in output
@@ -123,3 +122,12 @@ def test_missing_cases_are_reported_as_incomplete(fake_run, monkeypatch, capsys)
     asyncio.run(runner.main(["1.0.0"]))
     assert "coverage : INCOMPLETE" in capsys.readouterr().out
     assert "previous_run" not in fake_run[0]
+
+
+@pytest.mark.parametrize("version,target", [
+    ("1.0.0", "agent:ws07-refund-agent@1.0.0"),
+    ("latest", "agent:ws07-refund-agent"),
+])
+def test_native_target_selects_the_requested_agent_version(fake_run, version, target):
+    asyncio.run(runner.main([version]))
+    assert fake_run[0]["target"] == target

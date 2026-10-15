@@ -5,7 +5,8 @@ app/data/dataset.jsonl), sends each customer message to `agent/<seat>-refund-age
 scores the answer and the tool results with evals/scorers.py, and takes the mean pass rate per
 scorer.
 
-What makes it fail: any mean below its entry in THRESHOLDS exits 1. This is a regression gate,
+Exit codes: 0 means every threshold passed, 1 means a threshold was missed, and 2 means
+an execution or scoring error prevented a complete evaluation. This is a regression gate,
 not a benchmark: the bars say "no worse than the version we shipped", with a margin so the
 model's own variance does not flake a green run. Its exit code makes it usable as a CI gate.
 
@@ -46,42 +47,54 @@ RESULTS_DIR = ROOT / "evals" / "results"
 
 
 def rows_detail(results) -> list[dict]:
-    """One record per dataset row. A scorer that raised or returned no score counts as a fail:
-    the gate must not go green because the judge was unreachable."""
+    """Preserve execution and scoring errors separately from quality verdicts."""
     records = []
     for datapoint_result in results:
-        for job_result in datapoint_result.job_results or []:
-            output = job_result.output if isinstance(job_result.output, dict) else {"answer": str(job_result.output)}
+        inputs = datapoint_result.data_point.inputs
+        for job_result in datapoint_result.job_results or [None]:
+            output = job_result.output if job_result else None
+            output = output if isinstance(output, dict) else {"answer": str(output or "")}
             scores = {}
-            for score in job_result.evaluator_scores or []:
-                passed = False
-                if not score.error and score.score is not None:
-                    passed = score.score.pass_ if score.score.pass_ is not None else bool(score.score.value)
-                explanation = score.error or getattr(score.score, "explanation", None) or ""
-                scores[score.evaluator_name] = {"pass": bool(passed), "explanation": str(explanation)[:300]}
-            inputs = datapoint_result.data_point.inputs
-            records.append(
-                {
-                    "message": inputs.get("message"),
-                    "expected_decision": inputs.get("expected_decision"),
-                    "tool_calls": output.get("tool_calls", []),
-                    "answer": output.get("answer", ""),
-                    "trace_id": output.get("trace_id"),
-                    "error": str(datapoint_result.error or job_result.error or "") or None,
-                    "scores": scores,
+            for score in (job_result.evaluator_scores or []) if job_result else []:
+                error = score.error
+                passed = None
+                if not error and score.score is not None:
+                    passed = score.score.pass_
+                    if passed is None and score.score.value is not None:
+                        passed = bool(score.score.value)
+                if passed is None and not error:
+                    error = "Scorer returned no verdict"
+                scores[score.evaluator_name] = {
+                    "pass": passed,
+                    "error": str(error) if error else None,
+                    "explanation": str(error or getattr(score.score, "explanation", None) or "")[:300],
                 }
-            )
+            error = datapoint_result.error or (job_result.error if job_result else "No job result returned")
+            if not error:
+                for name in THRESHOLDS:
+                    scores.setdefault(name, {"pass": None, "error": "Scorer result missing", "explanation": ""})
+            records.append({
+                "message": inputs.get("message"),
+                "expected_decision": inputs.get("expected_decision"),
+                "tool_calls": output.get("tool_calls", []),
+                "answer": output.get("answer", ""),
+                "trace_id": output.get("trace_id"),
+                "error": str(error) if error else None,
+                "scores": scores,
+            })
     return records
 
 
-def means(rows: list[dict]) -> dict[str, float]:
-    """Mean pass rate per scorer. A row whose job errored counts as a fail on every scorer."""
-    per_scorer: dict[str, list[float]] = {name: [] for name in THRESHOLDS}
-    for row in rows:
-        for name in THRESHOLDS:
-            score = row["scores"].get(name)
-            per_scorer[name].append(1.0 if score and score["pass"] and not row["error"] else 0.0)
-    return {name: round(sum(v) / len(v), 3) if v else 0.0 for name, v in per_scorer.items()}
+def means(rows: list[dict]) -> dict[str, float | None]:
+    """Only report a scorer's mean when every row has a usable verdict."""
+    scores = {}
+    for name in THRESHOLDS:
+        usable = [row["scores"].get(name) for row in rows if not row["error"]]
+        complete = bool(rows) and len(usable) == len(rows) and all(
+            score and not score.get("error") and score["pass"] is not None for score in usable
+        )
+        scores[name] = round(sum(bool(score["pass"]) for score in usable) / len(rows), 3) if complete else None
+    return scores
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -130,12 +143,19 @@ def main(argv: list[str] | None = None) -> int:
 
     # ── Step 2 · Compare each mean with its threshold ──
     rows = rows_detail(results)
+    errors = []
     if not rows:
-        print(f"rows     : 0 from dataset {settings.key('refund-eval')}")
-        print("verdict  : nothing to score. Run `make seed-eval` to fill the dataset, then try again (exit 1)")
-        return 1
+        errors.append("No dataset rows returned; run make seed-eval and try again")
+    for index, row in enumerate(rows, 1):
+        if row["error"]:
+            errors.append(f"row {index}: {row['error']}")
+        else:
+            for name, score in row["scores"].items():
+                if score.get("error"):
+                    errors.append(f"row {index}, {name}: {score['error']}")
     scores = means(rows)
-    failed = [scorer for scorer, bar in THRESHOLDS.items() if scores.get(scorer, 0.0) < bar]
+    failed = [name for name, bar in THRESHOLDS.items() if scores[name] is not None and scores[name] < bar]
+    verdict = "error" if errors else "failed" if failed else "passed"
     url = url_out[0] if url_out else ""
 
     # ── Step 3 · Write the results, print the verdict, return the exit code ──
@@ -150,6 +170,8 @@ def main(argv: list[str] | None = None) -> int:
                 "scores": scores,
                 "thresholds": THRESHOLDS,
                 "failed": failed,
+                "errors": errors,
+                "verdict": verdict,
                 "experiment_url": url,
                 "details": rows,
             },
@@ -160,11 +182,19 @@ def main(argv: list[str] | None = None) -> int:
     print(f"── Regression eval · {settings.agent_key}@{args.version} ".ljust(55, "─"))
     print(f"rows     : {len(rows)} from dataset {settings.key('refund-eval')}")
     for scorer, bar in THRESHOLDS.items():
-        status = "fail" if scorer in failed else "pass"
-        print(f"{status:<8} : {scorer} {scores.get(scorer, 0.0):.2f} (threshold {bar:.2f})")
+        if scores[scorer] is None:
+            print(f"error    : {scorer} — incomplete; no mean reported")
+        else:
+            status = "fail" if scorer in failed else "pass"
+            print(f"{status:<8} : {scorer} {scores[scorer]:.2f} (threshold {bar:.2f})")
     print(f"results  : {out.relative_to(ROOT)}")
     if url:
         print(f"studio   : {url}")
+    if errors:
+        for error in errors:
+            print(f"error    : {error}")
+        print("verdict  : error, evaluation incomplete; resolve errors and rerun (exit 2)")
+        return 2
     if failed:
         print(f"verdict  : failed, {', '.join(failed)} below threshold (exit 1)")
         return 1

@@ -174,22 +174,26 @@ The **Workshop orders** panel shows the read-only data the code tools were built
 
 === "Python SDK"
 
-    Use this in application code. `ask_agent()` is the workshop helper: it makes the call and gives you the answer, tool calls, results and trace ID.
-
-    Source: [`ask_agent()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/client.py#L92-L98).
+    Call the managed agent through the SDK, then read its output items and trace ID. `make_orq()` loads the workshop connection settings.
 
     ```python {.code-frame}
-    from app.refund_agent.client import ask_agent
+    from app.refund_agent.client import make_orq
+    from app.refund_agent.config import settings
 
-    turn = ask_agent(
-        "Refund ord_a1, I changed my mind.",
-        version="1.0.0",  # pin the version
+    orq = make_orq()
+    response = orq.responses.create(
+        model=f"agent/{settings.agent_key}@1.0.0",  # pin the version
+        input="Refund ord_a1, I changed my mind.",
     )
 
-    print(turn.answer)
-    for call in turn.tool_calls:
-        print(call.name, call.arguments, call.result)
-    print(turn.trace_id)
+    for item in response.model_dump()["output"]:
+        if item["type"] == "message":
+            print("".join(part.get("text", "") for part in item["content"]))
+        elif item["type"] == "function_call":
+            print(item["name"], item["arguments"])
+        elif item["type"].startswith("orq:"):
+            print(item["name"], item["result"])
+    print(response.telemetry.trace_id)
     ```
 
 === "curl"

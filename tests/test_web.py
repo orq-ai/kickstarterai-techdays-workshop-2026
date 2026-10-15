@@ -1,7 +1,6 @@
 """The chat UI's server: the read-only backend view and the chat route, with the agent faked. No network."""
 
 import json
-from dataclasses import replace
 
 from starlette.testclient import TestClient
 
@@ -40,7 +39,7 @@ def _fake_agent(monkeypatch):
         )
 
     monkeypatch.setattr(web, "ask_agent", ask_agent)
-    monkeypatch.setattr(web, "settings", replace(web.settings, api_key="test-key"))
+    monkeypatch.setattr(web, "settings", web.settings.model_copy(update={"api_key": "test-key"}))
     return calls
 
 

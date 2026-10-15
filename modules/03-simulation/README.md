@@ -90,16 +90,16 @@ Each conversation also prints `stop` and its reason. `judge` is a stopping decis
 
 Run it twice. A model is not deterministic: one run can miss what the next one finds. Inspect both runs, including failures that appeared only once. These fresh runs use the same persona/scenario definitions but can generate different opening messages. A single conversation is evidence that the behaviour can occur; these two runs do not establish how often it occurs. Save a baseline report for the controlled replay in the next module.
 
-**What evaluatorq is doing.** The library owns the conversation loop: it asks the simulator for a customer turn, calls `ManagedAgentTarget`, appends the answer and tool evidence to the transcript, and asks the judge whether criteria held. This repository supplies the three things evaluatorq cannot infer: realistic cases, a target adapter for the managed agent, and the release criteria.
+**What evaluatorq is doing.** The library owns the conversation loop: it asks the simulator for a customer turn, invokes the native `agent:<key>@<version>` target, appends the answer and tool evidence to the transcript, and asks the judge whether criteria held. This repository supplies realistic cases and the release criteria; evaluatorq handles the managed-agent connection and tool-result matching.
 
-Where this lives: the [`simulate() call`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/run.py#L133) in `run.py`, and [`agent_target()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/target.py#L44-L48).
+Where this lives: the [`simulate() call` in `run.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/run.py).
 
 ```python {.code-frame}
+from app.refund_agent.config import settings
 from evaluatorq.simulation import simulate
-from evals.target import agent_target
 
 results = await simulate(
-    target=agent_target("1.0.0"),     # calls agent/<key>@1.0.0
+    target=f"agent:{settings.agent_key}@1.0.0",
     personas=PERSONAS,
     scenarios=SCENARIOS,
     max_turns=3,

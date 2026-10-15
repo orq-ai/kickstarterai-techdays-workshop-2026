@@ -14,9 +14,12 @@ Source: [`hello_agent.py`](https://github.com/orq-ai/kickstarterai-techdays-work
 # Simplified from modules/02-refund-agent/hello_agent.py
 orq.agents.create(
     key="your-unique-hello-agent-key",  # the script uses your seat: ws07-hello-agent
+    role="Friendly customer greeter.",
+    description="A minimal managed agent that greets the customer without tools.",
     instructions="Greet the customer in one friendly sentence.",
     path=settings.path,
     model={"id": settings.model, "parameters": {"reasoning_effort": "none"}},
+    settings={"max_iterations": 8, "max_execution_time": 120, "tools": []},
 )
 response = orq.responses.create(model="agent/your-unique-hello-agent-key", input="Hello")
 ```

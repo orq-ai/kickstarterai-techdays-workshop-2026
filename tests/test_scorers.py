@@ -3,6 +3,8 @@
 import asyncio
 from types import SimpleNamespace as NS
 
+import pytest
+
 from app.refund_agent.client import parse_turn
 from evals import scorers
 
@@ -83,7 +85,9 @@ def test_policy_judge_reads_the_verdict_and_fails_closed(monkeypatch):
         ({"passed": True, "explanation": "follows policy"}, True),
         ({"passed": False, "explanation": "promised a refund it cannot give"}, False),
         ({"value": True}, True),  # some evaluator replies carry `value` instead of `passed`
-        ({}, False),  # no verdict at all is a fail, not a pass
     ]:
         monkeypatch.setattr(scorers, "rest", lambda method, path, body, v=verdict: v)
         assert run(scorers.policy_judge, params) is expected, verdict
+    monkeypatch.setattr(scorers, "rest", lambda *args: {})
+    with pytest.raises(ValueError, match="no valid boolean verdict"):
+        run(scorers.policy_judge, params)
