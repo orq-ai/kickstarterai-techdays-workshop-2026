@@ -116,6 +116,8 @@ html { font-size: 100%; }
    the text edge. The scroll wrapper around it still scrolls a table too wide for a phone. */
 .md-typeset .md-typeset__table { display: block; width: 100%; }
 .md-typeset .md-typeset__table > table:not([class]) { display: table; width: 100%; }
+/* Content tabs (=== "orqi"): Material sets the labels at 0.64rem (~10px), far below the 0.98rem body. */
+.md-typeset .tabbed-labels > label { font-size: 0.95rem; padding: 0.8em 1.25em 0.6em; }
 /* The module metadata block (Time / Prerequisites / You will have) is written as a
    two-column table with an empty header, because Python-Markdown's `tables` requires a
    header row. Material renders that as a real thead, so the page opens on an empty grey
