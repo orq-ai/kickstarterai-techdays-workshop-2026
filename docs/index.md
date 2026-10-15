@@ -11,9 +11,9 @@ hide: [navigation]
 
 ## How the pieces fit
 
-Your chat UI and simulation run on your laptop and call the AI Gateway. Orq runs the [managed refund agent](https://my.orq.ai/kickstartai-workshop-2026/agents)'s model loop and its three [code tools](https://my.orq.ai/kickstartai-workshop-2026/tools), then returns the answer and tool results. Every call leaves a [trace in the Studio](https://my.orq.ai/kickstartai-workshop-2026/traces). Your coding agent can also use the Orq MCP server to work with your workspace.
+Your chat UI and simulation run on your laptop and call the AI Gateway. orq.ai runs the [managed refund agent](https://my.orq.ai/kickstartai-workshop-2026/agents)'s model loop and its three [code tools](https://my.orq.ai/kickstartai-workshop-2026/tools), then returns the answer and tool results. Every call leaves a [trace in the Studio](https://my.orq.ai/kickstartai-workshop-2026/traces). Your coding agent can also use the orq.ai MCP server to work with your workspace.
 
-![Diagram: the chat and simulation call the Orq AI Gateway from your laptop. The managed refund agent and its code tools run in Orq, with traces in the Studio. Your coding agent connects to the gateway and the Orq MCP server.](assets/diagrams/workshop-map.png)
+![Diagram: the chat and simulation call the orq.ai AI Gateway from your laptop. The managed refund agent and its code tools run in orq.ai, with traces in the Studio. Your coding agent connects to the gateway and the orq.ai MCP server.](assets/diagrams/workshop-map.png)
 
 ## Requirements
 

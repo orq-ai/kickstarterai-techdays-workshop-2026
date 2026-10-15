@@ -61,4 +61,4 @@ for item in response.model_dump()["output"]:
     elif kind == "message":
         print(f"answer   : {''.join(part.get('text', '') for part in item['content'])}")
 print(f"trace    : {response.telemetry.trace_id}")
-print("next     : open the trace in the Studio; the tool spans ran in orq, not on your laptop")
+print("next     : open the trace in the Studio; the tool spans ran in orq.ai, not on your laptop")
