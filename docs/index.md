@@ -43,7 +43,6 @@ You do **not** need to install these packages individually with `pip`; `uv` uses
 - [orq.ai CLI reference](https://docs.orq.ai/reference/cli): install and command reference
 - [evaluatorq documentation](https://orq-ai.github.io/evaluatorq/): simulations, jobs, evaluators, and dashboards
 - [evaluatorq on GitHub](https://github.com/orq-ai/evaluatorq): source, examples, and issue tracker
-- [evaluatorq on PyPI](https://pypi.org/project/evaluatorq/): package releases and install metadata
 
 ## Learning path
 
