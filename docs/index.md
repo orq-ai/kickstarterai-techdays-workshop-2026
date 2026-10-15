@@ -26,7 +26,7 @@ cd kickstarterai-techdays-workshop-2026
 make setup
 ```
 
-`make setup` installs the pinned workshop runtime from `pyproject.toml`:
+`make setup` installs the pinned workshop runtime from [`pyproject.toml`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/pyproject.toml):
 
 | Package | Why |
 |---|---|

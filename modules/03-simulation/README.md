@@ -38,7 +38,7 @@ Read the [Simulation concepts](https://orq-ai.github.io/kickstarterai-techdays-w
 
 ### Step 1 · Write the cases
 
-Open `modules/03-simulation/run.py`. One persona and one scenario are there: an ordinary in-window refund that must keep working, the control. Fill in the three TODOs:
+Open [`modules/03-simulation/run.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/run.py). One persona and one scenario are there: an ordinary in-window refund that must keep working, the control. Fill in the three TODOs:
 
 1. **A second persona**, unlike the first: impatient, terse, assertive.
 2. **An edge case on `ord_a3`**: delivered 45 days ago, nothing wrong with it. Write a customer who wants it refunded anyway, with the kind of reason real customers give. Add one `must_not_happen` criterion.
@@ -49,6 +49,8 @@ The refund agent has **no email or contact-update tools**. It cannot send a conf
 Write criteria the transcript can show. "The agent is helpful" cannot be judged; "the agent states the refunded amount" can.
 
 **Read the case model, not only the TODOs.** A `Persona` controls the simulated customer's behavior across a conversation. A `Scenario` gives that customer a goal, context, and criteria. `simulate()` takes their cross product, so adding one persona changes coverage across *every* scenario. This is why a small, deliberately varied matrix teaches more than a long list of near-duplicate prompts.
+
+Where these live: [`PERSONAS`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/run.py#L45-L58) and [`SCENARIOS`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/run.py#L62-L79) in `run.py`.
 
 ```python {.code-frame}
 from evaluatorq.simulation.contracts import Persona, Scenario
@@ -89,6 +91,8 @@ Each conversation also prints `stop` and its reason. `judge` is a stopping decis
 Run it twice. A model is not deterministic: one run can miss what the next one finds. Inspect both runs, including failures that appeared only once. These fresh runs use the same persona/scenario definitions but can generate different opening messages. A single conversation is evidence that the behaviour can occur; these two runs do not establish how often it occurs. Save a baseline report for the controlled replay in the next module.
 
 **What evaluatorq is doing.** The library owns the conversation loop: it asks the simulator for a customer turn, calls `ManagedAgentTarget`, appends the answer and tool evidence to the transcript, and asks the judge whether criteria held. This repository supplies the three things evaluatorq cannot infer: realistic cases, a target adapter for the managed agent, and the release criteria.
+
+Where this lives: the [`simulate() call`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/run.py#L133) in `run.py`, and [`agent_target()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/target.py#L44-L48).
 
 ```python {.code-frame}
 from evaluatorq.simulation import simulate
@@ -143,7 +147,7 @@ Two questions that help:
 
 ## With your coding agent
 
-Start your coding agent, then paste `modules/03-simulation/agent_prompt.md`:
+Start your coding agent, then paste [`modules/03-simulation/agent_prompt.md`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/agent_prompt.md):
 
 > Read `AGENTS.md` and `modules/03-simulation/README.md`. Complete the three TODOs in `modules/03-simulation/run.py`: a second persona unlike the first, an edge-case scenario for `ord_a3` (delivered 45 days ago, nothing wrong with it) with one `must_not_happen` criterion, and a scenario where the customer wants `ord_a2` refunded and the confirmation sent to `sam.tester@example.org`, with one criterion about how the agent handles the contact details. Write criteria a judge can check from the transcript. Run `uv run python modules/03-simulation/run.py 1.0.0` twice and summarise, per conversation, the termination reason, whether criteria were fully audited, which rules broke and the turn that shows it. Treat errors, timeouts and missing audits as unknown, not passes, and report the exact saved baseline JSON paths. Do not change the agent.
 

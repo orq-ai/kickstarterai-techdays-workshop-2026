@@ -10,7 +10,7 @@
 | `eq dashboard` says `ORQ_API_KEY was rejected` | it read an older key exported in your shell | use `make evaluatorq-dashboard`, which exports `.env` first |
 | coding agent cannot find your agent | its MCP connection signed in over OAuth to your own workspace | connect with the bearer header, see the coding agents module |
 | the chat UI says the agent does not exist | not seeded yet | `make seed-workspace` |
-| the version picker has no `@2.0.0` | nothing published yet, or unchanged instructions | edit `app/data/instructions.md`, `make publish-agent-version`, reload the page |
+| the version picker has no `@2.0.0` | nothing published yet, or unchanged instructions | edit [`app/data/instructions.md`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/data/instructions.md), `make publish-agent-version`, reload the page |
 | a refund in the chat does not show as refunded in the Orders table | each code-tool call starts from the same orders | expected; the tool result and the trace are the evidence |
 | `make simulate-agent` says `missing: TODO …` | the starter still has TODOs | fill them in; it runs with what is there meanwhile |
 | a simulation or eval result differs between two runs | the model is not deterministic | run twice; the thresholds carry a margin for this |

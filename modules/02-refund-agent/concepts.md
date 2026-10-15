@@ -8,6 +8,8 @@ An agent is a model with instructions and, optionally, tools. orq.ai runs it in 
 
 ### A hello agent
 
+Source: [`hello_agent.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/02-refund-agent/hello_agent.py).
+
 ```python {.code-frame}
 # Simplified from modules/02-refund-agent/hello_agent.py
 orq.agents.create(
