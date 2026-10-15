@@ -109,8 +109,8 @@ A version is therefore an experimentable artifact: replaying `@1.0.0` and `@2.0.
     ```bash {.terminal}
     git fetch origin solution
     git show \
-  origin/solution:modules/04-fix-and-eval/solution/instructions.md \
-  > app/data/instructions.md
+      origin/solution:modules/04-fix-and-eval/solution/instructions.md \
+      > app/data/instructions.md
     make publish-agent-version
     ```
 
