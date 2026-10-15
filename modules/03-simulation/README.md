@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Prerequisites** | designing an agent module done |
+| **Prerequisites** | Build a Managed Agent module done |
 | **You will have** | six simulated conversations against `@1.0.0`, judged against criteria you wrote, in `eq dashboard`, and a short list of behaviours to fix |
 
 ## Why
@@ -28,7 +28,7 @@ Each criterion describes an observable event. `must_happen` requires that event 
 
 The dashed arrow is the loop: the judge audits after each agent reply and either asks the simulator for the next message or stops the conversation.
 
-The Python starter uses the model in `JUDGE_MODEL` for both the simulator and the judge, in separate calls. The refund agent uses the model configured when you seeded it from `MODEL`. Every model call goes through the Orq AI Gateway. Evaluatorq coordinates the conversations on your laptop, saves them for the local `eq dashboard`, and uploads the results to an Experiment in the Studio. You do not need to create a simulator or judge agent in the Studio; the seeded `-refund-policy-judge` is for the later regression eval.
+The Python starter uses the model in `JUDGE_MODEL` for both the simulator and the judge, in separate calls. The refund agent uses the model configured when you seeded it from `MODEL`. Every model call goes through the Orq AI Gateway. Evaluatorq coordinates the conversations on your laptop, saves them for the local `eq dashboard`, and uploads the results to an Experiment in the Studio. You do not need to create a simulator or judge agent in the Studio. The `<WS_PREFIX>-refund-policy-judge` evaluator is a different thing: you create it in Improve and Evaluate with `make seed-eval`, for the regression eval.
 
 Each persona is paired with each scenario. Two personas and three scenarios produce six conversations in one run. We pin the agent to `@1.0.0` to keep the baseline stable when we compare it with a fixed version later.
 

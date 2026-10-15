@@ -27,10 +27,10 @@ Then follow the docs site, or `make help` for every target in order.
 | Page | Folder | You run |
 |---|---|---|
 | Onboarding | `modules/00-onboarding` | `make setup orq-doctor gateway-check`; the gateway from curl, CLI and Python |
-| Designing an agent | `modules/02-refund-agent` | hello agent, `make seed-workspace`, `make invoke-agent`, first trace |
 | Coding agents (optional) | `modules/01-coding-agents` | orqi, or the orq.ai plugin in your own agent |
+| Build a Managed Agent | `modules/02-refund-agent` | hello agent, `make seed-workspace`, `make invoke-agent`, first trace |
 | Simulation | `modules/03-simulation` | `make simulate-agent`, `make evaluatorq-dashboard` |
-| Fix and eval | `modules/04-fix-and-eval` | `make publish-agent-version`, `make compare-versions`, `make regression-eval` |
+| Improve and Evaluate | `modules/04-fix-and-eval` | `make publish-agent-version`, `make compare-versions`, `make regression-eval` |
 
 `main` holds the exercises with TODOs. The public `solution` branch has the same files completed; look at one file without switching branches: `git show origin/solution:modules/03-simulation/run.py`.
 
