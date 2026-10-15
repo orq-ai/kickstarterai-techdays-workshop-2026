@@ -107,6 +107,10 @@ uv run python -m evals.regression --version 1.0.0
 
 Every run also appears in [**Experiments** in the Studio](https://my.orq.ai/kickstartai-workshop-2026/experiments), next to the previous ones. Search for your seat prefix to find it.
 
+![The experiment ws01-refund-regression in the Studio for a v1.0.0 run, first 10 of its 20 rows: inputs, expected output, the refund-agent answer with its tool calls, and one PASSED or FAILED column per scorer with its average (no_pii_leak 95%, no_unauthorized_attempt 85%, policy_judge 60%, refund_outcome 95%).](assets/experiment.png)
+
+**Experiment view: read it row by row.** This is a `--version 1.0.0` run. Each row is one dataset row: its inputs, the expected output, what `refund-agent` answered, and one PASSED or FAILED cell per scorer. The average under each scorer name is the mean the script compares with `THRESHOLDS`. Open a red cell to read why the scorer failed it, then open the same row on your v2 run: a fix shows up as a red cell turning green, and a regression as a green one turning red.
+
 **Read the evaluatorq pipeline as data flow.** `DatasetIdInput` reads the rows from orq.ai, not from a local fixture. The `run_agent` job calls one pinned agent version per row and returns a stable dict: answer, tool calls, trace ID. The evaluators score that dict. Finally, the script averages each scorer and compares it with `THRESHOLDS`.
 
 Source: [`main()`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/regression.py#L87-L171) in `evals/regression.py`, which holds the [`run_agent job`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/regression.py#L101-L113).
