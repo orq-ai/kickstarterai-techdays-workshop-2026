@@ -7,7 +7,7 @@
 
 ## Why
 
-The refund agent is a fully managed, versioned orq.ai agent: your app sends one message and gets one response, while orq.ai runs both the model loop and the code tools. The tools come from `app/refund_agent/tools.py`; instructions come from `app/data/instructions.md`.
+The refund agent is a fully managed, versioned orq.ai agent: your app sends one message and gets one response, while orq.ai runs both the model loop and the code tools. The tools come from [`app/refund_agent/tools.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/tools.py); instructions come from [`app/data/instructions.md`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/data/instructions.md).
 
 Foundations covers the generic agent loop; [Use Case](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-logic/) defines the refund requirements and [Agent Design](https://orq-ai.github.io/kickstarterai-techdays-workshop-2026/modules/02-solution-design/) shows the v1 approach.
 
@@ -37,8 +37,8 @@ The seed script reads the local agent sources and creates the matching orq.ai re
 
 | Local source | Resource created in orq.ai |
 |---|---|
-| `app/refund_agent/tools.py` | Three hosted code tools |
-| `app/data/instructions.md` | The first refund-agent version |
+| [`app/refund_agent/tools.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/tools.py) | Three hosted code tools |
+| [`app/data/instructions.md`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/data/instructions.md) | The first refund-agent version |
 
 Afterward, the chat UI and scripts use the resource keys. They invoke the managed agent; they do not run the tool implementation on your laptop. The dataset and policy judge come later, in Improve and Evaluate.
 
@@ -104,7 +104,7 @@ Open [**Agents** in the workshop workspace](https://my.orq.ai/kickstartai-worksh
 |---|---|
 | **Settings** tab of the agent | The role and description, the model, and three attached tools: `lookup_order`, `issue_refund` and `get_policy`. |
 | **Versions** tab | A single version, v1.0.0. The limits show up here after your first call. |
-| **Tools** → `issue_refund` → **Tool Definition** | The Python that orq.ai runs, generated from `tools.py`. |
+| **Tools** → `issue_refund` → **Tool Definition** | The Python that orq.ai runs, generated from [`tools.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/tools.py). |
 
 **Code-tool view: read the executable policy.** The schema is what the model may request; the Python is what orq.ai actually executes. Open `issue_refund` and read it top to bottom:
 
@@ -117,7 +117,7 @@ Open [**Agents** in the workshop workspace](https://my.orq.ai/kickstartai-worksh
 
 ### Step 3 · Inspect and call it from Python
 
-Open `modules/02-refund-agent/run.py`. Complete these two TODOs before you run it:
+Open [`modules/02-refund-agent/run.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/02-refund-agent/run.py). Complete these two TODOs before you run it:
 
 | TODO | Where | What to implement | Done when |
 |---|---|---|---|

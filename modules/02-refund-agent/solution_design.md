@@ -32,7 +32,7 @@ The model chooses what to say and which tool to call next. It does not calculate
 
 ## Tool contracts and enforcement
 
-The policy text lives in `app/data/kb/`. The rules that must never bend live in `app/refund_agent/tools.py`. The prompt decides when to call a tool; the tool decides what is allowed.
+The policy text lives in [`app/data/kb/`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/tree/main/app/data/kb). The rules that must never bend live in [`app/refund_agent/tools.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/tools.py). The prompt decides when to call a tool; the tool decides what is allowed.
 
 | Tool | What it does |
 |---|---|
@@ -57,7 +57,7 @@ return {"ok": True, "amount_refunded": amount(order_id)}
 
 ## The v1 instructions
 
-`app/data/instructions.md` is the agent's prompt. The start of it:
+[`app/data/instructions.md`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/data/instructions.md) is the agent's prompt. The start of it:
 
 ```text
 You are the refund assistant for Lumen Goods.

@@ -2,7 +2,7 @@
 
 **Managed agent.** An agent hosted by orq.ai: instructions, model, tools, limits and versions in one entity. Invoked through the Responses API as `model="agent/<key>"`, pinned with `@<version>`. [Docs](https://docs.orq.ai/docs/ai-studio/ai-engineering/build-agents)
 
-**Code tool.** A Python tool that orq.ai runs next to the agent. It receives the call's arguments in `params` and returns what it leaves in `result`. In this repo they are generated from `app/refund_agent/tools.py`.
+**Code tool.** A Python tool that orq.ai runs next to the agent. It receives the call's arguments in `params` and returns what it leaves in `result`. In this repo they are generated from [`app/refund_agent/tools.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/app/refund_agent/tools.py).
 
 **Agent version.** Every update with `version_increment` creates a new version (`1.0.0`, `2.0.0`); old versions stay callable as `agent/<key>@<version>`.
 

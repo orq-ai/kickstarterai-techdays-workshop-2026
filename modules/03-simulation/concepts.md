@@ -89,7 +89,7 @@ An empty `rules_broken` list does not establish that every rule held. Check `cri
 
 ## What the judge can see
 
-Text alone can make a confident but incorrect answer look persuasive. This workshop's `evals/target.py` keeps the managed agent's code-tool calls and their results on the transcript passed to the judge. The judge can therefore use execution evidence, not just the final wording.
+Text alone can make a confident but incorrect answer look persuasive. This workshop's [`evals/target.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/evals/target.py) keeps the managed agent's code-tool calls and their results on the transcript passed to the judge. The judge can therefore use execution evidence, not just the final wording.
 
 This only works when the agent returns those intermediate outputs and they are passed to the judge. If the agent returns only its final answer, the judge can evaluate only that answer; it cannot inspect tool calls or results that were not returned.
 

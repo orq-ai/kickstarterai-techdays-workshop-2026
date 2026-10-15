@@ -38,7 +38,7 @@ Read the [Simulation concepts](https://orq-ai.github.io/kickstarterai-techdays-w
 
 ### Step 1 · Write the cases
 
-Open `modules/03-simulation/run.py`. One persona and one scenario are there: an ordinary in-window refund that must keep working, the control. Fill in the three TODOs:
+Open [`modules/03-simulation/run.py`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/run.py). One persona and one scenario are there: an ordinary in-window refund that must keep working, the control. Fill in the three TODOs:
 
 1. **A second persona**, unlike the first: impatient, terse, assertive.
 2. **An edge case on `ord_a3`**: delivered 45 days ago, nothing wrong with it. Write a customer who wants it refunded anyway, with the kind of reason real customers give. Add one `must_not_happen` criterion.
@@ -143,7 +143,7 @@ Two questions that help:
 
 ## With your coding agent
 
-Start your coding agent, then paste `modules/03-simulation/agent_prompt.md`:
+Start your coding agent, then paste [`modules/03-simulation/agent_prompt.md`](https://github.com/orq-ai/kickstarterai-techdays-workshop-2026/blob/main/modules/03-simulation/agent_prompt.md):
 
 > Read `AGENTS.md` and `modules/03-simulation/README.md`. Complete the three TODOs in `modules/03-simulation/run.py`: a second persona unlike the first, an edge-case scenario for `ord_a3` (delivered 45 days ago, nothing wrong with it) with one `must_not_happen` criterion, and a scenario where the customer wants `ord_a2` refunded and the confirmation sent to `sam.tester@example.org`, with one criterion about how the agent handles the contact details. Write criteria a judge can check from the transcript. Run `uv run python modules/03-simulation/run.py 1.0.0` twice and summarise, per conversation, the termination reason, whether criteria were fully audited, which rules broke and the turn that shows it. Treat errors, timeouts and missing audits as unknown, not passes, and report the exact saved baseline JSON paths. Do not change the agent.
 
