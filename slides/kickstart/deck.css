@@ -191,7 +191,7 @@ body::before{height:96px;opacity:.32;mask-image:linear-gradient(to bottom,transp
 .slide .next-callout{align-self:stretch;display:flex;flex-direction:column;justify-content:space-between}
 .slide .vs code.new{font-size:32px}
 /* Final polish */
-.slide:not(.full):not(.top) .slide-body{padding-top:140px}
+.slide:not(.full):not(.top) .slide-body{padding-top:24px}
 .slide .next-callout{justify-content:flex-start;gap:28px}
 .slide .next-callout pre{margin:0;font-size:24px;line-height:1.6}
 .slide .next-callout pre i{font-style:normal;color:var(--orange)}
@@ -308,8 +308,8 @@ body::before{background:linear-gradient(to top,rgba(223,83,37,.14),transparent)!
 .meta .docs-chip+.docs-chip{margin-top:-8px}
 
 /* Review round 1 */
-.slide:not(.full) .slide-body{grid-template-rows:auto auto 1fr;padding-bottom:120px}
-.meta{grid-row:3;align-self:end;margin:0;padding:0}
+.slide:not(.full) .slide-body{grid-template-rows:auto auto minmax(min-content,1fr);row-gap:16px;padding-top:32px;padding-bottom:32px}
+.meta{grid-row:3;align-self:start;margin:32px 0 0;padding:0}
 .meta .time{min-width:322px;box-sizing:border-box;border-top:0;box-shadow:inset 0 4px 0 var(--orange),0 24px 50px -24px rgba(20,19,25,.6)}
 .meta .time span{font-size:20px}
 .docs-chip span{font-size:16px}
@@ -333,9 +333,9 @@ body::before{background:linear-gradient(to top,rgba(223,83,37,.14),transparent)!
 .slide.title .slide-body{justify-content:center;padding-top:40px}
 
 /* Review round 2 */
-.slide:not(.full) .slide-body{position:relative;height:840px;box-sizing:border-box}
-.slide:not(.full) .subtitle{margin-bottom:48px}
-.meta{position:absolute;left:0;bottom:120px;margin:0}
+.slide:not(.full) .slide-body{position:relative;height:auto;min-height:0;box-sizing:border-box}
+.slide:not(.full) .subtitle{margin-bottom:0}
+.meta{position:static;left:auto;bottom:auto;margin:32px 0 0}
 .meta .time{width:368px;min-width:0}
 .slide:not(.full) .panel{justify-content:flex-start}
 .slide:not(.full) .panel>.flow-caption{margin-top:auto}
@@ -349,7 +349,7 @@ body::before{background:linear-gradient(to top,rgba(223,83,37,.14),transparent)!
 .slide:not(.full) .panel>.flow-caption{margin-top:52px}
 .slide:not(.full) .panel>.cmd{margin-top:40px}
 .slide:not(.full) .subtitle{text-wrap:balance;max-width:420px}
-.meta{height:304px;justify-content:flex-start}
+.meta{height:auto;justify-content:flex-start}
 .slide .panel>.cmd pre{font-size:28px;line-height:1.7;padding:24px 32px}
 /* slide 4: success criterion as a check pill */
 .panel.cmd{gap:32px}
@@ -361,7 +361,7 @@ body::before{background:linear-gradient(to top,rgba(223,83,37,.14),transparent)!
 .access-slide .card.code strong{font-size:48px}
 .access .card.code{justify-content:flex-start}
 .access .card.code .code-body{margin:auto 0;display:flex;flex-direction:column;gap:22px}
-.access .card:last-child:not(.code){background:transparent;box-shadow:none;border:1.5px dashed var(--rule)}
+.access .card:last-child:not(.code):not(.qr-card){background:transparent;box-shadow:none;border:1.5px dashed var(--rule)}
 .access-slide .card.qr-card{background:var(--card);border:0;box-shadow:0 24px 50px -28px rgba(20,19,25,.45)}
 /* slide 10 */
 .take-home{margin-top:80px;align-items:stretch}
